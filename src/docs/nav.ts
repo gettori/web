@@ -48,6 +48,7 @@ export const NAV: NavGroup[] = [
       page("Diffs", "git/diffs"),
       page("Who wrote a hunk", "git/who-wrote-this"),
       page("Checkpoints", "git/checkpoints"),
+      page("The Inbox", "git/inbox"),
       page("Merge conflicts", "git/merge-conflicts"),
       page("Pull requests and issues", "git/pull-requests-and-issues"),
     ],
