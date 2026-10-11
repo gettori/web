@@ -79,8 +79,7 @@ from the next turn, so the agent stops asking about this kind of call.
 The agent is stopped on the question, so a
 [steer](/docs/agents/steering-and-the-queue/) is refused until you answer:
 **Session is waiting for permission, answer it first.** Messages you queue
-still wait in the queue. Text that another part of Tori tries to send into
-the chat, like a hunk comment, is refused the same way.
+still wait in the queue, and so do hunk comments you send to it.
 
 If the prompt came from a subagent that you are not watching, it shows in the
 main transcript too, with **Read what this subagent is doing** to jump to its
