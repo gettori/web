@@ -52,10 +52,15 @@ times it happened. The chip shows how many times.
 | --- | --- | --- |
 | Secret read | 30 | A turn read or named a secret-shaped file, such as `.env` or a key |
 | Checks failed | 25 | The last check a turn ran after its last edit failed |
+| Test files deleted | 25 | The session deleted a test file: one in a `test`, `tests`, `__tests__` or `spec` folder, or named like `*.test.*`, `*_test.*` or `test_*` |
+| CI, auth or secret file | 20 | The session changed a CI file (`.github/workflows`, `.gitlab-ci.yml` and the like), a file with auth, login, OAuth, credential or permission in its path, or a secret-shaped file |
+| Manifest or lockfile | 15 | The session changed a dependency manifest or lockfile, such as `package.json`, `pnpm-lock.yaml`, `Cargo.toml` or `go.sum` |
+| Outside the named folders | 15 | The session changed files outside the folders its first prompt or its issue named |
+| Shared with another session | 10 | Another session in the same folder also wrote one of these files |
 | Edit without reading | 10 | The session changed a file it never looked at first |
 | Unverified turn | 10 | A turn changed code and nothing it ran checked it |
 | Lines | up to 30 | Lines the session added and removed since you last reviewed it |
-| No checkpoints | 0 | Tori has no snapshot to count lines from, so lines are missing |
+| No checkpoints | 0 | Tori has no snapshot to count lines from, so lines and the file signals are missing |
 
 Lines grow slowly: 10 lines are worth about 10 points, 100 about 20, and the
 count stops adding at about 1,000. A small change that read a secret file still
@@ -63,6 +68,15 @@ ranks above a large clean one.
 
 Only turns after your last review count, so a row that comes back shows the new
 work, not the old signals again.
+
+### Outside the named folders
+
+Tori reads the session's first prompt, and the issue its branch was started
+from when there is one, for paths: a word with a `/` in it, or a file name with
+an extension, whose first part exists in the project. `src/review/mod.rs` names
+the `src/review` folder, `README.md` names that file. Every changed file outside
+them counts. When nothing in the prompt or the issue looks like a path, this
+signal stays off. Tori fetches the issue once per session while it runs.
 
 ## Mark reviewed
 
