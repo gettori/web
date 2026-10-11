@@ -114,6 +114,7 @@ account usage controls. See
 | Open Markdown and SVG rendered | Off | Opens those files in the rendered view instead of the source |
 | Git blame | Off | Per-line blame in the gutter; an uncommitted line names the agent turn that wrote it |
 | Side by side diffs | Off | Two column vs inline diff rendering |
+| Send hunk comments right away | Off | Sends each hunk comment as you write it instead of holding it for one **Send** |
 | TODO tags | TODO, FIXME, HACK, XXX | Tags the TODO panel searches for, workspace overridable |
 
 ## Panes

@@ -1,6 +1,6 @@
 ---
 title: Diffs
-description: Read a change as rows or inside the whole file, stage or throw away a hunk or a few lines, comment on a hunk for an agent, and switch between inline and side by side.
+description: Read a change as rows or inside the whole file, stage or throw away a hunk or a few lines, comment on hunks and send them to an agent as one message, and switch between inline and side by side.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -26,6 +26,7 @@ or the **Working tree**, and has:
 
 | Control | What it does |
 | --- | --- |
+| **N comments** | The hunk comments you are holding, with **Send**. Only there while you hold some, see [Comment on a hunk](#comment-on-a-hunk) |
 | **Previous change**, **Next change** | Jump between hunks. `Shift+Option+F5` and `Option+F5` in the file view |
 | **Stage this file** or **Unstage this file** | The whole file at once |
 | **Discard every hunk below** | Throws away every unstaged change in the file, after a confirmation and a snapshot |
@@ -88,20 +89,51 @@ hunk headers, so **Who wrote this hunk** is only on the rows view.
 
 Each hunk has a comment button, **Comment on this hunk**. Use it to point an
 agent at a specific change: "this should handle a 429 too", "rename this".
+Write as many as the review needs, then send them all at once.
 
 <Steps>
 
-1. Select the session you want to ask in the sidebar.
-2. Click the comment button on the hunk and type your comment.
-3. Press `Enter` or **Send**. `Escape` closes the box.
+1. Click the comment button on a hunk and type your comment.
+2. Press `Enter` or **Hold comment**. `Escape` closes the box.
+3. Do the same on any other hunk, in this file or another. The tab's bar
+   counts them: **3 comments**.
+4. Select the session you want to tell in the sidebar.
+5. Click the count, check the list, and click **Send**.
 
 </Steps>
 
-The comment goes to that session as **In @src/sign.ts lines 12-18: your
-comment**, into its composer for a chat or typed at its prompt for a terminal
-agent. It is never sent for you; read it there and send. The button is greyed
-out with the reason when no session is selected or the session cannot be
-reached.
+The list shows each comment's file, lines and text. **Remove this comment**
+takes one out, **Clear** empties it. **Send** is greyed out with the reason
+when no session is selected.
+
+Every diff tab in the workspace shares one list, and so does the
+[Session pane](/docs/workspace/panes-and-tabs/), which has its own count next
+to **Show reads** and sends to the session it shows. Holding a comment needs
+no session. The list lives until you send or clear it, or quit Tori.
+
+All the comments go as one message, each with its file and lines:
+
+- **A chat** gets it as a turn of its own, sent right away. If a turn is
+  running it waits in the [queue](/docs/agents/steering-and-the-queue/) like a
+  message you queued. A chat that autopilot is driving, that is stopped at its
+  spend limit, or whose queue is parked refuses it, and your comments stay in
+  the list. A chat you opened only to read has to be running first: send it a
+  message, then send the comments.
+- **A terminal agent** gets it typed at its prompt as one line,
+  **1) In @src/sign.ts lines 12-18: your comment 2) In @src/api.ts lines 4-9:
+  another**, and nothing more. Tori never presses Enter in a terminal; read it
+  there and send.
+
+A single comment goes as **In @src/sign.ts lines 12-18: your comment**, without
+the number.
+
+### Send each comment right away
+
+**Send hunk comments right away**, in Settings > Editor, skips the list: each
+comment goes to the selected session as soon as you press `Enter` or **Send**,
+the same way as above. The comment button then needs a session, and is greyed
+out with the reason without one. If the send fails, your comment stays in the
+box.
 
 ## Diffs in the editor
 
