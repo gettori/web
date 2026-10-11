@@ -29,6 +29,14 @@ The first row names the branch, with **Refresh** (which also fetches) and
   is gone. When the upstream was force-pushed over your commits it shows the
   count to pull and its click offers **The upstream was force-pushed. Reset to
   it**.
+  It reads **Diverged** when both your branch and `origin/<branch>` have
+  commits the other lacks. Its tooltip gives both counts and both likely
+  causes: somebody else pushed, so use **Pull (Rebase)**; or you rewrote
+  history here (a rebase or an amend), so use **Force Push**. When the reflog
+  shows the rewrite happened here, it adds **This looks like a rewrite here.**
+  Clicking it opens **More Actions** instead of pushing. Diverged is measured
+  against `origin/<branch>`, where a push goes, so a branch that tracks
+  `origin/main` is not called diverged just because main moved.
 - **Open a pull request**, or **Reopen the pull request** for a closed one.
   See [Pull requests and issues](/docs/git/pull-requests-and-issues/).
 - A **plug** to add an account for the repository's host, or a **person** to
@@ -118,7 +126,9 @@ The arrow beside **Commit** offers:
   and the button reads **Amend**. If the commit looks like it is already pushed,
   Tori asks **Amend a pushed commit?** first; that check is only as fresh as
   your last fetch.
-- **Commit & Push**, or **Amend & Push**.
+- **Commit & Push**, or **Amend & Push**. The push goes through the same
+  checks as **Push** (see [Before a push](#before-a-push)). In a Topic each
+  repository is pushed in turn, so each question comes on its own.
 - **Stop amending**.
 
 ### AI Draft
@@ -147,14 +157,49 @@ The `...` menu acts on the repository on screen:
 | **Pull** | Fetches and merges. Always merges, even if your git config says `pull.rebase` |
 | **Pull (Rebase)** | Fetches and rebases on top |
 | **Push** | Pushes, setting the upstream on the first push |
+| **Force Push** | Only on a diverged branch. Replaces `origin/<branch>` with your branch, after a confirm |
 | **Rebase** | A submenu, below |
 | **Stash All Changes** | Puts every change aside |
 | **Commit** | Shows or hides the commit box |
 | **Graph**, **Stashes**, **Checkpoints** | Shows or hides each history tab |
 | **Open Graph in Editor** | The full commit graph in a tab |
 
+Under **Pull**, **Pull (Rebase)** and **Push**, a line says what each will do
+to this branch right now, with the counts:
+
+- **Pull**: **Fast-forward to origin/feat, 3 commits**, or **Merge origin/feat
+  into this branch, 1 commit, adds a merge commit** when both sides have moved.
+  On a reference member, where pull only fast-forwards, it says the pull will
+  refuse.
+- **Pull (Rebase)**: **Replay your 2 commits on top of origin/feat, after its
+  1 commit**.
+- **Push**: **2 commits to origin/feat**, or **Publish feat to origin** before
+  the first push.
+
 When the upstream was force-pushed over your commits, **Pull** reads **Reset to
 Upstream** instead.
+
+### Before a push
+
+**Push** on a diverged branch does nothing. Its line reads **Diverged: pull
+with rebase, or force push**, because git would reject it anyway. **Commit &
+Push** still commits, and **Push to origin** and **Git: Sync** in the palette stop
+with the same message. Sync stops before it pulls, since a pull would merge
+the old history back in.
+
+Any push of two or more commits is checked against `origin/main` (your base
+branch) first. If more than half of the commits are already there under other
+hashes, usually because a pull replayed main onto your branch, **Push copies of
+base commits?** asks first, for example **23 of 23 commits are already on main
+under other hashes, a pull replayed main onto this branch.** You can choose
+**Rebase onto origin/main**, which drops the copies, **Push anyway**, or
+**Cancel**. Only the commits not already on `origin/<branch>` count.
+
+**Force Push** asks **Force push feat?** and says how many commits on
+`origin/<branch>` it replaces and how many of yours go up. It is a
+force-with-lease on the exact commit that dialog was showing: if somebody
+pushed in the meantime, the push is rejected and nothing of theirs is lost.
+It goes through the same copy check.
 
 A push or fetch that needs a password or passphrase asks in a Tori dialog, and
 the answer goes straight to git; Tori does not store it.
@@ -245,7 +290,7 @@ each command names the repository it will act on.
 | Command | What it does |
 | --- | --- |
 | **Git: Fetch**, **Pull**, **Pull (Rebase)** | As in the menu |
-| **Git: Sync (pull, then push)** | Both, in that order |
+| **Git: Sync (pull, then push)** | Both, in that order. Stops on a diverged branch |
 | **Git: Stage All Changes**, **Unstage All Changes** | Everything at once |
 | **Git: Discard All Changes** | After a snapshot |
 | **Git: Commit (Signed Off)** | Commits with a `Signed-off-by` line |
