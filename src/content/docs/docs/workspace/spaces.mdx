@@ -1,6 +1,6 @@
 ---
 title: Spaces, projects and branches
-description: "The sidebar: create and arrange spaces, add projects by folder, clone or bare repo, read every mark on a branch row, and use every menu."
+description: "The sidebar: create and arrange spaces, add projects by folder or clone, convert a clone to the worktree layout, read every mark on a branch row, and use every menu."
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -147,9 +147,10 @@ open, so clicking it selects it.
    - **Folder**: a plain folder, no git. Type a **Name**.
    - **Clone**: clones a git repository into a new folder. Type the
      **Repository URL**; the **Folder name** fills in from the URL unless you
-     change it.
-   - **Bare + worktree**: a bare repository plus one worktree for its default
-     branch. Add more branches later as their own folders.
+     change it. **Worktree layout** is on by default: the clone goes into a
+     `.bare` repository with its default branch checked out as its own folder,
+     and you add more branches later as their own folders. Clear the box for
+     a plain clone.
 3. Press `Enter` or confirm.
 
 </Steps>
@@ -173,10 +174,62 @@ Right-click a project row, or hover it and click its actions button:
 | **Add branch** | Repo | Checks out or creates a branch. See [Worktrees and branches](/docs/git/worktrees-and-branches/#add-a-branch-or-worktree) |
 | **Add worktree** | Bare | Adds a branch as its own folder |
 | **Fan out** | Repo, Bare | Several attempts at one task. See [Fan out](/docs/git/worktrees-and-branches/#fan-out-several-attempts) |
+| **Convert to worktree layout** | Repo | Turns the clone into a **Bare** project in place, see below |
 | **Prune worktrees** | Bare | Clears git's records of worktree folders deleted outside Tori, and says how many it pruned |
 | **Set origin**, **Change origin** | Repo, Bare | Points `origin` at a remote. Accepts `https://`, `git@` and `ssh://` URLs. Existing branches keep their names |
 | **Project settings** | Any | Opens the project's [settings dialog](/docs/workspace/project-settings/): icon, setup command and shared files, allowed agents, verification commands, trust, origin and account, the repo's workspace settings and the autopilot contract |
 | **Remove project**, **Remove folder** | Any | Deletes it, see below |
+
+### Convert a clone to the worktree layout
+
+**Convert to worktree layout** in a **Repo** project's menu turns an ordinary
+clone into a **Bare** project without cloning again. `.git` becomes `.bare`,
+and the checkout moves into a folder named after the branch's last segment:
+`repo/main` for a clone on `main`, `repo/x` for one on `feat/x`. The project
+keeps its place in the space.
+
+The dialog lists everything that moves before anything runs:
+
+| Row | What it is |
+| --- | --- |
+| **Checkout** | Where the checkout lands |
+| **Repo** | `.git` becomes `.bare` |
+| **Topic** | A [Topic](/docs/workspace/topics/) worktree in the repo, moving out to its own folder beside the checkout. Its Topic follows it |
+| **Moves** | Another worktree inside the checkout, moving with it |
+| **Repaired** | A worktree of this repo outside the project folder. It stays where it is and is pointed at `.bare` |
+
+Nothing in git is lost: staged and unstaged changes, untracked and ignored
+files, stashes, local branches, remotes and the branch's reflog all stay, so
+`git status`, `git stash list` and `git branch` read the same afterwards.
+
+Your open tabs, breakpoints, expanded folders, pane layout, closed-tab history
+and search history follow the files into the new folder, and the new branch
+row is selected. Earlier agent sessions stay recorded at the old path, so they
+drop out of the branch's history.
+
+If a [Topic](/docs/workspace/topics/) reads this repo and the branch you
+convert is not the default branch, the dialog says so: the new layout has no
+default-branch folder until you add one with **Add worktree**.
+
+**Convert** stays disabled, with the reason shown, when:
+
+- a rebase, merge, cherry-pick, revert or bisect is in progress,
+- the repository has submodules, a sparse checkout, per-worktree config or
+  `core.worktree` set,
+- `HEAD` is detached, or the branch has no commits yet,
+- a Topic worktree in the repo has the same name as the branch's folder,
+- a terminal or agent tab is running in the project, or
+- a file in the project has unsaved changes, including unsaved work kept from
+  your last quit.
+
+<Aside type="note" title="If a conversion is interrupted">
+
+If Tori stops in the middle of a conversion, the project shows as a
+conversion that stopped partway. Its menu has only **Undo conversion**, which
+puts the ordinary clone back exactly as it was. **Remove empty container**
+never appears on it.
+
+</Aside>
 
 ### Change a project's icon
 
