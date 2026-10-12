@@ -195,6 +195,10 @@ under other hashes, a pull replayed main onto this branch.** You can choose
 **Rebase onto origin/main**, which drops the copies, **Push anyway**, or
 **Cancel**. Only the commits not already on `origin/<branch>` count.
 
+The pull request form's **Push and open a pull request** and **Push only**
+skip both checks for now: they push as they are, and a diverged branch is
+rejected by git instead.
+
 **Force Push** asks **Force push feat?** and says how many commits on
 `origin/<branch>` it replaces and how many of yours go up. It is a
 force-with-lease on the exact commit that dialog was showing: if somebody

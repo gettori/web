@@ -112,7 +112,7 @@ question opens with that card in view. A pull request row opens its worktree.
 
 ## Review
 
-## What is listed
+### What is listed
 
 A session is listed when all of these hold:
 
@@ -126,10 +126,17 @@ A session is listed when all of these hold:
 Once you commit and push the work and the folder is clean, the session drops
 off the list by itself, reviewed or not.
 
+<Aside>
+Lines are the session's own files, worked out the same way Checkpoints decides
+what a turn wrote. Two sessions in one dirty folder are both listed, and a
+session that only answered questions can show up next to one that wrote, when
+Tori cannot tell who changed a file.
+</Aside>
+
 The Inbox starts empty. The first time Tori runs with it, everything that
 happened before counts as already read, and only new turns show up.
 
-## Reading a row
+### Reading a row
 
 Each row shows:
 
@@ -142,7 +149,7 @@ Click a row to go to the session. Tori opens the Changes panel on the
 **Checkpoints** tab, at the session's first turn you have not reviewed, where
 each file opens its diff with [Who wrote this hunk](/docs/git/who-wrote-this/).
 
-## The signals
+### The signals
 
 The score adds up fixed points. Each signal counts once per row, however many
 times it happened. The chip shows how many times.
@@ -170,7 +177,7 @@ ranks above a large clean one.
 Only turns after your last review count, so a row that comes back shows the new
 work, not the old signals again.
 
-### Outside the named folders
+#### Outside the named folders
 
 Tori reads the session's first prompt, and the issue its branch was started
 from when there is one, for paths: a word with a `/` in it, or a file name with
@@ -179,7 +186,7 @@ the `src/review` folder, `README.md` names that file. Every changed file outside
 them counts. When nothing in the prompt or the issue looks like a path, this
 signal stays off. Tori fetches the issue once per session while it runs.
 
-## Mark reviewed
+### Mark reviewed
 
 **Mark reviewed** takes the row off the list until the session starts a new
 turn and changes something.
@@ -188,13 +195,6 @@ You cannot mark a session that is still working, or one waiting on a question
 or an approval: its turn has not finished, and later edits in the same turn
 would go unseen. If a new turn starts between the moment you looked and your
 click, Tori refuses too and asks you to look again.
-
-<Aside>
-Lines are the session's own files, worked out the same way Checkpoints decides
-what a turn wrote. Two sessions in one dirty folder are both listed, and a
-session that only answered questions can show up next to one that wrote, when
-Tori cannot tell who changed a file.
-</Aside>
 
 Deleting a session also removes its review mark.
 
