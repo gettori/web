@@ -1,0 +1,78 @@
+---
+title: Conflict radar
+description: See a branch that no longer merges cleanly with its base, and a file two worktrees are changing at once, before either becomes a pull request.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+Two agents in two worktrees can edit the same file for an hour, and nobody
+finds out until the second pull request will not merge. The conflict radar
+watches for that while the work is still happening. It looks for two things:
+
+- **A base conflict**: the branch's base has moved on, and some files would
+  conflict when the branch catches up.
+- **An overlap**: a session in this worktree and a session in another
+  worktree of the same project are both changing the same file.
+
+It is on by default. Turn it off with **Watch branches for conflicts** in
+Settings > Chat. Off, Tori runs none of these checks and every mark below
+goes away.
+
+## Base conflicts
+
+Tori asks git what a merge of the base into the branch would do, without
+touching your files. When files would conflict, the branch's row in the
+sidebar gets the red conflict mark, and its tooltip lists the files. The
+check runs when a fetch finishes, when a pull request's base changes, when a
+turn ends, and when a row is drawn, so a branch nobody has open is still
+checked once a session or the autopilot is working in it.
+
+The base is the branch the pull request will go into: the one you picked
+when you started the branch, or the repository's default branch.
+
+## Overlaps
+
+An overlap is a file that two live sessions in different worktrees of the
+same project both wrote, and that still differs from the base in both
+worktrees. A session counts while it is open, working or idle. It stops
+counting when it ends.
+
+When one is found:
+
+- **The branch row** of each worktree gets an amber files mark with the
+  number of files. The tooltip names them (or counts them past three) and the
+  other branch. This mark stays while an agent in the row is working, when
+  the other marks step aside.
+- **The session's tab**, and its row in History, get a small files mark in
+  the top left corner of the agent glyph. Hover for the files and the other
+  branch.
+- **Checkpoints** shows **Also open in** on the file, naming the other session
+  and its branch.
+
+An overlap goes away when either side puts the file back the way the base has
+it, or when either session ends.
+
+<Aside>
+Only chats record which files they write, so only chats can overlap. An
+agent running in a terminal tab records nothing and never shows an overlap,
+though its branch still gets base conflicts.
+</Aside>
+
+An overlap is not the same as [shared with another chat](/docs/git/checkpoints/):
+that one is two sessions in the same worktree, and reverting the file undoes
+both. Reverting a file that overlaps with another worktree only changes your
+copy, so Tori does not ask about it.
+
+## In the Inbox
+
+Both feed the [Inbox](/docs/git/inbox/) score: a base conflict adds 20, an
+overlap adds 15, and each chip shows how many files.
+
+## With the autopilot
+
+The [autopilot](/docs/automation/autopilot/) reads both for every item it
+runs. When two of its running items are changing the same file, it holds the
+later one until the first one's pull request merges, and tells you which two
+it held apart. When an item's branch would conflict with its base, it tells
+the worker to bring the base in and resolve those files before the work is
+called done.
