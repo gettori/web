@@ -261,6 +261,12 @@ At the right end of a project row:
 
 - **A status bubble**, while the project is closed, rolling up every session
   under it.
+- **An orange pull request mark** when pull requests in the project's repo
+  are waiting on your review and have no worktree here yet, with the count
+  from 2 up. Click it for the list, each with its number, title and author;
+  pick one to make its `pr-<number>` worktree and select it. A project can
+  make these by itself: see
+  [Automations](/docs/workspace/project-settings/#automations).
 - **A broken link mark** when a worktree is missing a
   [shared file](/docs/git/shared-files/). Click it to open the project's
   settings on **Worktrees**.
@@ -365,6 +371,14 @@ Sessions report one of three states, and the sidebar rolls them up:
 A branch row shows its sessions, a closed project shows everything under it,
 and a space tile shows everything in the space. Needs you always wins: one
 waiting session makes the whole rollup say so, with the count.
+
+An orange pull request in the bubble, **Pull request needs attention**, means
+it is your move on a branch's pull request:
+
+- Your own pull request: a check failed, or a reviewer requested changes.
+- Someone else's: it is asking for your review. It clears once you review
+  it, and comes back when the author asks you again. Their failing checks
+  never light it.
 
 ## Topics
 

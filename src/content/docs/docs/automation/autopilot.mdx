@@ -138,6 +138,13 @@ only proposes, so an old backlog never starts itself. An issue that two
 sources both match becomes one item. An issue another project already has
 open is left to that project.
 
+A project whose [review rule](/docs/workspace/project-settings/#automations)
+is on starts its own reviews, so pickup files none of its review requests.
+With **Create a worktree and review it**, each review the rule starts shows
+up here as a running review item, and a later push reopens it. The autopilot
+takes it from there once the chat finishes, and brings you the verdict to
+approve.
+
 When an issue leaves every list (it closed, it was unassigned, or it no
 longer matches its source), an item that has not started yet closes. An
 item already running is not stopped. It gets a note saying so, and the

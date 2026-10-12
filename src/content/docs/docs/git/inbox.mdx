@@ -25,7 +25,7 @@ The tab lists what happened since you last looked at it, in four sections:
 | Section | What is in it |
 | --- | --- |
 | **Finished since** a time | Each session that finished a turn, once, with how many turns, the lines it added and removed, and its latest [verification](/docs/reference/security/#verification) verdict: **Verified**, **Checks failed** or **Not verified** (none while **Mark unverified turns** is off) |
-| **Pull requests** | **Pull request opened**, **Pull request merged**, and **Pull request needs attention** for a failing check or changes requested |
+| **Pull requests** | **Pull request opened**, **Pull request merged**, and **Pull request needs attention** when it is your move on a pull request |
 | **Usage limits** | **Hit its usage limit** and **Continued after the limit reset**, one row per account however many of its chats stopped |
 | **Waiting on you** | Every approval, question, spend limit or blocked terminal not answered yet, however old |
 
@@ -78,7 +78,7 @@ Every time a session needed you, the tab gets a row:
 | **Stopped at its spend limit** | A chat stopped at its budget |
 | **Waiting for you** | A terminal session is blocked. Tori cannot tell on what |
 | **Finished** | A chat finished a turn |
-| **Pull request needs attention** | A branch's pull request has a failing check or changes requested |
+| **Pull request needs attention** | Your branch's pull request has a failing check or changes requested, or someone else's asks for your review |
 
 Rows are grouped by project, the project with the newest row first, and newest
 first inside each group. Each row shows the session's name (a branch for a pull
