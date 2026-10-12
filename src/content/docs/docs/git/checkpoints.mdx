@@ -40,13 +40,18 @@ Each file shows its added and removed lines. Click a file to unfold its diff
 in place, or hover it for **Open this diff in the editor** and **Open the file
 as it is now**. Long lists show the first files and a **+N more** row.
 
-Two marks can appear on a file, explained under the list:
+Two marks can appear on a file, explained under the list, and a third
+on its own:
 
 - **shared with another chat**: another chat in the same worktree also wrote
   this file during that time. Reverting it undoes that chat's work too.
 - **unattributed** (a dashed circle): the file changed during the turn, but no
   session recorded writing it, usually because a shell command wrote it. Tori
   cannot tell whose it is.
+- **Also open in** (a files mark): a session in another worktree of the
+  project is changing this file now. Hover for which session and branch.
+  Reverting here does not touch that worktree, so Tori does not ask about it.
+  See [Conflict radar](/docs/git/conflict-radar/).
 
 In a turn's diff tab (**Open this diff in the editor**), each hunk has **Who
 wrote this hunk**, read against the tree as it stood when that turn ended, so

@@ -56,6 +56,8 @@ times it happened. The chip shows how many times.
 | CI, auth or secret file | 20 | The session changed a CI file (`.github/workflows`, `.gitlab-ci.yml` and the like), a file with auth, login, OAuth, credential or permission in its path, or a secret-shaped file |
 | Manifest or lockfile | 15 | The session changed a dependency manifest or lockfile, such as `package.json`, `pnpm-lock.yaml`, `Cargo.toml` or `go.sum` |
 | Outside the named folders | 15 | The session changed files outside the folders its first prompt or its issue named |
+| Would conflict with the base | 20 | The session's branch would conflict with its base on these files. See [Conflict radar](/docs/git/conflict-radar/) |
+| Also being changed in another worktree | 15 | A live session in another worktree of the project is changing these files too. See [Conflict radar](/docs/git/conflict-radar/) |
 | Shared with another session | 10 | Another session in the same folder also wrote one of these files |
 | Edit without reading | 10 | The session changed a file it never looked at first |
 | Unverified turn | 10 | A turn changed code and nothing it ran checked it |

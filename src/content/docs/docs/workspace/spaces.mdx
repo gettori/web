@@ -295,6 +295,7 @@ From left to right:
   | Mark | Means |
   | --- | --- |
   | Red conflict mark | The base branch has moved on and some files would conflict when you catch up |
+  | Amber files mark with a count | A session in another worktree is changing these files too. See [Conflict radar](/docs/git/conflict-radar/) |
   | Up arrow with a count | Commits to push. Amber when you are also behind (diverged) |
   | Up arrow, muted | Commits to publish: the branch has never been pushed |
   | Up arrow, no count | The branch has no upstream yet, or its remote branch was deleted |
@@ -303,7 +304,7 @@ From left to right:
 
   The tooltip also says when the last commit was made, and lists conflicting
   files. While a session in the branch is working or waiting on you, the marks
-  step aside for its status.
+  step aside for its status, except the amber files mark, which stays.
 - **A Topic tag** when the worktree belongs to a [Topic](/docs/workspace/topics/)
   and **Show Topic worktrees in Spaces** is on. Click it to open the Topic.
 - **A status bubble** for the sessions in it.
