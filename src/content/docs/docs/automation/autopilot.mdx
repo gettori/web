@@ -183,6 +183,10 @@ autopilot, which may answer the ones it can and brings you the rest.
 - Starting the autopilot resumes its last session. If that session died, or
   you changed its agent, it starts a fresh one that picks up the same
   workers, holds and cards.
+- With [Conflict radar](/docs/git/conflict-radar/) on, it holds back the later
+  of two running items that are changing the same file until the first one's
+  pull request merges, and tells a worker whose branch would conflict with
+  its base to bring the base in first.
 - No agent session can turn the autopilot on or off. Only you can: from the
   Cockpit, a shell, or a paired phone.
 

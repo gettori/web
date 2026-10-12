@@ -42,6 +42,7 @@ account usage controls. See
 | Mark secret file reads | On | A turn that read a secret file, or ran a command naming one, says so in the chat, on its tab and in Checkpoints. See [Secret watch](/docs/reference/security/#secret-watch) |
 | Mark edits made without reading | On | An ACP agent's edit to a file the session never read, searched or named says so on the call and its turn. See [Blind edits](/docs/reference/security/#blind-edits) |
 | Mark unverified turns | On | A turn that changed code says whether a test, type check, lint or build ran after its last edit: verified, failed, or unverified when nothing ran or its exit was not seen. See [Verification](/docs/reference/security/#verification) |
+| Watch branches for conflicts | On | A branch that would conflict with its base, or a file a session in another worktree is changing too, says so on its row, its tab, in Checkpoints and in the Inbox. Off runs none of these checks. See [Conflict radar](/docs/git/conflict-radar/) |
 | Resume at reset | Off | A Claude chat stopped by a usage limit gets one message from Tori to continue, shortly after the limit resets |
 
 **Notifications**
