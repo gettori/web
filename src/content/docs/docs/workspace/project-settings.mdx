@@ -1,6 +1,6 @@
 ---
 title: Project settings
-description: One dialog per project that holds everything set for that project, from its icon, remote and setup command to its agents, autopilot contract, trust and verification commands.
+description: One dialog per project that holds everything set for that project, from its icon, remote and setup command to its agents, autopilot contract, what to do when your review is requested, trust and verification commands.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -53,6 +53,7 @@ Which sections a project has depends on its layout:
 | General | Yes | Yes | Yes |
 | Worktrees | | | Yes |
 | Agents | Yes | Yes | Yes |
+| Automations | | Yes | Yes |
 | Tooling | Yes | Yes | Yes |
 
 A bare project whose setup never finished (an empty container) gets the same
@@ -134,6 +135,54 @@ and its **Issue sources** as one card per source, saved with **Save sources**.
 A change made anywhere else, in Settings or by an agent over the socket, shows
 here at once. While autopilot is off, a card says so and the contract is
 hidden.
+
+### Automations
+
+**When your review is requested** decides what the project does by itself
+when a pull request on GitHub asks for your review. It runs every 2 minutes,
+when Tori checks the host, in any space, with or without the
+[autopilot](/docs/automation/autopilot/), and only while Tori is open.
+
+**Do**:
+
+- **Nothing**, the default.
+- **Create a worktree**: makes the pull request's `pr-<number>` worktree, on
+  its head commit, as soon as it asks for you. When the author pushes while
+  the request stands, the worktree moves to the new head, but only when
+  nothing in it is yours: no changed files and no commits of your own. A
+  worktree with your work in it stays where it is.
+- **Create a worktree and review it**: the same worktree, and a chat in it
+  that reviews the change against its base. The chat runs in the background,
+  in plan mode for Claude, so it reads the change without stopping to ask;
+  another agent runs on its usual mode and may stop to ask you. When the
+  author pushes, or asks for your review again, the same chat is told what
+  changed since it last looked, or a new one starts if that chat is closed.
+  A chat in the middle of a turn finishes it first. The review ends in a
+  verdict and comments for you to read; nothing is posted to the pull request
+  without you.
+
+The rule acts on pull requests that ask for you from the moment you turn it
+on. Those already waiting stay on the project row's
+[review requests mark](/docs/workspace/spaces/#marks-on-a-project-row).
+
+**Review prompt**, with **Create a worktree and review it**: what the chat is
+told after the pull request's number, title, base and head. Left empty, the
+built-in prompt shown in the field runs.
+
+**At most per hour**, 1 to 50, 5 by default. Past it the rule pauses and a
+**Paused** row says so, with **Resume**. Requests that came in while it was
+paused are not acted on.
+
+The rule is saved in your own settings, never in the repo, so it never runs
+on a teammate's machine. GitLab has no list of review requests, so the rule
+does nothing there.
+
+With the autopilot on, the rule takes review requests for this project and
+pickup leaves them to it. With **Create a worktree and review it**, each
+review is handed to the autopilot as a running review item, and the
+autopilot brings you its verdict to approve, the same as a review it started
+itself. With **Create a worktree**, the autopilot does not hear about review
+requests here.
 
 ### Tooling
 
