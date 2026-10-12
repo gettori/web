@@ -205,6 +205,7 @@ that thing is rather than in the Settings window.
 | Shared files | Project settings > Worktrees | [Links untracked files into every worktree](/docs/git/shared-files) |
 | Agents allowed in a project | Project settings > Agents | [Limits agents and accounts](/docs/agents/accounts-and-usage/#limiting-agents-per-project) |
 | Remembered chat picks | Project settings > Agents | [Shown per worktree, with Forget all](/docs/workspace/project-settings/#agents) |
+| Second opinion reviewer | Project settings > Agents | [A different agent from the session's, or one fixed agent and account](/docs/git/second-opinion/#pick-the-reviewer) |
 | Verification commands | Project settings > Tooling | [What counts as a check](/docs/reference/security/#what-counts-as-a-check) |
 | Host account for a repository | Project settings > General | Which login its pull requests and pushes use, kept per remote |
 | When a chat needs a worktree | Topic menu | [Ask, create or refuse](/docs/workspace/topics/#chats-in-a-topic) |

@@ -1,0 +1,130 @@
+---
+title: Second opinion
+description: Ask a different agent to review a session's work, read-only, and get its findings as held hunk comments you can send back to the session that wrote the code.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+A second opinion is another agent reading what a session changed and telling
+you what it would push back on. It runs in the background, cannot edit
+anything, and its findings land in the session's diff as
+[held hunk comments](/docs/git/diffs/#comment-on-a-hunk). You read them, drop
+the ones you disagree with, and send the rest to the session that wrote the
+code.
+
+## Start one
+
+There are three places to ask for one:
+
+- **History**: right-click a session's row in the History dropdown and pick
+  **Second opinion**.
+- **The sidebar**: right-click a worktree or a checked out branch and pick
+  **Second opinion**. It reviews the newest session there that has
+  unreviewed work. With none, the row stays in the menu and says **No session
+  here has unreviewed work**.
+- **The [Inbox](/docs/git/inbox/)**: each row has a **Second opinion** button
+  next to **Mark reviewed**.
+
+A toast names the reviewer when it starts, and another says how many comments
+it left when it ends, or that it found nothing worth raising. While it runs,
+the menu items read **Second opinion running** and the Inbox button is greyed
+out. Only one second opinion runs per session at a time.
+
+## What the reviewer reads
+
+The reviewer gets the same work the Inbox shows for the session: everything
+it changed since it was last [marked reviewed](/docs/git/inbox/#mark-reviewed).
+With it goes what the session was asked to do in that stretch, so the review
+is against the task and not just the code.
+
+- Lockfiles (`Cargo.lock`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`
+  and the like) are left out of the diff and named instead.
+- Past 2,000 changed lines, the remaining files are left out and named, and
+  the reviewer can open them itself if they matter.
+- A session that changed nothing since its mark, or only lockfiles, has
+  nothing to review, and Tori says so instead of starting.
+
+It is asked for bugs, missed requirements and risky changes, only on lines
+the session added or changed, and no style nits. A finding on a file the
+session did not change is dropped.
+
+## Read-only
+
+The reviewer runs in the session's own worktree, in its agent's read-only
+mode: plan mode for Claude, the read-only mode for Codex. Tori checks the mode
+took before it sends anything, and stops the reviewer if it ever leaves it.
+Any permission it asks for is denied and any question it asks is answered
+with "nobody is here", so it never waits on you. It gets 15 minutes, then it
+is stopped and the run is marked failed.
+
+Only agents with a read-only mode Tori can confirm can review, which today is
+Claude and Codex. The reviewer's session is listed in the worktree's history
+like any other.
+
+## Pick the reviewer
+
+Project settings > Agents > **Second opinion** picks who reviews in this
+project:
+
+- **A different agent from the session's**, the default: the first enabled
+  agent that can review and is not the agent that wrote the code. When there
+  is none, Tori tells you nobody can give a second opinion.
+- **An agent and account**: that one always reviews, even a session by the
+  same agent. If it is turned off later, Tori refuses and says it is not
+  available.
+
+There is no picker per run. Change the setting to change the reviewer.
+
+## The findings
+
+When the session's diff opens, its findings show up in the
+[held comments](/docs/git/diffs/#comment-on-a-hunk) count next to your own.
+Each one carries the reviewer's name, and a **stale** tag once its file has
+changed since the review read it. Stale findings are kept: the line numbers
+may have moved, but the point usually still stands.
+
+**Send** routes them by who wrote them:
+
+- Your own comments go to the selected session, as before.
+- The reviewer's comments go to the session it reviewed, whichever session is
+  selected. That session is resumed if it is not open. Each reads
+  **Codex (second opinion): the comment**, so the agent knows it is not from
+  you.
+
+**Remove this comment** and **Clear** dismiss findings for good, and a sent
+finding does not come back. Findings are kept on disk per project, so they
+survive closing the diff or quitting Tori, until you mark the session
+reviewed.
+
+## In the Inbox
+
+An Inbox row shows where its second opinion stands, next to its signals:
+
+| Chip | Meaning |
+|---|---|
+| **Second opinion running** | The reviewer is still working |
+| **N second opinion comments** | Findings you have not sent or dismissed yet. **, stale** is added when any of them is stale |
+| **Second opinion: nothing open** | Every finding was sent or dismissed, or there were none |
+| **Second opinion failed** | Hover for why, for example it timed out, left read-only mode, or answered without its findings |
+
+The second opinion does not change the row's score.
+
+**Mark reviewed** deletes the session's findings: they were about the work
+you just signed off. A reviewer still running at that moment has its
+findings thrown away when it finishes. Running a second opinion again
+replaces the earlier one.
+
+## Spending
+
+A reviewer's turns count toward the project's spending like any chat. When the
+project is already at or past its per project
+[ceiling](/docs/agents/limits-and-spending/#set-a-spending-ceiling), a second
+opinion will not start, and the toast says how much was spent of how much.
+The ceiling is checked only before a run, so a reviewer is never cut off
+halfway.
+
+<Aside>
+Codex does not report what a turn cost, so a Codex review adds nothing to the
+project's dollar total, and a project spending only on Codex never reaches
+the ceiling.
+</Aside>
