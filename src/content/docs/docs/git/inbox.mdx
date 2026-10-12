@@ -1,20 +1,70 @@
 ---
 title: The Inbox
-description: What needed you in the last day, and every session with work you have not read yet, riskiest first.
+description: What happened since you last looked, what needed you in the last day, and every session with work you have not read yet, riskiest first.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
 
-The Inbox has two tabs. **Needs you** lists what needed you in the last 24
-hours, so a notification you missed is still there. **Review** lists the
-sessions whose work is waiting for you to read it, across every space, with the
-riskiest at the top.
+The Inbox has three tabs. **Since you looked** is one screen for everything
+that happened while you were away. **Needs you** lists what needed you in the
+last 24 hours, so a notification you missed is still there. **Review** lists
+the sessions whose work is waiting for you to read it, across every space, with
+the riskiest at the top.
 
 Open it with the **Inbox** button in the sidebar strip, next to the dock button,
 or with `Cmd+Shift+X`. The button counts the Needs you rows you have not
-answered plus the sessions waiting for review. The Inbox opens on **Needs you**
-while something there is unanswered, and on **Review** otherwise. Press
-`Escape` or **Close** to go back to the workspace.
+answered plus the sessions waiting for review. The Inbox opens on **Since you
+looked** when it has something, then on **Needs you** while something there is
+unanswered, and on **Review** otherwise. Press `Escape` or **Close** to go back
+to the workspace.
+
+## Since you looked
+
+The tab lists what happened since you last looked at it, in four sections:
+
+| Section | What is in it |
+| --- | --- |
+| **Finished since** a time | Each session that finished a turn, once, with how many turns, the lines it added and removed, and its latest [verification](/docs/reference/security/#verification) verdict: **Verified**, **Checks failed** or **Not verified** (none while **Mark unverified turns** is off) |
+| **Pull requests** | **Pull request opened**, **Pull request merged**, and **Pull request needs attention** for a failing check or changes requested |
+| **Usage limits** | **Hit its usage limit** and **Continued after the limit reset**, one row per account however many of its chats stopped |
+| **Waiting on you** | Every approval, question, spend limit or blocked terminal not answered yet, however old |
+
+Click a row to open what it names: a finished session or a limit opens its
+chat, a pull request opens its worktree, a waiting row opens its session at the
+card. A terminal session shows no lines or verdict. Lines come from
+[checkpoints](/docs/git/checkpoints/), so a session without them shows none.
+With nothing to show the tab says **Nothing finished since you last looked, and
+nothing is waiting on you.**
+
+### When it opens by itself
+
+The Inbox opens on **Since you looked** by itself, only when the tab has
+something:
+
+- When Tori starts.
+- When you come back after four hours or more away. Away means Tori was not in
+  front, or nothing in its window was clicked or typed in, so a Mac left locked
+  with Tori in front counts.
+
+Or open it any time from the command palette (`Cmd+K`) with **Show what
+happened since you last looked**.
+
+### What counts as looking
+
+The tab counts as seen when you leave it: you switch to another tab, close the
+Inbox, open a row, or switch away from Tori while it is showing. Opening Tori
+without opening the tab does not count, so a quick look at one chat during the
+night leaves the morning's list alone.
+
+While the tab is open, its start stays put, so new work joins the list rather
+than replacing it. The next time you look, it starts from where you last saw
+it. The Mac and a paired phone share that point: read it on one and the other
+starts from there too. Tori keeps what happened since then for up to a week,
+across restarts.
+
+Pull requests are only known for projects Tori polls, which is the active
+space. A merge that happens while Tori is closed shows up after it starts and
+polls again. A worktree removed before its merge was seen adds no row.
 
 ## Needs you
 
@@ -154,7 +204,7 @@ the row shows how it went. Marking the row reviewed deletes its findings. See
 
 ## On the phone
 
-A paired phone has the same two tabs. On **Review**, **Approve** is **Mark
+A paired phone has the same three tabs. On **Review**, **Approve** is **Mark
 reviewed** and **Reply** messages a live session. See
 [Using the phone app](/docs/phone/using-the-phone-app/). An agent cannot read
 or mark either list itself: only you, at the Mac or on a paired phone.
