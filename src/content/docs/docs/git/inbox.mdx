@@ -1,17 +1,66 @@
 ---
 title: The Inbox
-description: Every session with work you have not read yet, riskiest first, and the signals that put it there.
+description: What needed you in the last day, and every session with work you have not read yet, riskiest first.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
 
-The Inbox lists the sessions whose work is waiting for you to read it, across
-every space, with the riskiest at the top. It answers "what do I read first",
-not "what finished last".
+The Inbox has two tabs. **Needs you** lists what needed you in the last 24
+hours, so a notification you missed is still there. **Review** lists the
+sessions whose work is waiting for you to read it, across every space, with the
+riskiest at the top.
 
 Open it with the **Inbox** button in the sidebar strip, next to the dock button,
-or with `Cmd+Shift+I`. The button shows how many sessions are waiting. Press
+or with `Cmd+Shift+X`. The button counts the Needs you rows you have not
+answered plus the sessions waiting for review. The Inbox opens on **Needs you**
+while something there is unanswered, and on **Review** otherwise. Press
 `Escape` or **Close** to go back to the workspace.
+
+## Needs you
+
+Every time a session needed you, the tab gets a row:
+
+| Row | When |
+| --- | --- |
+| **Waiting for approval** | A chat asked permission to run a tool |
+| **Asked a question** | A chat asked you a question |
+| **A worker asked a question** | A worker asked a question its chat or the autopilot passes on to you |
+| **Stopped at its spend limit** | A chat stopped at its budget |
+| **Waiting for you** | A terminal session is blocked. Tori cannot tell on what |
+| **Finished** | A chat finished a turn |
+| **Pull request needs attention** | A branch's pull request has a failing check or changes requested |
+
+Rows are grouped by project, the project with the newest row first, and newest
+first inside each group. Each row shows the session's name (a branch for a pull
+request), what it needed, and the time, with **Yesterday** in front for a row
+from the day before.
+
+A turn that finishes while you are looking at that chat is listed already
+answered. A worker that the autopilot or its chat looks after adds no row when
+it finishes. One red check is one row, however many turns run on the branch
+while it stays red; the next red check after it goes green is a new row.
+
+### Answered rows
+
+An answered row stays, dimmed and marked **answered**, until it is a day old.
+
+- A permission, a question, a spend limit or a blocked terminal is answered
+  once the session stops needing you: you answered it, it moved on, or its tab
+  closed.
+- **Finished** and **Pull request needs attention** are answered once you look
+  at the session: it is selected while Tori is in front, its chat tab is on
+  screen, you open the row, or you open the session on your phone. A pull
+  request row is also answered when its check turns green.
+
+Rows still open when Tori starts again are shown answered, since Tori could not
+see what happened while it was closed. A session still waiting gets a new row.
+
+### Opening a row
+
+Click a row to go to its session. A chat still waiting on an approval or a
+question opens with that card in view. A pull request row opens its worktree.
+
+## Review
 
 ## What is listed
 
@@ -105,7 +154,7 @@ the row shows how it went. Marking the row reviewed deletes its findings. See
 
 ## On the phone
 
-A paired phone shows the same list, with **Approve** for **Mark reviewed** and
-**Reply** to message a live session. See
-[Using the phone app](/docs/phone/using-the-phone-app/). An agent cannot read or
-mark the list itself: only you, at the Mac or on a paired phone, can review.
+A paired phone has the same two tabs. On **Review**, **Approve** is **Mark
+reviewed** and **Reply** messages a live session. See
+[Using the phone app](/docs/phone/using-the-phone-app/). An agent cannot read
+or mark either list itself: only you, at the Mac or on a paired phone.
