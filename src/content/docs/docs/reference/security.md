@@ -90,18 +90,30 @@ turn. It is a record, not a gate: nothing is blocked and nothing asks you, it
 tells you afterwards what happened. It is on by default; **Settings > Chat >
 Mark secret file reads** turns it off, and every mark goes with it.
 
-The mark makes one of two claims, depending on how much Tori actually knows:
+The mark names the file and makes one of two claims, depending on how much
+Tori actually knows:
 
-- **Read a secret file**: a read or search tool opened the path.
-- **A command named a secret file**: a shell command had the path as one of
-  its words, as in `cat .env`, `docker run --env-file=.env` or
+- **Read .env**: a read or search tool opened the path.
+- **Command named .env**: a shell command had the path as one of its words,
+  as in `cat .env`, `docker run --env-file=.env` or
   `cp ~/.aws/credentials /tmp`. Tori cannot tell whether the command read the
   file, so it says less.
 
+When a turn touched more than one secret file, the mark says how many, as in
+**2 secret files**.
+
+A command only names a secret when that file is there. Tori looks the word up
+from the session's folder and from every `cd` earlier in the command, so
+`cd backend && cat .env` counts when `backend/.env` exists. Code an agent
+writes through the shell, like `rows.map((r) => r.key)` in a heredoc, has
+words that look like key files and names none, so it is not marked. A
+reopened chat checks the files as they are when you open it, so a secret
+deleted since then no longer marks the old turn.
+
 | Where | What you see |
 | --- | --- |
-| Chat transcript | A line at the head of the turn, with the paths in its tooltip, and a key on every tool card that touched one. Live and in a reopened chat, for Claude and ACP agents |
-| Tab | A key on the corner of the session's mark while the session is live, for a chat and for a terminal tab running Claude |
+| Chat transcript | A line at the head of the turn naming the file, and a key on every tool card that touched one. Click the line for one row per file: its path, which opens in the editor when it is inside the project, why it was touched (**Read with Read**, or the part of the command around the path), and **Show call**, which scrolls to that call and opens it, even inside a folded run of calls. Live and in a reopened chat, for Claude and ACP agents |
+| Tab | A key on the corner of the session's mark while the session is live, for a chat and for a terminal tab running Claude. Its tooltip names the file the same way |
 | History dropdown | The same key on a live session's row |
 | Changes panel, Checkpoints | A key on the row of the turn that did it, for Claude sessions |
 
@@ -187,10 +199,40 @@ The badge reads the last check the turn ran after its last edit:
 
 A check before a later edit does not count, since the code it passed is not
 the code the turn left behind. A turn that only ran a check, or changed
-nothing, gets no badge. Code changed means an edit, write, delete or move by
-the agent's file tools, a subagent's included. A file written by a shell
-command (`sed -i`, `echo > file`) does not count, so a turn that only did
+nothing, gets no badge of its own. Code changed means an edit, write, delete
+or move by the agent's file tools, a subagent's included. A file written by a
+shell command (`sed -i`, `echo > file`) does not count, so a turn that only did
 that gets no badge.
+
+Some files no check reads, so editing them is not changing code, and a turn
+that only touched them gets no badge:
+
+- files outside the session's repository,
+- files the repository ignores, such as `.scribe/plan.md` or anything under a
+  gitignored folder,
+- docs and assets: `.md`, `.mdx`, `.txt`, `.rst`, images, `.svg`, `.pdf` and
+  fonts,
+- `LICENSE`, `CHANGELOG`, `NOTICE` and `AUTHORS`, with or without a suffix
+  like `LICENSE-MIT`. A code file named like one, such as `license.rs`, still
+  counts.
+
+A turn that also edited code is decided by its code edits alone, so writing a
+plan after a passing test keeps it verified.
+
+### Checked in a later turn
+
+A check covers the whole working tree, so a later turn's check settles the
+turns before it that are still unverified or failed. Ask for `cargo test` in
+its own prompt and the turn that changed the code turns **Verified** when it
+passes, or **Checks failed** when it fails. It does not matter what the later
+turn edited first. Its tooltip starts with **Checked in a later turn.** and
+lists the checks that settled it. Only a check whose exit Tori saw settles
+anything. A verified turn stays verified, while a failed one can still be
+settled by a later passing check, so a fix in a later turn clears it.
+
+This holds live, in a reopened chat, on older history you load with **Load
+earlier**, and for a session resumed after Tori restarts. The Inbox's
+**Finished since** shows the session's verdict after the settle.
 
 Tori only trusts an exit that belongs to the check. These count as **ran,
 exit not seen**, and a turn resting on one reads unverified:
@@ -213,7 +255,7 @@ are assumed not to be what failed.
 | Chat transcript | A badge at the head of the turn. Its tooltip says what decided it and lists every check, as in `cargo test: passed in 14.2s`, `pnpm test: failed, exit 1 after 3.1s` or `cargo test: ran, exit not seen`. Live and in a reopened chat, for Claude and ACP agents |
 | Tab | A tick, a cross or a dashed circle on the corner of the session's mark for its latest turn that changed code, while the session is live, for a chat and for a terminal tab running Claude. A later passing turn clears an earlier failure. A screen reader hears failed and unverified, not verified |
 | History dropdown | The same mark on a live session's row |
-| Changes panel, Checkpoints | The badge on each turn's row, for Claude sessions |
+| Changes panel, Checkpoints | The badge on each turn's row, for Claude sessions. A screen reader hears when a later turn checked it |
 
 The time shows for a check Tori watched run. A Claude chat reopened from its
 transcript shows the result without it.
