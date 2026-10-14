@@ -1,0 +1,123 @@
+---
+title: Quitting and the daemon
+description: What keeps running when you close Tori, how an update waits for your sessions, what a crash costs, and how to reach a terminal tab from any shell.
+---
+
+import Aside from "../../../components/docs/Aside.astro";
+
+Your chats, terminal tabs, the [Autopilot](/docs/automation/autopilot/) and
+[remote access](/docs/phone/pairing/) run in a background process,
+`tori daemon`, not in the window. Quitting Tori closes the window and nothing
+else: a turn in flight finishes, a shell keeps running, and the phone keeps
+its connection. Open Tori again and every tab is where you left it.
+
+## Quitting
+
+Quit with `Cmd+Q` as before. There is no prompt yet.
+
+When you open Tori again:
+
+- A chat that was working is still working, or has finished while you were
+  away, and its tab shows everything it did.
+- A terminal tab is still running its shell. It shows the screen only once
+  you look at it, by replaying what the shell printed while the window was
+  closed. Tori keeps the last 2 MB of each shell's output, so a long build
+  log is cut from the top.
+- Questions and permission prompts raised while the window was closed are
+  waiting for you.
+
+While the window is closed, the [`tori` CLI](/docs/automation/cli/) and
+[MCP server](/docs/automation/mcp-server/) keep working. A chat started with
+`tori spawn` or from the phone runs at once, and the window opens a tab for
+it when it next opens. Mac notifications come from the window, so with it
+closed, the phone app and `tori session wait` are how you hear that a session
+needs you.
+
+## Remote access with the window closed
+
+Remote access, once on, stays on when you quit: Tori keeps listening on the
+address you picked, and the phone works with the window closed. The Mac is
+kept from idle sleeping only while a phone is connected or a session is
+working. Turn remote access off in Settings > Remote to stop listening.
+
+## Updates
+
+After you install a new version and open it, the old daemon keeps running
+your sessions. It restarts into the new version on its own once no session is
+working. Until then the title bar says **Update waiting for 2 sessions**, with
+the count of sessions still working.
+
+**Restart now** restarts the daemon at once, and stops any turn in flight.
+
+Now and then a new version cannot talk to the old daemon at all. Then the
+pill says **Restart needed for the update**, and Tori cannot reach your
+sessions until you click **Restart now**.
+
+## When the daemon restarts or crashes
+
+A restart for an update, or a crash, ends what the daemon was holding:
+
+- Shells in terminal tabs end with it.
+- A chat that was running comes back as an open tab with its transcript, and
+  picks up its session again when you send the next message.
+- A message sent to such a chat from the phone, or with `tori steer`, starts
+  it again too.
+
+The window crashing does not touch your sessions: the daemon holds them, and
+opening Tori again shows them running.
+
+Tori starts the daemon when you open it, and macOS starts it again at login
+and after a crash. It runs as a LaunchAgent, at
+`~/Library/LaunchAgents/app.gettori.tori.daemon.plist`, and writes what it
+does to `~/.config/tori/run/daemon.log`.
+
+If it fails to start five times in a row, it stops trying. The title bar then
+says **Daemon stopped after 5 failed starts**, with **Try again**; the log
+says why. When the window cannot reach the daemon for another reason, a toast
+says **The Tori daemon cannot be reached, so tori and MCP tools cannot reach
+Tori**, followed by the reason.
+
+## Open a terminal tab from any shell
+
+`tori attach` shows a terminal tab's shell in a terminal outside Tori:
+
+```sh
+$ tori sessions --live
+$ tori attach 7c1e9a2f-4b0d-4e2a-9f61-3d8c2b7a5e14
+tori: attaching to 7c1e9a2f-4b0d-4e2a-9f61-3d8c2b7a5e14, Ctrl-\ detaches
+```
+
+- It takes the session id of an agent running in a terminal tab, as
+  `tori sessions --live` lists it, or a terminal tab's own id.
+- It replays what the shell printed, then you type into the same shell the
+  tab shows. The tab and the terminal both see everything, and the shell
+  takes the size of whichever was resized last.
+- `Ctrl-\` detaches and leaves the shell running. When the shell exits, it
+  prints `tori: <id> exited with <code>`.
+- It refuses to run inside a Tori terminal tab, and it needs a real terminal,
+  not a pipe.
+
+A chat tab is not a shell, so it cannot be attached; follow it with
+`tori session tail` instead.
+
+<Aside type="note" title="Putting tori on your PATH">
+
+Every shell Tori opens has `tori` on its PATH. A terminal outside Tori does
+not, until you click **Add** under Settings > Advanced > **Terminal
+command**. That writes one line to `~/.zprofile` (`~/.bash_profile` if your
+login shell is bash), and new terminals pick it up. **Remove** takes that
+line out and nothing else.
+
+</Aside>
+
+## Stopping the daemon
+
+```sh
+tori daemon --uninstall
+```
+
+stops the daemon, ends every session it holds, removes the LaunchAgent so it
+does not start at login, and deletes `~/.config/tori/rpc.json`, so nothing
+that read its token can reach Tori. Opening Tori afterwards does not start it
+again by itself: the title bar says **Daemon uninstalled**, and **Start**
+installs it again.

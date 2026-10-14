@@ -8,7 +8,7 @@ const page = (label: string, slug: string): NavLink => ({ label, href: slug ? `/
 export const NAV: NavGroup[] = [
   {
     label: "Getting started",
-    items: [page("Overview", ""), page("Install", "install"), page("First run", "first-run"), page("Updates and crash reports", "updates")],
+    items: [page("Overview", ""), page("Install", "install"), page("First run", "first-run"), page("Updates and crash reports", "updates"), page("Quitting and the daemon", "daemon")],
   },
   {
     label: "Workspace",
