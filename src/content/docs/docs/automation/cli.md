@@ -4,9 +4,11 @@ description: Scripting Tori from a shell.
 ---
 
 The `tori` binary doubles as a CLI: run from any shell, including a terminal
-tab Tori itself spawned, it talks to the running app over the same protocol
-its MCP server and phone app use. Tori has to be running. Every shell Tori
-opens has `tori` on its PATH already.
+tab Tori itself spawned, it talks to Tori's [daemon](/docs/daemon/) over the
+same protocol its MCP server and phone app use. The daemon keeps running after
+you quit, so `tori` works with the window closed. Every shell Tori opens has
+`tori` on its PATH already; for a terminal outside Tori, click **Add** under
+Settings > Advanced > **Terminal command**.
 
 ```sh
 tori sessions [--live] [--cwd <path>] [--limit <n>] [--json]
@@ -48,6 +50,8 @@ tori autopilot project [--project <path>] [--ships pr|local]
                        [--agent <id>] [--account <id>] [--model <id>] [--issues <json>] [--json]
 tori autopilot hold resolve <id> [--json]
 tori mcp
+tori attach <session|tab>
+tori daemon [--uninstall]
 ```
 
 `--json` is available on read commands for scripting. Exit codes: `0` on

@@ -109,6 +109,13 @@ a relaunch.
 
 ## Restored tabs
 
-After a relaunch every terminal tab comes back in its place, but nothing is
-started until you click it. A shell tab then gets a fresh prompt in the same
-folder; an agent tab resumes its session. Scrollback is not restored.
+Quitting Tori leaves every shell running in Tori's
+[daemon](/docs/daemon/). Open Tori again and each terminal tab is live where
+you left it; the first time you look at one, it replays what its shell printed
+meanwhile, up to the last 2 MB. `tori attach` shows the same shell in a
+terminal outside Tori, see [Open a terminal tab from any
+shell](/docs/daemon/#open-a-terminal-tab-from-any-shell).
+
+A shell does not survive the daemon itself restarting, for an update or after
+a crash: what was running in it ends, and its scrollback goes with it. A shell
+tab on screen closes then, as it does when its shell exits.

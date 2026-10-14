@@ -31,7 +31,9 @@ only, which is really "off" for anything but local testing. Tori never
 listens on more than one address at once, and a local network address saved
 by an older build is refused.
 
-While remote access is on, the Mac is kept from idle sleeping so the
+Remote access stays on after you quit Tori: the [daemon](/docs/daemon/)
+keeps listening, so the phone works with the window closed. While a phone is
+connected or a session is working, the Mac is kept from idle sleeping so the
 connection holds; this costs battery on a laptop, which is why remote access
 defaults off.
 
