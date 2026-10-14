@@ -60,6 +60,10 @@ Everything Tori itself writes is a plain file, mostly under
 | `chat-queues/` | Each chat's queued messages, one file per session, removed when the queue empties or the session is deleted |
 | `stash.json` | Drafts stashed from the composer with `Cmd+S`, up to 20 |
 | `crashes/` | A file per crash: version, thread, message and backtrace. Never sent anywhere |
+| `rpc.json` | Where the [daemon's](/docs/daemon/) socket is, and the token a local `tori` uses to reach it |
+| `run/` | The daemon's socket, its lock, its log `daemon.log`, and the `tori` link every shell Tori opens has on its PATH |
+| `daemon-starts` | How many daemon starts in a row have failed; at five it stops trying |
+| `daemon-off` | Written by `tori daemon --uninstall`, so Tori does not start the daemon again until you click **Start** |
 | `topics.json` | Your [Topics](/docs/workspace/topics/) and their members |
 | `forge_accounts.json` | Your GitHub and GitLab accounts and which repository uses which |
 | `unit_issues.json` | Which branch was started from which issue |

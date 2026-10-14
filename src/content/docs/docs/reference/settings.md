@@ -193,6 +193,11 @@ those files and the version you are running. **Report a bug** opens the bug
 form in your browser, prefilled; nothing is sent anywhere without that
 click.
 
+**Terminal command**: **Add** writes one line to your shell profile
+(`~/.zprofile`, or `~/.bash_profile` if your login shell is bash) so a
+terminal outside Tori can run `tori`, for `tori attach` or `tori sessions`.
+New terminals pick it up. **Remove** takes that line out and nothing else.
+
 ## Settings that live elsewhere
 
 Some settings belong to one project, account or Topic, and are set where
