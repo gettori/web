@@ -146,13 +146,17 @@ when Tori checks the host, in any space, with or without the
 **Do**:
 
 - **Nothing**, the default.
-- **Create a worktree**: makes the pull request's `pr-<number>` worktree, on
-  its head commit, as soon as it asks for you. Tori never moves it after
-  that. When the pull request's branch is in the project's own repo, the
-  worktree tracks it, so the author's pushes show on its row as commits to
-  pull, and **Pull** in the Changes panel brings them in. A pull request from
-  a fork has no branch to track, so its worktree stays on the commit it was
-  made at.
+- **Create a worktree**: makes a worktree for the pull request, on its head
+  commit, as soon as it asks for you. Tori never moves it after that. When
+  the pull request's branch is in the project's own repo, the worktree and
+  its branch take that branch's name and track it, so the author's pushes
+  show on its row as commits to pull, and **Pull** in the Changes panel
+  brings them in. A push from it goes to the author's branch. A pull request
+  from a fork has no branch to track, so its worktree is named
+  `pr-<number>` and stays on the commit it was made at. So is one whose
+  branch name you already have here with work the pull request lacks, or
+  checked out in the repository itself. A worktree you already have on the
+  pull request's branch is used as it is.
 - **Create a worktree and review it**: the same worktree, and a chat in it
   that reviews the change against its base. The chat runs in the background,
   by default in plan mode for Claude, so it reads the change without stopping
