@@ -155,8 +155,9 @@ when Tori checks the host, in any space, with or without the
   made at.
 - **Create a worktree and review it**: the same worktree, and a chat in it
   that reviews the change against its base. The chat runs in the background,
-  in plan mode for Claude, so it reads the change without stopping to ask;
-  another agent runs on its usual mode and may stop to ask you. When the
+  by default in plan mode for Claude, so it reads the change without stopping
+  to ask; another agent runs on its usual mode and may stop to ask you.
+  **Runs on** changes that. When the
   author pushes, or asks for your review again, the worktree moves to the new
   head, but only when nothing in it is yours: no changed files and no commits
   of your own. Then the same chat is told what changed since it last looked,
@@ -172,6 +173,23 @@ on. Those already waiting stay on the project row's
 **Review prompt**, with **Create a worktree and review it**: what the chat is
 told after the pull request's number, title, base and head. Left empty, the
 built-in prompt shown in the field runs.
+
+**Runs on**, with **Create a worktree and review it**: the agent, account,
+model, effort and permission mode the review chat starts on, picked the same
+way as in a new chat. Left unset, it starts on the project's
+[autopilot contract](/docs/automation/autopilot/) when there is one, else the
+agent and model a new chat in that worktree would get, in the agent's
+read-only mode where it has one. **Reset** clears every pick. A review chat
+that is already open keeps what it started on; a pick reaches the next chat
+the rule starts.
+
+<Aside type="caution">
+A mode that runs tools without asking, such as Claude's bypass mode, shows a
+**Runs without asking** warning. The review then runs commands on the pull
+request's branch with nobody approving them, its build scripts and tests
+among them, and text in the pull request can steer it. Pick it only for
+authors you trust.
+</Aside>
 
 **At most per hour**, 1 to 50, 5 by default. Past it the rule pauses and a
 **Paused** row says so, with **Resume**. Requests that came in while it was
