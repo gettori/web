@@ -54,6 +54,7 @@ account usage controls. See
 | Play a sound when a session needs you | Off | With a play button to hear it |
 | Notify when a chat finishes its turn | Off | A notification at the end of every turn |
 | Play a sound when a chat finishes its turn | Off | With a play button to hear it |
+| Show the needs you count in the menu bar | On | The Dock badge's number, beside Tori's menu bar icon |
 
 **Safety**
 
