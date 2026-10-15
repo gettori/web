@@ -3,7 +3,8 @@ title: Every setting
 description: Every setting Tori has, grouped by the panel it lives in.
 ---
 
-Open Settings with the gear at the right end of the title bar. The
+Open Settings with the gear at the right end of the title bar, with `Cmd+,`,
+or from **Tori > Settings...** in the menu bar. The
 rail on the left lists the panes; the search box at the top finds a setting by
 name and badges each pane with how many rows match. The keyboard button in the
 header opens the [shortcut sheet](/docs/workspace/keyboard-shortcuts/).
