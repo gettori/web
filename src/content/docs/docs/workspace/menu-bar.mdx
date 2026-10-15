@@ -1,0 +1,99 @@
+---
+title: The menu bar
+description: What each menu in Tori's macOS menu bar holds, and why some items show no shortcut.
+---
+
+Apart from the standard macOS items (Undo, Copy, Minimize and the like), every
+item from File to Window is an action from the command palette, under the same
+name it has there and in the shortcut sheet (`Cmd+/`).
+
+An item shows its shortcut only when Tori runs it wherever you are. Some keys
+mean something else in one place: `Cmd+S` saves in the editor but stashes a
+draft in the composer, `Cmd+,` in the agent picker opens that agent's
+settings, and `Cmd+P`, `Cmd+L` and `Ctrl+-` stay with a program running in
+the terminal. Those keys still work, but the menu leaves them out, because a
+key shown in the menu bar is taken wherever focus is. The
+[Keyboard shortcuts](/docs/workspace/keyboard-shortcuts/) page lists them all.
+
+Choosing an item that has nothing to act on, such as **Save** with no
+file open, shows a notice saying why rather than doing nothing.
+
+## Tori
+
+| Item | Keys |
+| --- | --- |
+| About Tori | |
+| Settings... | |
+| Check for Updates... | |
+| Services, Hide, Hide Others | `Cmd+H`, `Cmd+Opt+H` |
+| Quit Tori | `Cmd+Q`. Asks first, see [Quitting](/docs/daemon/#quitting) |
+
+## File
+
+| Item | Keys |
+| --- | --- |
+| New Scratch Buffer | |
+| Go to File... | |
+| Save | |
+| Save As... | |
+| Reopen Closed Tab | |
+| Close Tab | `Cmd+W` |
+
+## Edit
+
+| Item | Keys |
+| --- | --- |
+| Undo, Redo | `Cmd+Z`, `Cmd+Shift+Z` |
+| Cut, Copy, Paste, Select All | `Cmd+X`, `Cmd+C`, `Cmd+V`, `Cmd+A` |
+| Search in Project | `Cmd+Shift+F` |
+
+## View
+
+| Item | Keys |
+| --- | --- |
+| Toggle Sidebar | `Cmd+B` |
+| Toggle Terminal | `Cmd+Opt+J` |
+| Toggle Editor | `Cmd+Opt+E` |
+| Toggle File Tree | `Cmd+Opt+B` |
+| Toggle Dock | `Cmd+Ctrl+J` |
+| Autopilot / Workspace | `Cmd+Shift+J` |
+| Zoom In, Zoom Out, Actual Size | `Cmd+=`, `Cmd+-`, `Cmd+0` |
+| Toggle Full Screen | `Cmd+Ctrl+F` |
+
+## Go
+
+| Item | Keys |
+| --- | --- |
+| Back | |
+| Forward | |
+| Inbox | `Cmd+Shift+X` |
+| Command Palette | `Cmd+K` |
+| Go to Definition | |
+| Find References | |
+
+## Session
+
+| Item | Keys |
+| --- | --- |
+| Stop Turn | `Cmd+.` |
+| Next Waiting Session | `Cmd+Shift+A` |
+| Since You Last Looked | |
+| Autopilot Overlay | |
+
+## Window
+
+| Item | Keys |
+| --- | --- |
+| Minimize, Zoom | `Cmd+M` |
+| Split Right | |
+| Split Down | |
+| Close Pane | |
+
+## Help
+
+| Item | What it opens |
+| --- | --- |
+| Tori Documentation | These docs |
+| Keyboard Shortcuts | The shortcut sheet |
+| Release Notes | The changelog |
+| Report an Issue | A new GitHub issue |
