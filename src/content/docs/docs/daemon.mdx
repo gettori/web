@@ -13,7 +13,9 @@ its connection. Open Tori again and every tab is where you left it.
 
 ## Quitting
 
-Quit with `Cmd+Q` as before. There is no prompt yet.
+`Cmd+Q`, or closing the window, asks **Quit Tori?** first: **Sessions and
+terminals keep running in the background.** Check **Also stop running
+sessions** to end them too; see [Stopping the daemon](#stopping-the-daemon).
 
 When you open Tori again:
 
@@ -111,6 +113,13 @@ line out and nothing else.
 </Aside>
 
 ## Stopping the daemon
+
+To end every session for now, check **Also stop running sessions** when you
+quit. The daemon stops with the window, and shells and turns in flight end.
+It starts again the next time you open Tori, or at login. If it cannot be
+stopped, a toast says why and Tori stays open.
+
+To stop it and keep it off:
 
 ```sh
 tori daemon --uninstall
