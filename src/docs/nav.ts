@@ -19,6 +19,7 @@ export const NAV: NavGroup[] = [
       page("Panes, tabs and layout", "workspace/panes-and-tabs"),
       page("Search and the omnibox", "workspace/search-and-shortcuts"),
       page("Keyboard shortcuts", "workspace/keyboard-shortcuts"),
+      page("The menu bar", "workspace/menu-bar"),
     ],
   },
   {
