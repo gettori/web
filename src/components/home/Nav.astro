@@ -1,5 +1,6 @@
 ---
 import { SITE } from "../../config";
+import { DOWNLOADS } from "../../downloads";
 
 const here = (path: string) => (Astro.url.pathname.startsWith(path) ? "page" : undefined);
 ---
@@ -20,7 +21,7 @@ const here = (path: string) => (Astro.url.pathname.startsWith(path) ? "page" : u
       ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg
     >
   </button>
-  <a href={SITE.download} class="download" data-download>Download</a>
+  <a href={DOWNLOADS.arm} class="download" data-dl data-intel={DOWNLOADS.intel}>Download</a>
 </nav>
 
 <style>
@@ -115,6 +116,9 @@ const here = (path: string) => (Astro.url.pathname.startsWith(path) ? "page" : u
 </style>
 
 <script>
+  import { pointDownloads } from "./macArch";
+
+  void pointDownloads();
   document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
     const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
     localStorage.setItem("starlight-theme", next);
