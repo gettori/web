@@ -284,7 +284,8 @@ for those three.
 
 Each row under a project is one branch of a **Repo** or one worktree of a
 **Bare** project. Up to six show; the rest fold into a **N more** row that
-opens them. The branch you have selected always stays visible.
+opens them. A [stack](#stacked-pull-requests) counts as one of the six. The
+branch you have selected always stays visible.
 
 ### What a row shows
 
@@ -321,7 +322,9 @@ From left to right:
 A branch with a pull request, or with changes against its base, grows a second
 line:
 
-- The pull request's number and state (draft, open, merged or closed), an eye
+- The pull request's number and state (draft, open, merged or closed), its
+  place in a [stack](#stacked-pull-requests) as a stack glyph and `2/3`
+  when it is one layer of a stack, an eye
   when a chat is [watching it](/docs/git/pull-requests-and-issues/#let-a-chat-watch-a-pull-request),
   its review verdict, and its checks as passed out of the checks that ran.
   Skipped checks never ran, so they count on neither side; a grey count with
@@ -329,9 +332,38 @@ line:
 - The size of the change against the base: `+120/-14` and the number of files.
 - When it was opened (or merged or closed), and how many comments it has.
 
-Hover the line for the title, the author, the review and checks in words, and
-the size. A branch whose pull request merged with nothing new since rests on a
+Hover the line for the title, the author, its place in a stack (**Layer 2 of 3
+in a stack, targets main**), the review and checks in words, and the size. A branch whose pull request merged with nothing new since rests on a
 faint teal wash; one whose pull request was closed unmerged is dimmed.
+
+### Stacked pull requests
+
+GitHub can stack pull requests: each one targets the branch of the one below
+it, and the bottom one targets the trunk, usually `main`. You make and change
+stacks on GitHub or with the `gh stack` command. Tori only reads them, and only
+on github.com, not on GitHub Enterprise Server or GitLab.
+
+When two or more layers of one stack are branches in the project, they gather
+under a **Stack** row:
+
+- The badge says how many pull requests the stack has and where it lands, as
+  `3 PRs -> main`. The count is every layer on GitHub, including merged ones
+  and ones you do not have locally, so a gap in the `2/3` marks below is a
+  layer that is not here.
+- The layers are listed top first, the way GitHub's stack map reads, and the
+  trunk sits faintly at the foot. The trunk row is only a label, not a branch
+  you can select.
+- The **Stack** row takes the place its top layer had, so nothing else in the
+  list moves.
+- It starts open. Click it to collapse it; Tori remembers. Collapsed, it
+  carries one status bubble for the sessions in all its layers. Following a
+  link or a notification to a layer opens it again.
+- A layer whose pull request merged and that you still have keeps its place
+  in the group, styled like any other merged branch.
+
+A single local layer stays an ordinary row; its `2/3` mark says it has
+neighbours. A fan out attempt stays in its fan out group even when its branch
+is also a layer.
 
 ### Select a branch
 
