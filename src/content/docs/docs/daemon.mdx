@@ -11,13 +11,27 @@ Your chats, terminal tabs, the [Autopilot](/docs/automation/autopilot/) and
 else: a turn in flight finishes, a shell keeps running, and the phone keeps
 its connection. Open Tori again and every tab is where you left it.
 
+## Closing the window
+
+The red close button hides the window without asking. Tori keeps running in
+the menu bar and the Dock: the menu bar icon still lists your sessions, and
+Mac notifications still arrive. Click Tori in the Dock, or **Open Tori** in
+the menu bar icon, to bring the window back as you left it. With
+[Keep unsaved edits across a quit](/docs/editor/editor/#unsaved-edits-across-a-quit)
+on, unsaved edits are stashed as the window hides, so they come back even if
+Tori is ended while it is hidden.
+
+`Cmd+W` closes the current tab, never the window.
+
 ## Quitting
 
-`Cmd+Q`, or closing the window, asks **Quit Tori?** first: **Sessions and
-terminals keep running in the background.** Check **Also stop running
-sessions** to end them too; see [Stopping the daemon](#stopping-the-daemon).
+`Cmd+Q`, or **Quit Tori** in the Tori menu or the menu bar icon,
+asks **Quit Tori?** first, bringing the window back if it was hidden:
+**Sessions and terminals keep running in the background.** Check **Also stop
+running sessions** to end them too; see
+[Stopping the daemon](#stopping-the-daemon). Cancel and Tori stays open.
 
-When you open Tori again:
+When you open Tori again after quitting:
 
 - A chat that was working is still working, or has finished while you were
   away, and its tab shows everything it did.
@@ -28,19 +42,19 @@ When you open Tori again:
 - Questions and permission prompts raised while the window was closed are
   waiting for you.
 
-While the window is closed, the [`tori` CLI](/docs/automation/cli/) and
+After you quit, the [`tori` CLI](/docs/automation/cli/) and
 [MCP server](/docs/automation/mcp-server/) keep working. A chat started with
 `tori spawn` or from the phone runs at once, and the window opens a tab for
-it when it next opens. Mac notifications come from the window, so with it
-closed, the phone app and `tori session wait` are how you hear that a session
-needs you.
+it when it next opens. Mac notifications come from Tori itself, so once you
+quit, the phone app and `tori session wait` are how you hear that a session
+needs you. Close the window instead of quitting to keep them.
 
 ## Remote access with the window closed
 
 Remote access, once on, stays on when you quit: Tori keeps listening on the
 address you picked, and the phone works with the window closed. The Mac is
 kept from idle sleeping only while a phone is connected or a session is
-working. Turn remote access off in Settings > Remote to stop listening.
+working. Closing the lid still puts it to sleep. Turn remote access off in Settings > Remote to stop listening.
 
 ## Updates
 

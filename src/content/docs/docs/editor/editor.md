@@ -194,7 +194,8 @@ later without ever staging it.
 
 With **Keep unsaved edits across a quit** on (the default), quitting Tori with
 unsaved buffers does not ask you to save or discard: they are stashed, undo
-history included, and come back on the next launch. Closing a tab with unsaved
+history included, and come back on the next launch. Closing the window
+stashes them too, in case Tori is ended while the window is hidden. Closing a tab with unsaved
 changes still asks, **Discard unsaved changes to sign.ts?**
 
 A tab you close keeps its undo history and folds; `Cmd+Shift+T` reopens it
