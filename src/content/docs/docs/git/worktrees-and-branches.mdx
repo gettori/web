@@ -221,8 +221,11 @@ commits**, and how many tabs and agents are running in it. Two options:
 - **Delete remote branch (git push --delete)**: off by default. Also deletes it
   on the remote.
 
-Confirming stops the tabs and agents running there, then removes the worktree
-and the branches you chose. If deleting the remote branch fails, the local
+Confirming moves the selection to the next worktree in the project (or the
+one before it, or the main checkout), stops the tabs and agents running there,
+then removes the worktree and the branches you chose. The folder disappears in
+one step rather than file by file, so the Changes panel never fills with
+deleted files while it goes. If deleting the remote branch fails, the local
 removal still happens and the failure is reported.
 
 ### Clean up after deleting outside Tori
