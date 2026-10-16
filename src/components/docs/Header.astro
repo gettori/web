@@ -1,6 +1,7 @@
 ---
 import Search from "./Search.astro";
 import { SITE } from "../../config";
+import { DOWNLOADS } from "../../downloads";
 ---
 
 <div class="bar">
@@ -30,11 +31,14 @@ import { SITE } from "../../config";
         ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg
       >
     </button>
-    <a href={SITE.download} class="download">Download</a>
+    <a href={DOWNLOADS.arm} class="download" data-dl data-intel={DOWNLOADS.intel}>Download</a>
   </div>
 </div>
 
 <script>
+  import { pointDownloads } from "../home/macArch";
+
+  void pointDownloads();
   // The header persists across page swaps, so these bind once for the whole visit.
   const root = document.documentElement;
   const menu = document.querySelector<HTMLButtonElement>("[data-docs-menu]")!;
