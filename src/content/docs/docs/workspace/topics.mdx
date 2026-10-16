@@ -42,6 +42,9 @@ a **+** for a new one. Click a space tile to go back.
 
 </Steps>
 
+The new Topic is selected straight away, with a chat draft at its home ready
+to type in, unless something is already open there.
+
 Worktrees are made under each repository's `.tori/worktrees/` folder (a plain
 repo) or beside its other worktrees (a bare one). A member that fails to set up
 is listed with **Retry**, and the rest of the Topic is still made.
@@ -64,6 +67,14 @@ the worktree in Spaces and pick **Move to topic...**. The dialog has two tabs:
   worktree, on** its branch. **Branch** starts as the worktree's branch. Pick
   any other repositories and click **Create Topic**. The dialog opens on New
   when there are no Topics yet, and switching tabs keeps what you typed.
+
+After the move the sidebar switches to **Topics** and selects the Topic, with
+the moved worktree in front. Tabs open in the worktree move with it. A chat
+that was already started keeps working in that one repository, since it keeps
+the folders it launched with; the dialog says so before you move, for example
+**1 chat here moves with it and keeps working in this repo only. New chats in
+the Topic see every repo.** A draft you have not sent yet moves to the Topic's
+home and sees every repository.
 
 Nothing in git changes: no checkout, no new branch, no commit, and the
 worktree's changes stay where they are. The worktree keeps its own branch even
