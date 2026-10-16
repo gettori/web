@@ -1,0 +1,240 @@
+---
+import { DOWNLOADS } from "../../downloads";
+
+interface Props {
+  size?: "md" | "lg";
+  up?: boolean;
+}
+const { size = "md", up = false } = Astro.props;
+---
+
+<div class:list={["dl", size, up && "up"]} data-dl-split>
+  <a href={DOWNLOADS.arm} class="main" data-dl data-intel={DOWNLOADS.intel}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+      ><path
+        d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"
+      ></path></svg
+    >
+    <span class="label">Download for Mac<small data-dl-chip>Apple Silicon</small></span>
+  </a>
+  <button type="button" class="more" aria-label="Other downloads" aria-haspopup="menu" aria-expanded="false" data-dl-more>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+      ><path d="m6 9 6 6 6-6"></path></svg
+    >
+  </button>
+  <div class="menu" role="menu" hidden data-dl-menu>
+    <span class="group" aria-hidden="true">macOS</span>
+    <a role="menuitem" href={DOWNLOADS.arm} data-arch="arm" data-on>
+      <span><b>Apple Silicon</b><small>M1 and later</small></span>
+    </a>
+    <a role="menuitem" href={DOWNLOADS.intel} data-arch="intel">
+      <span><b>Intel</b><small>Macs with an Intel processor</small></span>
+    </a>
+    <span class="group" aria-hidden="true">Android</span>
+    <a role="menuitem" href={DOWNLOADS.android}>
+      <span><b>Android APK</b><small>Pairs with Tori on your Mac</small></span>
+    </a>
+    <a role="menuitem" href={DOWNLOADS.releases} class="all">All releases <span aria-hidden="true">-&gt;</span></a>
+  </div>
+</div>
+
+<style>
+  .dl {
+    position: relative;
+    display: flex;
+    height: 52px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #f8dfb8, #e2b378);
+    color: var(--on-accent);
+    box-shadow:
+      0 10px 40px rgba(217, 164, 104, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s;
+  }
+  .dl:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 14px 50px rgba(217, 164, 104, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .dl.lg {
+    height: 54px;
+    box-shadow:
+      0 10px 50px rgba(217, 164, 104, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .main,
+  .more {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    transition: background 0.2s;
+  }
+  .main {
+    gap: 10px;
+    padding: 0 18px 0 22px;
+    border-radius: 999px 0 0 999px;
+    font-weight: 600;
+    font-size: 15.5px;
+  }
+  .lg .main {
+    padding-left: 24px;
+    font-size: 16px;
+  }
+  .main:hover,
+  .more:hover,
+  .more[aria-expanded="true"] {
+    color: inherit;
+    background: rgba(255, 255, 255, 0.22);
+  }
+  .label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+  }
+  .label small {
+    font-size: 11.5px;
+    font-weight: 500;
+    opacity: 0.7;
+  }
+  .more {
+    justify-content: center;
+    width: 44px;
+    padding: 0 4px 0 0;
+    border: none;
+    border-left: 1px solid rgba(42, 29, 12, 0.18);
+    border-radius: 0 999px 999px 0;
+    background: none;
+    cursor: pointer;
+  }
+  .more svg {
+    transition: transform 0.2s var(--ease);
+  }
+  .more[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+
+  .menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    width: max(100%, 248px);
+    padding: 6px;
+    border-radius: 16px;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px var(--shadow);
+    text-align: left;
+    animation: v-rise 0.25s var(--ease) both;
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  .up .menu {
+    top: auto;
+    bottom: calc(100% + 8px);
+  }
+  .group {
+    padding: 8px 10px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .menu a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+  }
+  .menu a:hover,
+  .menu a:focus-visible {
+    background: var(--glass-hi);
+    color: var(--text);
+  }
+  .menu a span {
+    display: flex;
+    flex-direction: column;
+  }
+  .menu b {
+    font-weight: 600;
+  }
+  .menu small {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .menu a[data-on]::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    flex: none;
+    background: var(--accent-text);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+  .menu .all {
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid var(--hair);
+    border-radius: 0 0 10px 10px;
+    justify-content: flex-start;
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  import { detectMac } from "./macArch";
+
+  const CHIP = { arm: "Apple Silicon", intel: "Intel" };
+
+  for (const split of document.querySelectorAll<HTMLElement>("[data-dl-split]")) {
+    const main = split.querySelector<HTMLAnchorElement>("a[data-dl]")!;
+    const more = split.querySelector<HTMLButtonElement>("[data-dl-more]")!;
+    const menu = split.querySelector<HTMLElement>("[data-dl-menu]")!;
+    const items = [...menu.querySelectorAll<HTMLAnchorElement>("a")];
+
+    void detectMac().then((mac) => {
+      if (mac !== "intel") return;
+      main.href = main.dataset.intel!;
+      split.querySelector("[data-dl-chip]")!.textContent = CHIP.intel;
+      for (const a of items) a.toggleAttribute("data-on", a.dataset.arch === "intel");
+    });
+
+    const close = (refocus = false) => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      more.setAttribute("aria-expanded", "false");
+      if (refocus) more.focus();
+    };
+    const open = () => {
+      menu.hidden = false;
+      more.setAttribute("aria-expanded", "true");
+      (items.find((a) => a.hasAttribute("data-on")) ?? items[0]).focus();
+    };
+
+    more.addEventListener("click", () => (menu.hidden ? open() : close()));
+    menu.addEventListener("click", () => close());
+    split.addEventListener("keydown", (ev) => {
+      if (menu.hidden) return;
+      if (ev.key === "Escape") return close(true);
+      const at = items.indexOf(document.activeElement as HTMLAnchorElement);
+      const step = ev.key === "ArrowDown" ? 1 : ev.key === "ArrowUp" ? -1 : 0;
+      if (!step) return;
+      ev.preventDefault();
+      items[(at + step + items.length) % items.length].focus();
+    });
+    document.addEventListener("pointerdown", (ev) => !split.contains(ev.target as Node) && close());
+    split.addEventListener("focusout", (ev) => !split.contains(ev.relatedTarget as Node) && close());
+  }
+</script>

@@ -9,7 +9,7 @@ const DONE = "45,212,191";
 
 // Keyed by sidebar group label, so a group added to the config without an entry here is left off the grid.
 const SECTIONS: Record<string, { icon: IconNode; spot: string; blurb: string; wide?: boolean }> = {
-  "Getting started": { icon: Rocket, spot: GOLD, blurb: "Install the app, get past Gatekeeper, and walk through setup.", wide: true },
+  "Getting started": { icon: Rocket, spot: GOLD, blurb: "Install the app and walk through setup.", wide: true },
   Workspace: { icon: LayoutPanelLeft, spot: WORK, blurb: "Spaces, projects and branches, the panes they open in, and how to jump around." },
   "Agents and chat": { icon: Bot, spot: NEED, blurb: "The seven agent CLIs Tori drives, the chat view, and accounts." },
   "Git and review": { icon: GitPullRequest, spot: DONE, blurb: "Worktrees, the Changes panel, and pull requests from the window." },
