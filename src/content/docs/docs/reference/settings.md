@@ -136,6 +136,12 @@ Projects lists which folders you have marked trusted, required for a server
 or debugger that runs project code. See
 [Language tooling](/docs/editor/tooling).
 
+Projects also holds **Unattended sessions**: **Never run unattended**, the
+commands a session may not run while nobody is watching, and **Allowed domains
+when boxed**, where a boxed Claude session's shell may connect. One entry per
+line, each with **Reset to defaults**. See
+[When nobody is watching](/docs/agents/unattended/).
+
 ## Appearance
 
 | Setting | Default | Effect |
@@ -218,6 +224,7 @@ that thing is rather than in the Settings window.
 | When a chat needs a worktree | Topic menu | [Ask, create or refuse](/docs/workspace/topics/#chats-in-a-topic) |
 | Autopilot contract | Project settings > Agents | [How work ships and how far it goes](/docs/automation/autopilot/#per-project-contract) |
 | Usage windows, warn threshold, notify | Settings > Agents, per account | Which quota bars show and when they warn |
+| Sandbox level | Project settings > Tooling | [As me, boxed when unattended, or always boxed](/docs/agents/unattended/#pick-a-level) |
 | Trusted projects | Project settings > Tooling, and Settings > Projects | [Which folders may run their own code](/docs/reference/security/#project-trust) |
 | Commit box, history tabs | Changes panel `...` menu | Shown or hidden |
 | Follow live edits | Composer bar | Not remembered across a launch |
