@@ -71,6 +71,7 @@ Everything Tori itself writes is a plain file, mostly under
 | `icons/` | Project icons you uploaded |
 | `servers/` | Language servers Tori installed for you |
 | `debuggers/` | The virtualenv Tori keeps for debugpy |
+| `ports.json` | Which [block of ports](/docs/git/ports/) each worktree holds |
 | `setup/` | Output of each worktree's [setup command](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees) |
 | `claude-mcp.json` | The MCP configuration that gives Claude sessions [Tori's MCP server](/docs/automation/mcp-server/) |
 | `gitconfig` | The git credential settings used when a host account serves git |
