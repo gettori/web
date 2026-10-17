@@ -53,7 +53,8 @@ itself anything:
 - A project's `.tori/settings.json` can turn a language server or linter
   off for that project. It cannot turn one back on that you turned off.
 - A project's
-  [setup](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees)
+  [setup](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees),
+  [run](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree)
   and [teardown](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal)
   commands are stored in your own settings, not in the repository, and never
   run for a worktree made from a fork's pull request.
