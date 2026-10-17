@@ -1,6 +1,6 @@
 ---
 title: Project settings
-description: One dialog per project that holds everything set for that project, from its icon, remote and setup command to its agents, autopilot contract, what to do when your review is requested, trust and verification commands.
+description: One dialog per project that holds everything set for that project, from its icon, remote, setup and teardown commands to its agents, autopilot contract, what to do when your review is requested, trust and verification commands.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -97,10 +97,11 @@ Moving the strip alone changes nothing until you pick something.
 
 ### Worktrees
 
-Bare projects only. What every new worktree gets:
+Bare projects only. What every worktree gets:
 
-- **Setup** holds the **Setup command**, and whether **Agents started over
-  the socket wait for it**. See [A setup command for new worktrees](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees).
+- **Commands** holds the **Setup command**, whether **Agents started over
+  the socket wait for it**, and the **Teardown command**. See [A setup command for new worktrees](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees)
+  and [A teardown command before removal](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal).
 - **Shared files**, with the shared folder's path and a refresh button in its
   heading. The list on the left says, for each entry, how many worktrees have
   it linked, how many are missing it and how many hold a copy of their own,

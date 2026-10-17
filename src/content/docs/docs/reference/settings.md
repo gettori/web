@@ -215,6 +215,7 @@ that thing is rather than in the Settings window.
 | --- | --- | --- |
 | Project icon | Project settings > General | [Automatic, an image or a picked glyph](/docs/workspace/project-settings/#general) |
 | Setup command, and whether scripted sessions wait for it | Project settings > Worktrees | [Runs in every new worktree](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees) |
+| Teardown command | Project settings > Worktrees | [Runs before a worktree is removed](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal) |
 | Shared files | Project settings > Worktrees | [Links untracked files into every worktree](/docs/git/shared-files) |
 | Agents allowed in a project | Project settings > Agents | [Limits agents and accounts](/docs/agents/accounts-and-usage/#limiting-agents-per-project) |
 | Remembered chat picks | Project settings > Agents | [Shown per worktree, with Forget all](/docs/workspace/project-settings/#agents) |

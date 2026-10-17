@@ -1,6 +1,6 @@
 ---
 title: Worktrees and branches
-description: Add a branch or worktree, start one from an issue, run a setup command in every new worktree, fan out several attempts, and remove what you are done with.
+description: Add a branch or worktree, start one from an issue, run a setup command in every new worktree and a teardown command before one goes, fan out several attempts, and remove what you are done with.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -114,8 +114,9 @@ and send.
 
 Every Bare project's [settings dialog](/docs/workspace/project-settings/) has a
 **Worktrees** section: right-click the project, choose **Project settings** and
-pick **Worktrees**. It holds what each new worktree gets: a setup command, and
-the files shared into it.
+pick **Worktrees**. It holds what each worktree gets: a setup command when it
+is created, a teardown command before it is removed, and the files shared into
+it.
 
 ### A setup command for new worktrees
 
@@ -154,6 +155,42 @@ installed tree. Sessions you start by hand never wait.
 The command is kept in your own settings file, keyed by the project, not in
 the repository, so a repository cannot give itself a command to run. An empty
 field runs nothing.
+
+### A teardown command before removal
+
+Some worktrees leave things behind that git knows nothing about: a test
+database, a container, a cache outside the folder. A teardown command cleans
+them up.
+
+<Steps>
+
+1. Open **Project settings** for the project and pick **Worktrees**.
+2. Type the command in **Teardown command**, for example
+   `docker compose down --volumes`.
+3. Press `Enter` or click away to save it.
+
+</Steps>
+
+From then on:
+
+- It runs before every removal of a worktree in the project: **Remove
+  worktree**, [removing worktrees automatically](#remove-worktrees-automatically),
+  promoting an attempt (for the attempts that go) and removing a Topic member's
+  worktree.
+- It runs with `sh -c` in the worktree, while the folder is still there, with
+  `TORI_PROJECT_ROOT`, `TORI_WORKTREE_PATH` and the worktree's
+  [ports](/docs/git/ports/#a-block-of-ports-per-worktree) set. A setup still
+  running there is stopped first.
+- The row shows **Tearing down** while it runs.
+- A teardown that runs longer than 2 minutes is stopped. Whether it fails or
+  is stopped, the removal still goes ahead, and a toast says **Teardown in
+  critical failed (exit 1)** with **Show log**. A teardown that works says
+  nothing, because the worktree going away already says it.
+- A worktree made from a fork's pull request never runs it, since that code is
+  not yours.
+
+Like the setup command, it is kept in your own settings file, not in the
+repository. An empty field runs nothing.
 
 ### Shared files
 
@@ -223,7 +260,8 @@ commits**, and how many tabs and agents are running in it. Two options:
 
 Confirming moves the selection to the next worktree in the project (or the
 one before it, or the main checkout), stops the tabs and agents running there,
-then removes the worktree and the branches you chose. The folder disappears in
+runs the project's [teardown command](#a-teardown-command-before-removal) if
+it has one, then removes the worktree and the branches you chose. The folder disappears in
 one step rather than file by file, so the Changes panel never fills with
 deleted files while it goes. If deleting the remote branch fails, the local
 removal still happens and the failure is reported.
