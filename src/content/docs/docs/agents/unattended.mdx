@@ -1,0 +1,163 @@
+---
+title: When nobody is watching
+description: Run a project's agents in their own sandbox when you are away, and keep a session nobody is watching from running cloud, infra and database commands.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+An agent you are watching can ask you before it does something risky. One
+running while you are away cannot, so Tori does two things for it:
+
+- It starts the session in the agent's **own sandbox**, depending on the
+  project's level.
+- While nobody is watching, it refuses the shell commands on a **deny list**,
+  whatever the level, and the session tells you when you come back.
+
+Both work with Claude and Codex. Other agents run as they always did.
+
+## Pick a level
+
+Open the project's settings, go to **Tooling**, and set **Sandbox** under
+**Execution**:
+
+| Level | What it does |
+| --- | --- |
+| **As me** | Agents run with your own access, whoever is watching |
+| **Boxed when unattended** | A session started while nobody is at the window or the phone runs in the agent's sandbox. The default |
+| **Always boxed** | Every session runs in the agent's sandbox, terminal tabs included |
+
+The level is yours, kept in your own settings. It is never read from the repo,
+so a project cannot loosen it for you.
+
+### When a session is boxed
+
+The box is decided once, when a session starts or resumes, and a running
+session keeps what it started with. Walking away does not move a running
+session into the box; the deny list below covers that.
+
+- **Always boxed**: every chat and every terminal tab.
+- **Boxed when unattended**: a chat that starts or resumes in the background,
+  such as a worker the autopilot or another chat starts, or while nobody is
+  watching. A terminal tab is never boxed at this level, because you opened
+  it.
+- **As me**: nothing.
+
+## What counts as watching
+
+Somebody is watching when either of these holds:
+
+- The Tori window is on screen (not closed to the menu bar, hidden or
+  minimized), the screen is unlocked, and the Mac has had keyboard or mouse
+  input in the last 10 minutes.
+- A paired phone is connected with the Tori app in front.
+
+Which tab is in front does not matter. Somebody reading quietly for more than
+10 minutes counts as away, and may come back to one blocked command.
+
+## What the box does
+
+**Claude**, in a chat or a tab, runs its shell commands in its own sandbox:
+
+- Writes only inside the project.
+- Network only to the [allowed domains](#allowed-domains), plus the project's
+  own git host.
+- A command that fails in the box cannot be retried outside it, and a repo's
+  own `.claude/settings.json` cannot turn that off.
+- The `tori` command keeps working from inside the box.
+- If the sandbox cannot start on this Mac, the session does not start.
+
+**Codex in a chat** is held in its **read-only** mode: it writes inside the
+project with no network, and anything that needs more asks you instead of
+Codex's own reviewer. The mode picker cannot leave it. A background chat that
+is not boxed still cannot switch to full access.
+
+**Codex in a terminal tab** starts with `--sandbox workspace-write`, so the
+same rules: writes inside the project, no network. Starting it with Codex's
+own skip-the-sandbox flag is refused on a boxed project, with a message
+saying why.
+
+## Commands that never run unattended
+
+While nobody is watching, a session's shell command is checked against the
+deny list before it runs. A match is refused, and the agent is told why:
+
+```
+Tori blocked this: `aws` may not run while nobody is at the window or the phone.
+Leave it for the user and tell them what it was for.
+```
+
+Once the session stops working, it shows **Had a command blocked while you
+were away**: on its dot, in the tray, and as a row in the
+[Inbox](/docs/git/inbox/#needs-you). It clears once you look at the session.
+
+This happens on every level, **As me** included, and in sessions that are not
+boxed. When you are watching, the list does nothing and the agent asks you as
+usual.
+
+### The list
+
+Set it in Settings > **Projects**, under **Unattended sessions**, in **Never
+run unattended**: one command per line. Edits reach sessions already running
+on their next command. **Reset to defaults** goes back to the built-in list:
+
+`aws`, `gcloud`, `az`, `railway`, `fly`, `flyctl`, `kubectl`, `terraform`,
+`pulumi`, `psql`, `mysql`, `mongosh`, `redis-cli`, `git push --force`,
+`git push -f`
+
+### How a line matches
+
+A line's first word is the command. Its other words have to follow the
+command, in order, though other words may sit between them. So
+`git push --force` catches `git push --force` and `git push origin main --force`,
+and leaves a plain `git push` alone.
+
+A command is found when it is:
+
+- one of several joined with `&&`, `||`, `;`, `|` or `&`, or inside `( )`,
+  `$( )` or backticks, also in double quotes;
+- run by a full path, like `/usr/local/bin/aws`;
+- behind variables such as `FOO=1 aws`, or behind `sudo`, `env`, `command`,
+  `exec`, `nohup`, `time` or `nice`;
+- inside `sh -c`, `bash -c`, `zsh -c`, `dash -c` or `eval`.
+
+Text in quotes is not a command, so `grep -r 'kubectl delete' .` runs.
+
+<Aside type="caution" title="A tripwire, not a wall">
+
+The list catches the usual ways of running a command, not a script, a
+Makefile or a program that runs one for the agent. A project that needs a
+hard wall is set to **Always boxed**.
+
+</Aside>
+
+### If Tori cannot answer
+
+A listed command is refused when Tori cannot be reached, or does not answer
+within 10 seconds, to say whether anybody is watching. Every other command
+runs as usual.
+
+## Allowed domains
+
+Settings > **Projects** > **Unattended sessions** > **Allowed domains when
+boxed** lists where a boxed Claude session's shell may connect, one per line,
+`*.example.com` included. The project's own git host is added for each
+session. **Reset to defaults** goes back to the main package registries:
+
+`registry.npmjs.org`, `registry.yarnpkg.com`, `pypi.org`,
+`files.pythonhosted.org`, `crates.io`, `index.crates.io`, `static.crates.io`,
+`proxy.golang.org`, `rubygems.org`
+
+The list does not apply to Codex. A boxed Codex session has no network, and
+asks for each host it needs.
+
+## What is not covered
+
+- **MCP tools.** The list covers shell commands only, not a database or cloud
+  MCP server the agent was given.
+- **Codex chats** get the box but not the deny list.
+- **A Codex terminal tab that is not boxed** gets no deny list either: the
+  list reaches Codex only on a boxed launch. Set the project to **Always
+  boxed** to cover its Codex tabs.
+- **A Codex terminal tab** that has a command blocked shows no dot, since Tori
+  does not track Codex sessions in a tab. The agent is still told why.
+- **Agents other than Claude and Codex** are not boxed and have no deny list.
