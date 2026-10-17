@@ -70,6 +70,7 @@ Every time a session needed you, the view gets a row:
 | **A worker asked a question** | A worker asked a question its chat or the autopilot passes on to you |
 | **Stopped at its spend limit** | A chat stopped at its budget |
 | **Waiting for you** | A terminal session is blocked. Tori cannot tell on what |
+| **Had a command blocked while you were away** | A session tried a command on the [deny list](/docs/agents/unattended/#commands-that-never-run-unattended) while nobody was watching |
 | **Finished** | A chat finished a turn |
 | **Pull request needs attention** | Your branch's pull request has a failing check or changes requested, or someone else's asks for your review |
 
@@ -87,9 +88,10 @@ while it stays red; the next red check after it goes green is a new row.
 
 An answered row stays, dimmed and marked **answered**, until it is a day old.
 
-- A permission, a question, a spend limit or a blocked terminal is answered
-  once the session stops needing you: you answered it, it moved on, or its tab
-  closed.
+- A permission, a question, a spend limit, a blocked terminal or a blocked
+  command is answered once the session stops needing you: you answered it, it
+  moved on, or its tab closed. A blocked command also clears once you look at
+  the session.
 - **Finished** and **Pull request needs attention** are answered once you look
   at the session: it is selected while Tori is in front, its chat tab is on
   screen, you open the row, or you open the session on your phone. A pull

@@ -385,6 +385,15 @@ Tori keeps no permission rules of its own. When you answer an agent's
 prompt with "always in this project", that choice travels back to the agent
 in its own format and lives in the agent's own files.
 
+## Sessions nobody is watching
+
+A project's Claude and Codex sessions can run in the agent's own sandbox when
+you are away, or always. Whatever the level, a session nobody is watching
+cannot run the commands on a deny list (cloud, infra and database tools by
+default), and tells you when you are back. The list is a tripwire for the
+usual spellings, not a wall; **Always boxed** is the wall. See
+[When nobody is watching](/docs/agents/unattended/).
+
 ## What Tori installs
 
 Language servers and debuggers Tori installs for you come from a pinned
