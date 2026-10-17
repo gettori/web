@@ -35,7 +35,8 @@ Any process listening on TCP from the worktree gets a link, so a
 ## A block of ports per worktree
 
 Every terminal tab, chat session, [setup
-command](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees)
+command](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees),
+[run command](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree)
 and [teardown command](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal)
 Tori starts in a checkout gets ten ports in its environment:
 

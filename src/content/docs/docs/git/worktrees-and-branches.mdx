@@ -1,6 +1,6 @@
 ---
 title: Worktrees and branches
-description: Add a branch or worktree, start one from an issue, run a setup command in every new worktree and a teardown command before one goes, fan out several attempts, and remove what you are done with.
+description: Add a branch or worktree, start one from an issue, run a setup command in every new worktree, start and stop a run command in one, run a teardown command before one goes, fan out several attempts, and remove what you are done with.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -115,8 +115,8 @@ and send.
 Every Bare project's [settings dialog](/docs/workspace/project-settings/) has a
 **Worktrees** section: right-click the project, choose **Project settings** and
 pick **Worktrees**. It holds what each worktree gets: a setup command when it
-is created, a teardown command before it is removed, and the files shared into
-it.
+is created, a run command you start and stop by hand, a teardown command before
+it is removed, and the files shared into it.
 
 ### A setup command for new worktrees
 
@@ -156,6 +156,58 @@ The command is kept in your own settings file, keyed by the project, not in
 the repository, so a repository cannot give itself a command to run. An empty
 field runs nothing.
 
+### A run command for each worktree
+
+The command you start in every worktree, usually the dev server, can be set
+once for the project and started from the worktree's row.
+
+<Steps>
+
+1. Open **Project settings** for the project and pick **Worktrees**.
+2. Type the command in **Run command**, for example
+   `pnpm dev --port $TORI_PORT`.
+3. Press `Enter` or click away to save it.
+
+</Steps>
+
+From then on:
+
+- Each worktree row in the sidebar has a play button. Click it to start the
+  command in that worktree, and click the square that replaces it to stop it.
+  While it stops, the button is greyed out and says **Stopping**.
+- The command palette has **Start the run command** and **Stop the run
+  command** for the worktree in front. Both are listed only for a project with
+  a run command. Start says **Already running** while one runs, and Stop says
+  **Stopping** while one stops and **Nothing is running here** when nothing
+  does.
+- It runs in the background, not in a tab, with `sh -c` in the worktree and
+  `TORI_PROJECT_ROOT`, `TORI_WORKTREE_PATH` and the worktree's
+  [ports](/docs/git/ports/#a-block-of-ports-per-worktree) set. While it runs,
+  **Run command** sits at the top of the
+  [Scripts](/docs/editor/files/#scripts) section with the command beside it.
+  Click it, or right-click for **Show log**, to read its output, and
+  right-click for **Stop**.
+- Its server's port shows on the row a few seconds after it starts listening,
+  like any [running server](/docs/git/ports/).
+- Stopping sends it a polite signal first and gives it five seconds to clean
+  up, then ends it. Starting it again while it stops waits for the old one, so
+  two servers never fight over one port.
+- If it exits on its own with an error, a toast says **Run in critical failed
+  (exit 1)** with **Show log**. Stopping it says nothing.
+- Removing the worktree stops it before the teardown command runs, and
+  quitting Tori stops every run command. If Tori crashes, the next launch stops
+  the run commands it left running.
+- [Removing worktrees automatically](#remove-worktrees-automatically) never
+  removes a worktree whose run command is running.
+- A log past 5 MB is cut back to its last 1 MB, and run logs older than a week
+  are deleted when Tori starts.
+- A worktree made from a fork's pull request never runs it, since that code is
+  not yours. Its row has no play button and the palette does not list the two
+  commands there.
+
+Like the setup command, it is kept in your own settings file, not in the
+repository. An empty field leaves the play button off the rows.
+
 ### A teardown command before removal
 
 Some worktrees leave things behind that git knows nothing about: a test
@@ -179,8 +231,8 @@ From then on:
   worktree.
 - It runs with `sh -c` in the worktree, while the folder is still there, with
   `TORI_PROJECT_ROOT`, `TORI_WORKTREE_PATH` and the worktree's
-  [ports](/docs/git/ports/#a-block-of-ports-per-worktree) set. A setup still
-  running there is stopped first.
+  [ports](/docs/git/ports/#a-block-of-ports-per-worktree) set. A setup or run
+  command still running there is stopped first.
 - The row shows **Tearing down** while it runs.
 - A teardown that runs longer than 2 minutes is stopped. Whether it fails or
   is stopped, the removal still goes ahead, and a toast says **Teardown in
@@ -294,6 +346,7 @@ Tori never removes:
 - a worktree on a detached HEAD, which has no branch to bring it back with
 - a worktree with uncommitted changes
 - a worktree an agent is running in, or one with a terminal or editor tab open
+- a worktree whose [run command](#a-run-command-for-each-worktree) is running
 - the worktree you have selected
 - a worktree an autopilot item is still working in
 
