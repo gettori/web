@@ -46,6 +46,7 @@ export const NAV: NavGroup[] = [
     items: [
       page("Worktrees and branches", "git/worktrees-and-branches"),
       page("Shared in worktrees", "git/shared-files"),
+      page("Ports and dev servers", "git/ports"),
       page("The Changes panel", "git/changes-panel"),
       page("Diffs", "git/diffs"),
       page("Who wrote a hunk", "git/who-wrote-this"),
