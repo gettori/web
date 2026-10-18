@@ -90,6 +90,10 @@ export const NAV: NavGroup[] = [
     items: [page("Pairing and remote access", "phone/pairing"), page("Using the phone app", "phone/using-the-phone-app")],
   },
   {
+    label: "Browser extension",
+    items: [page("The browser extension", "browser/extension")],
+  },
+  {
     label: "Reference",
     items: [
       page("Every setting", "reference/settings"),
