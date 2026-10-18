@@ -61,6 +61,8 @@ wherever it is included.
 | `caller` | Who is calling: the session or tab, its agent, account and folder | Everyone, phone too |
 | `projects.list` | The tree the sidebar draws, then Topics with their members | Everyone, phone too |
 | `project.icon` | The image a project's row shows | Everyone, phone too |
+| `ports.list` | Each worktree's [dev servers](/docs/git/ports/#from-a-shell-or-an-agent): branch, folder, port block and listening ports | Everyone |
+| `worktree.at` | The worktree serving a localhost port, or nothing | Everyone |
 | `worktree.new` | Create a worktree on a new branch, from an issue or a pull request if given | Everyone |
 | `window.open` | Open a file in Tori's editor | Everyone |
 | `budget` | Spend against your ceilings, and the agent's quota windows | Everyone |
