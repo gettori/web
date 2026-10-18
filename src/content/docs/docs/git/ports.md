@@ -27,8 +27,11 @@ folder.
 
 A server belongs to the worktree its process runs in, so a server started from
 a package folder inside the worktree counts too. When worktrees are nested,
-the deepest one wins. Servers running anywhere else on the machine are not
-shown, and neither are Tori's own language servers and debug adapters.
+the deepest one wins. A server running somewhere else that listens on a port
+of the worktree's [block](#a-block-of-ports-per-worktree) counts too, which is
+how a Docker container published on `$TORI_PORT` shows up. Other servers on the
+machine are not shown, and neither are Tori's own language servers and debug
+adapters.
 
 There is no timer. The links refresh when the Tori window gets focus or comes
 back on screen, a few seconds after a terminal goes quiet, and when a [run
@@ -102,3 +105,29 @@ An agent can read `$TORI_PORT` too, so it knows where its server will be
 before starting anything.
 
 The registry of blocks is `~/.config/tori/ports.json`.
+
+## From a shell or an agent
+
+The same answers are on the [CLI](/docs/automation/cli/) and the [MCP
+server](/docs/automation/mcp-server/#every-tool), and they work with the window
+closed:
+
+```sh
+$ tori ports
+main  ~/work/api  base 40000  5173
+fix/retry  ~/work/api-fix-retry  base 40010  40010,40011
+```
+
+- `tori ports` lists every worktree with a server listening or a block: its
+  branch, folder, block base and listening ports. `--json` for scripts. The MCP
+  tool is `ports_list`.
+- `tori open --browser` opens the worktree you are in at
+  `http://localhost:<port>` in your default browser. Give a branch to open
+  another worktree of the same project. The port is `$TORI_PORT` when a server
+  listens on it, and the lowest listening port otherwise.
+- The MCP tool `worktree_at` takes a port and answers the worktree serving it,
+  or nothing.
+
+These scan when asked rather than on the window's refreshes, and answer from a
+scan up to two seconds old. A port nobody owns is looked for again at once, so a
+server that just started is found.
