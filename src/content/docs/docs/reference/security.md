@@ -335,6 +335,7 @@ Markdown previews, pull request bodies.
 | GitHub and GitLab sign-in | The system keychain | Used by the app's own requests; it is never handed to the window that draws the interface |
 | Git passwords and passphrases | Nowhere in Tori | A prompt opens a native dialog, and the answer goes straight to git. If the dialog cannot be shown, the prompt fails rather than hanging or guessing |
 | A paired phone's credential | The phone | Shown once at pairing. `devices.json` never holds the plain credential, and it is kept out of Android backups and device transfers |
+| The browser extension's credential | `browser.json` beside Tori's other files, readable only by you | Written by Settings > Browser > Install for `tori` to read when a browser starts it. `browsers.json` keeps only a hash; Install again and Revoke replace or remove it |
 
 ## The socket, the CLI and the MCP server
 
@@ -353,6 +354,10 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
 - A phone connects with its own device credential, which is not accepted
   on the local socket, and the local token is not accepted from the
   network.
+- The [browser extension](/docs/browser/extension/) connects with a
+  credential of its own and may only read sessions, projects and ports,
+  steer a chat and answer its questions. It subscribes to nothing and starts
+  nothing.
 
 ## Remote access
 

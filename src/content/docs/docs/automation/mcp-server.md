@@ -42,27 +42,29 @@ Tool names are the method names with the dot as an underscore, so
 `session.spawn` is the tool `session_spawn`, which Claude shows as
 `mcp__tori__session_spawn`. The last column is who may call it: a **shell**
 is a terminal tab or a script, a **chat** is a session you drive, a
-**worker** is a session another session spawned, and the **phone** is a
-paired device. **Everyone** means shell, chat and worker; the phone is named
-wherever it is included.
+**worker** is a session another session spawned, the **phone** is a
+paired device, and the **browser** is the
+[browser extension](/docs/browser/extension/). **Everyone** means shell,
+chat and worker; the phone and the browser are named wherever they are
+included.
 
 | Tool | What it does | Who may call |
 | --- | --- | --- |
-| `sessions.list` | Sessions, newest first, with whether each is live and its state | Everyone, phone too |
-| `session.tail` | The last events of a conversation, tool output capped | Everyone, phone too |
+| `sessions.list` | Sessions, newest first, with whether each is live and its state | Everyone, phone and browser too |
+| `session.tail` | The last events of a conversation, tool output capped | Everyone, phone and browser too |
 | `session.history` | A conversation a page at a time, by whole turns | Everyone, phone too |
 | `session.wait` | Wait for a session to stop working; its state, pending question and last message | Shell, chat |
-| `session.pending` | What a session is waiting on, each with its id | Shell, chat, phone |
+| `session.pending` | What a session is waiting on, each with its id | Shell, chat, phone, browser |
 | `session.answer` | Answer a question or permission prompt of a session you spawned | Chat, phone |
 | `session.spawn` | Start a session, optionally in a new worktree, with a first message and files | Shell, chat, phone (a plain chat only) |
-| `session.steer` | Send a message to a live chat, as a steer or as its next turn | Shell, chat, phone |
+| `session.steer` | Send a message to a live chat, as a steer or as its next turn | Shell, chat, phone, browser |
 | `session.interrupt` | Stop a live chat's current turn | Shell, chat, phone |
 | `session.info`, `session.model`, `session.mode` | Read or switch a live chat's model and permission mode | Outside shell, phone |
-| `caller` | Who is calling: the session or tab, its agent, account and folder | Everyone, phone too |
-| `projects.list` | The tree the sidebar draws, then Topics with their members | Everyone, phone too |
+| `caller` | Who is calling: the session or tab, its agent, account and folder | Everyone, phone and browser too |
+| `projects.list` | The tree the sidebar draws, then Topics with their members | Everyone, phone and browser too |
 | `project.icon` | The image a project's row shows | Everyone, phone too |
-| `ports.list` | Each worktree's [dev servers](/docs/git/ports/#from-a-shell-or-an-agent): branch, folder, port block and listening ports | Everyone |
-| `worktree.at` | The worktree serving a localhost port, or nothing | Everyone |
+| `ports.list` | Each worktree's [dev servers](/docs/git/ports/#from-a-shell-or-an-agent): branch, folder, port block and listening ports | Everyone, browser too |
+| `worktree.at` | The worktree serving a localhost port, with its project and space, or nothing | Everyone, browser too |
 | `worktree.new` | Create a worktree on a new branch, from an issue or a pull request if given | Everyone |
 | `window.open` | Open a file in Tori's editor | Everyone |
 | `budget` | Spend against your ceilings, and the agent's quota windows | Everyone |
@@ -70,7 +72,7 @@ wherever it is included.
 | `provenance.hunks` | Who wrote each hunk of a file in a worktree: the turn, the tool call and the agent's words before it, or why nothing recorded can say | Everyone |
 | `ask.create` | Ask you a question in the calling chat and wait | Chat, worker |
 | `ask.wait` | Wait for the answer to a question asked earlier | Everyone |
-| `ask.answer` | Answer another session's question on your behalf | Shell, chat, phone |
+| `ask.answer` | Answer another session's question on your behalf | Shell, chat, phone, browser |
 | `issues.assigned` | Open issues from the project's [issue sources](/docs/automation/autopilot/#issue-sources), or with none those assigned to you, then pull requests waiting on your review | Everyone |
 | `issues.get` | One issue: title, body, url and a suggested branch name. Given a URL, it finds the project by the repo's origin, or the one project whose issue sources read that repo | Everyone |
 | `issues.link_branch` | Make a branch on the host under an issue and fetch it | Shell, chat |

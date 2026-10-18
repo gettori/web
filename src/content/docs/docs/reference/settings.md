@@ -188,6 +188,17 @@ git everywhere. See
 
 See [Pairing and remote access](/docs/phone/pairing).
 
+## Browser
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| Browsers | | Each browser Tori found, and whether its file is the one this version writes |
+| Install | | Lets the browser extension reach Tori; installing again replaces its key |
+| Connected | | Whether a browser is talking to Tori right now |
+| Revoke | | Drops the extension's connection; it needs Install again |
+
+See [The browser extension](/docs/browser/extension/).
+
 ## Advanced
 
 **Base folder**: shown, and changeable, from here. Changing it does not move
