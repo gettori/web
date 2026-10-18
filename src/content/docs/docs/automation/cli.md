@@ -13,6 +13,7 @@ Settings > Advanced > **Terminal command**.
 ```sh
 tori sessions [--live] [--cwd <path>] [--limit <n>] [--json]
 tori projects [--json]
+tori ports [--json]
 tori session tail <id> [--lines <n>] [--agent <id>] [--json]
 tori session wait <id> [--timeout <secs>] [--json]
 tori session pending <id> [--json]
@@ -30,6 +31,7 @@ tori spawn [--agent <id>] [--account <id>] [--model <id>] [--mode <id>] [--effor
            [--folder <path> | --new-worktree <branch> [--project <path>] [--from <ref>]]
            [--prompt <text>] [--attach <path>]... [--background] [--json]
 tori open <path> [--line <n>]
+tori open --browser [<branch>]
 tori budget [<id>] [--folder <path>] [--json]
 tori ask <question>... [--option <text>]... [--timeout <secs>] [--approval <json> [--project <path>]]
 tori ask --wait <id> [--timeout <secs>]
@@ -83,6 +85,8 @@ d4b80c13-9e7f-4a55-8c02-61f0e3a9b7d2  codex   default  working    fix/rate-limit
   running ones and `--cwd` only those in a folder.
 - `tori projects` prints the tree the sidebar draws: spaces, projects and
   branch rows, then Topics with their members.
+- `tori ports` lists each worktree's [dev servers](/docs/git/ports/#from-a-shell-or-an-agent):
+  branch, folder, port block and the ports listening.
 - `tori session tail <id>` prints the last events of a conversation, with
   tool output capped.
 - `tori session wait <id>` blocks until a session stops working, then
@@ -147,6 +151,8 @@ worktree, against the working tree.
 - `tori checkpoint revert <id> <n>` puts the session's folder back to turn
   `n`. A backstop is taken first.
 - `tori open <path> --line <n>` opens a file in Tori's editor.
+- `tori open --browser [<branch>]` opens the current worktree's dev server, or
+  another branch's in the same project, in your default browser.
 
 ```sh
 $ tori spawn --agent codex --new-worktree fix/retry --prompt "retry 5xx deliveries"
