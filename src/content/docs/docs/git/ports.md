@@ -10,24 +10,33 @@ ports its servers can use.
 
 ## Links to running servers
 
-Every server listening from a worktree shows up as a link, with nothing to set
-up and whatever port it picked:
+Turn on **Show dev server links** in [Project
+settings](/docs/workspace/project-settings/#tooling) > **Tooling** >
+**Dev servers**, and every server listening from that project shows up as a
+link, with nothing else to set up and whatever port it picked:
 
 - On the worktree's row in the sidebar, as `:5173`. Click it to open
   `http://localhost:5173` in your browser.
 - At the top of the **Scripts** section, as `localhost:5173`. Click to open it,
   or right-click for **Open in browser** and **Copy URL**.
 
+It is off by default, per project. Finding servers runs `lsof`, so a project
+that serves nothing, a CLI or an Android app, never pays for it. It works for
+every kind of project: a bare repo's worktrees, a normal clone, and a plain
+folder.
+
 A server belongs to the worktree its process runs in, so a server started from
 a package folder inside the worktree counts too. When worktrees are nested,
 the deepest one wins. Servers running anywhere else on the machine are not
 shown, and neither are Tori's own language servers and debug adapters.
 
-The list refreshes every 30 seconds while the Tori window is visible, when the
-window gets focus, and a few seconds after a terminal goes quiet, so a server
-you just started shows up shortly after it prints its banner. Nothing is
-scanned while the window is hidden. A stopped server's link goes away on the
-next refresh.
+There is no timer. The links refresh when the Tori window gets focus or comes
+back on screen, a few seconds after a terminal goes quiet, and when a [run
+command](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree)
+starts or stops. So a server you start in a Tori terminal shows up shortly
+after it prints its banner. A server started in another app shows up the next
+time you come back to Tori, and a server that dies by itself stays listed
+until the next refresh. Nothing is scanned while the window is hidden.
 
 Any process listening on TCP from the worktree gets a link, so a
 `node --inspect` port shows up next to the dev server.
@@ -70,6 +79,20 @@ For servers that read `PORT` (Next.js, Express, Nuxt, Rails):
 
 ```sh
 PORT=$TORI_PORT next dev
+```
+
+For a Tauri app, the template pins Vite to port 1420 with `strictPort`, so a
+second worktree's `tauri dev` fails instead of moving. Read the block in
+`vite.config.ts`:
+
+```ts
+server: { port: Number(process.env.TORI_PORT) || 1420, strictPort: true },
+```
+
+and point Tauri at the same port in the run command:
+
+```sh
+tauri dev --config "{\"build\":{\"devUrl\":\"http://localhost:${TORI_PORT:-1420}\"}}"
 ```
 
 The `:-5173` fallback keeps the script working outside Tori. With two servers
