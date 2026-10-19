@@ -54,7 +54,9 @@ dashed outline and a number matching the tray's list, and both follow it
 as the page scrolls, resizes or redraws.
 
 Esc with no comment box open stops picking. The tray stays while it holds
-comments, and says how to pick more.
+comments, and says how to pick more. With no comments but a
+[page log](#the-page-log), it goes back to **Pick and comment** with the
+send options under it.
 
 ## The tray
 
@@ -92,6 +94,48 @@ brings the window forward on that chat.
 **Copy as Markdown** copies the comments in the same layout the agent gets,
 and keeps them. **Cancel** throws them away.
 
+## The page log
+
+From the moment a localhost page loads, the extension notes what it says
+went wrong:
+
+- `console.error` and `console.warn`, with format strings such as `%s`
+  filled in
+- errors nothing caught, and promise rejections nothing handled, with the
+  first lines of their stack
+- requests through `fetch` or `XMLHttpRequest` that end with status 400
+  or more, or never get an answer: the method, the address with its query
+  string, and the status. A request the page cancels is not a failure
+- Vite's error overlay and Next's build error dialog, each as one build
+  error. When Next also prints that error to the console, it is kept once
+
+Each message is cut at 500 characters. The same message several times in
+a row is kept once with a count, such as `x3`. Errors keep the first 50,
+since the first is usually the cause; warnings and requests keep the last
+50 each.
+
+On a worktree tab the tray shows a count, such as
+`Page log: 2 errors, 1 failed request`, and keeps it current while open.
+Send, **New chat in Tori** and **Copy as Markdown** all add the log under
+the comments as a **Page log** section. Each line has its time from the
+first comment, so what happened before you picked reads as negative,
+such as `-3.4s`.
+
+You can send with no comments at all. When the page is broken and the
+log has something, the toolbar icon's tray offers Send, **New chat in
+Tori** and **Copy as Markdown** under **Pick and comment**, and the agent
+gets the log alone.
+
+A send takes only what came after the last send, so sending twice from
+the same page does not repeat itself. Copying does not count as a send.
+A reload starts the log over; moving between routes inside the app does
+not.
+
+The log is turned off with **Console and network** in the
+[options](/docs/browser/extension/#options). A change applies from the
+next time a tab loads, and a tab that loaded before the extension was
+installed has no log until it reloads.
+
 ## What a comment carries
 
 For each comment, the agent gets:
@@ -113,8 +157,8 @@ Never sent:
 - the value of a password field, a field with `autocomplete="off"`, or one
   marked `data-sensitive`. It is blanked in the HTML and hidden in the
   screenshots, and a selection inside one is not offered
-- cookies, storage, network traffic or anything outside the element and
-  the screenshots
+- cookies, storage, request and response headers or bodies, or anything
+  outside the element, the screenshots and the [page log](#the-page-log)
 
 Screenshots can be turned off in the
 [options](/docs/browser/extension/#options); comments then go as text only.
