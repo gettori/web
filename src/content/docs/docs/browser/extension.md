@@ -10,7 +10,9 @@ named after the branch. On those tabs you can also
 [pick parts of the page and comment on them](/docs/browser/pick-and-comment/)
 for a chat in Tori.
 
-It works in Chrome, Chromium, Brave, Edge and Arc. Firefox is planned.
+It works in Chrome, Chromium, Brave, Edge and Arc, all of which install it
+from the Chrome Web Store. It needs Tori 26.1020.0 or later. Firefox is
+planned.
 
 ## Setting it up
 
@@ -22,22 +24,45 @@ extension.
    a browser is allowed to start `tori` and talk to it, and gives the
    extension a key of its own. Tori writes nothing into a browser's folder
    until you click this.
-2. Load the extension. It is not in the Chrome Web Store yet, so for now it
-   is built from source: `pnpm --dir extension build` in a Tori checkout
-   gives `extension/dist/chrome`. In `chrome://extensions` turn on
-   Developer mode, then **Load unpacked** and pick that folder.
+2. Still in Settings > Browser, **Get the extension** opens its page in the
+   Chrome Web Store, in your default browser. Add it there. To add it to
+   another browser, open the same page in that one.
 
-The unpacked build and the store build share one extension id, so a browser
-loads one or the other, never both.
+The extension then opens a [welcome page](#the-welcome-page), which checks
+the connection straight away, and Settings > Browser turns **Connected**.
 
 The **Browsers** row lists each browser Tori found and whether its file is
-the one this version of Tori writes. **Connected** says whether a browser is
-talking to Tori right now.
+the one this version of Tori writes. **Connected** means the extension has
+reached Tori since the last **Install**. It stays on while the browser is
+idle, since the extension drops its connection whenever it has nothing to
+do, and a restart of Tori resets it until the extension next calls. When the
+extension and Tori are too far apart in version, the row says **Update the
+extension** or **Update Tori** instead (see [Versions](#versions)).
 
 **Install again** replaces the key: a browser still using the old one is
 turned away and picks up the new one when it reconnects. **Revoke** drops the
 extension's connection at once, and it reaches Tori again only after
 **Install**.
+
+To build it from source instead, run `pnpm --dir extension build` in a Tori
+checkout and load `extension/dist/chrome` with **Load unpacked** in
+`chrome://extensions`, Developer mode on. The unpacked build and the store
+build share one extension id, so a browser loads one or the other, never
+both.
+
+## The welcome page
+
+The first time the extension is added, it opens a welcome page:
+
+- **Connection**: whether Tori is running and set up for this browser, with
+  the minimum Tori version when it is not set up, and **Check again**
+- **The toolbar icon**: what the dot and its tooltip mean
+- **Shortcut**: the pick shortcut as the browser has it now, or **Not set**,
+  with **Change**
+- **Docs**: opens this page
+
+Asking for the connection is also what tells Tori the extension is there, so
+Settings > Browser turns **Connected** without a localhost tab open.
 
 ## The toolbar icon
 
@@ -56,6 +81,8 @@ Any other tab gets no dot. Hovering says why:
 | This tab is not a Tori worktree. | Not a local port, or no worktree is serving it |
 | Tori is not running. | The browser started `tori`, but Tori itself is not running |
 | Tori is not set up for this browser yet. | No file for this browser, or one naming a different extension: Tori > Settings > Browser > Install |
+| This extension is too old for your Tori. Update it from the Chrome Web Store. | See [Versions](#versions) |
+| Your Tori is too old for this extension. Update Tori. | See [Versions](#versions) |
 
 Clicking the icon opens Tori's tray on the page: on a worktree tab, ready to
 [pick and comment](/docs/browser/pick-and-comment/#starting); on any other,
@@ -98,8 +125,45 @@ extension's menu in the browser (Options).
 | Active tab, scripting | Drawing the tray and the picker on the page you clicked, its screenshots, and the page log on localhost pages |
 | `localhost` and `127.0.0.1` | The dev servers it reads |
 
-Debugger, web request and access to other sites are optional: nothing asks
-for them yet.
+It asks for nothing else, and reads no site but those two hosts.
+
+## Versions
+
+The extension updates itself from the store, and Tori updates when you
+update it, so the two can be on different versions. Every message the
+extension sends carries the version of the format it speaks, and Tori reads
+a range of them. Inside the range, any pair works. Outside it, Tori turns
+the extension away with the side to update, both on the toolbar icon and in
+Settings > Browser:
+
+- **Update the extension**: the extension is older than this Tori reads.
+  The browser updates extensions on its own every few hours; in
+  `chrome://extensions`, Developer mode, **Update** does it now.
+- **Update Tori**: the extension is newer than this Tori reads. See
+  [Updates](/docs/updates/).
+
+The message clears with the next call that gets through.
+
+## Privacy
+
+Nothing leaves the browser except to the Tori app on your own Mac:
+
+- The extension talks only to the `tori` the browser starts through native
+  messaging, which hands everything to the running app. No server is
+  involved, Tori's or anyone else's, and there are no analytics.
+- It sees every tab's address, which is how it tells the localhost ones
+  apart, and keeps the others to itself. For a tab on `localhost` or
+  `127.0.0.1` it sends the address, to find its worktree, and, when you pick
+  and send, the
+  [comment and what comes with it](/docs/browser/pick-and-comment/):
+  the element's HTML, text, styles and source, screenshots when they are on,
+  and the page log when it is on.
+- Comments waiting to be sent, their screenshots, and the options stay in the
+  browser's own storage for the extension.
+- The only links it opens are this page and the browser's shortcut page.
+
+What Tori does with a comment once it has it is the same as anything you type
+into a chat: see [Files and privacy](/docs/reference/files-and-privacy/).
 
 ## What it can do
 

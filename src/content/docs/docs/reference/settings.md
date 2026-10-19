@@ -194,7 +194,8 @@ See [Pairing and remote access](/docs/phone/pairing).
 | --- | --- | --- |
 | Browsers | | Each browser Tori found, and whether its file is the one this version writes |
 | Install | | Lets the browser extension reach Tori; installing again replaces its key |
-| Connected | | Whether a browser is talking to Tori right now |
+| Extension | | **Get the extension** opens its Chrome Web Store page in your default browser |
+| Connected | | Whether the extension has reached Tori since the last Install, or which side to update |
 | Revoke | | Drops the extension's connection; it needs Install again |
 
 See [The browser extension](/docs/browser/extension/).
