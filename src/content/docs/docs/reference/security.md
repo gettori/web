@@ -357,7 +357,8 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
 - The [browser extension](/docs/browser/extension/) connects with a
   credential of its own and may only read sessions, projects and ports,
   steer a live chat, open a chat draft for you to send, bring the window
-  forward and answer a chat's questions. Each of those is held to the
+  forward, answer a chat's questions, and read which framework its app
+  uses with the plugin line for it. Each of those is held to the
   sessions of the worktree its tab's dev server runs in. `tori` works the
   worktree out from the tab's address itself, so the extension cannot name
   a folder of its choosing. Files it

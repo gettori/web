@@ -69,6 +69,7 @@ included.
 | `window.open` | Open a file in Tori's editor | Everyone |
 | `window.reveal` | Bring Tori's window forward on a chat's tab | Browser |
 | `chat.draft` | Open a new chat draft in Tori in the tab's worktree, with text and files as chips, for you to send | Browser |
+| `web.setup` | The tab's app in its worktree: framework, bundler, and the code-inspector-plugin line and install command, or nothing | Browser |
 | `attachment.write` | Write a file into Tori's attachments in base64 chunks, at most 8 MB, for `session.steer` and `chat.draft` to carry | Browser |
 | `budget` | Spend against your ceilings, and the agent's quota windows | Everyone |
 | `checkpoints.list`, `checkpoint.diff`, `checkpoint.revert` | A session's per-turn checkpoints: list, diff, revert. `checkpoint.diff` with `why` also says who wrote each hunk | Everyone |
