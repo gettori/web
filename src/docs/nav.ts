@@ -91,7 +91,7 @@ export const NAV: NavGroup[] = [
   },
   {
     label: "Browser extension",
-    items: [page("The browser extension", "browser/extension")],
+    items: [page("The browser extension", "browser/extension"), page("Pick and comment", "browser/pick-and-comment")],
   },
   {
     label: "Reference",

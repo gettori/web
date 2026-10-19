@@ -57,7 +57,7 @@ included.
 | `session.pending` | What a session is waiting on, each with its id | Shell, chat, phone, browser |
 | `session.answer` | Answer a question or permission prompt of a session you spawned | Chat, phone |
 | `session.spawn` | Start a session, optionally in a new worktree, with a first message and files | Shell, chat, phone (a plain chat only) |
-| `session.steer` | Send a message to a live chat, as a steer or as its next turn | Shell, chat, phone, browser |
+| `session.steer` | Send a message to a live chat, as a steer or as its next turn, with files. The browser's files must be ones `attachment.write` stored, and it may not wake a chat that is not live | Shell, chat, phone, browser |
 | `session.interrupt` | Stop a live chat's current turn | Shell, chat, phone |
 | `session.info`, `session.model`, `session.mode` | Read or switch a live chat's model and permission mode | Outside shell, phone |
 | `caller` | Who is calling: the session or tab, its agent, account and folder | Everyone, phone and browser too |
@@ -67,6 +67,9 @@ included.
 | `worktree.at` | The worktree serving a localhost port, with its project and space, or nothing | Everyone, browser too |
 | `worktree.new` | Create a worktree on a new branch, from an issue or a pull request if given | Everyone |
 | `window.open` | Open a file in Tori's editor | Everyone |
+| `window.reveal` | Bring Tori's window forward on a chat's tab | Browser |
+| `chat.draft` | Open a new chat draft in Tori in the tab's worktree, with text and files as chips, for you to send | Browser |
+| `attachment.write` | Write a file into Tori's attachments in base64 chunks, at most 8 MB, for `session.steer` and `chat.draft` to carry | Browser |
 | `budget` | Spend against your ceilings, and the agent's quota windows | Everyone |
 | `checkpoints.list`, `checkpoint.diff`, `checkpoint.revert` | A session's per-turn checkpoints: list, diff, revert. `checkpoint.diff` with `why` also says who wrote each hunk | Everyone |
 | `provenance.hunks` | Who wrote each hunk of a file in a worktree: the turn, the tool call and the agent's words before it, or why nothing recorded can say | Everyone |
