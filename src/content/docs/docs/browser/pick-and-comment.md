@@ -140,6 +140,8 @@ installed has no log until it reloads.
 
 For each comment, the agent gets:
 
+- a **Where** block first, saying where in the code the element comes from,
+  as far as the page can tell. See [Where in the code](#where-in-the-code)
 - the page's address and the route
 - a CSS selector that finds the element, and its path from the page's root
 - its position and size, the window size, the pixel ratio and whether the
@@ -147,7 +149,9 @@ For each comment, the agent gets:
 - its HTML, with attributes cut to `id`, `class`, `role`, `data-testid`,
   `href`, `src`, `alt`, `type`, `name` and `aria-*`, and at most 4 KB
 - its text, or the selected text, at most 1000 characters
-- up to 40 styles that differ from the element's defaults
+- its styles: up to 40 computed values of the properties its
+  [matched CSS rules](#matched-css-rules) set, or, when no rule
+  matched, up to 40 styles that differ from the element's defaults
 - two screenshots: the visible page as a JPEG and the element on its own
   as a PNG. They arrive as attachments the agent opens, named `[Image 1]`
   on in order. A send holds at most 10 screenshots
@@ -164,6 +168,158 @@ Screenshots can be turned off in the
 [options](/docs/browser/extension/#options); comments then go as text only.
 Taking one needs the access a click on the icon or the shortcut grants, so
 after a reload press either once more before picking.
+
+## Where in the code
+
+A selector leaves the agent searching for class names. The Where block
+gives it the component, the file and the line instead, from whatever the
+page offers. Each part is added when it is there and none is needed:
+
+```
+component: Button > Form > CheckoutPage
+props: label="Pay", onClick=fn, password=[redacted]
+source: src/components/Form.tsx:14
+rules:
+  src/settings/tabs.css:12-18 .tabs-header { gap: 24px; }
+route: /checkout
+data-testid: pay
+id: checkout
+aria-label: Pay now
+```
+
+With none of it available, the pick still carries the route and, when the
+element or one around it has them, its `data-testid` and `aria-label`, and
+the element's own `id`, plus its text in the rest of the comment.
+
+### Components and props
+
+Read from the page itself once the tray opens, with nothing to set up and
+nothing running in the page before that:
+
+| Framework | What it gives |
+| --- | --- |
+| React, including Next | The component chain and the props of the component that rendered the element |
+| Vue 3 | The chain, the props, and the component's file |
+| Svelte | The chain, and the element's own file and line |
+
+The chain holds the six nearest named components, innermost first. It
+leaves out unnamed components and providers, and a library's components
+except the one your code used directly: a library button shows as `Button`
+in your `Form`, without the library's own parts inside it or a framework's
+router above your page. A production build, whose names are cut to a letter
+or two, gives no chain.
+
+Props are shallow. Text is cut at 200 characters and shown in quotes;
+functions show as `fn`, elements as `<Name>`, lists as their length such
+as `[3]`, and objects as their first five keys. `children` is left out, and
+at most 20 props go. A prop whose name contains `pass`, `secret`, `token`
+or `key` goes as `[redacted]`, and when the picked element is a
+[field that is never sent](#what-a-comment-carries), every prop does.
+
+Solid gives no chain yet; its file and line come from the plugin below.
+
+### File and line
+
+For the file and line in every framework, turn on
+[code-inspector-plugin](https://github.com/zh-lx/code-inspector) in the
+app's dev build. It writes each element's place in the source into the
+page, and the extension reads it. It covers React, Vue, Preact, Solid,
+Qwik, Svelte and Astro, on Vite, webpack, Rspack, Turbopack and esbuild.
+
+Install it as a dev dependency, then add one line to the config:
+
+```sh
+pnpm add -D code-inspector-plugin
+```
+
+```ts
+// vite.config.ts
+import { codeInspectorPlugin } from "code-inspector-plugin";
+
+export default defineConfig({
+  plugins: [codeInspectorPlugin({ bundler: "vite" }), react()],
+});
+```
+
+```ts
+// next.config.ts, Next 15.3 and later with Turbopack
+import { codeInspectorPlugin } from "code-inspector-plugin";
+
+const nextConfig = {
+  turbopack: { rules: codeInspectorPlugin({ bundler: "turbopack" }) },
+};
+```
+
+```ts
+// next.config.js, Next with webpack
+const { codeInspectorPlugin } = require("code-inspector-plugin");
+
+module.exports = {
+  webpack: (config) => {
+    config.plugins.push(codeInspectorPlugin({ bundler: "webpack" }));
+    return config;
+  },
+};
+```
+
+```ts
+// nuxt.config.ts
+import { codeInspectorPlugin } from "code-inspector-plugin";
+
+export default defineNuxtConfig({
+  vite: { plugins: [codeInspectorPlugin({ bundler: "vite" })] },
+});
+```
+
+You do not have to write these out. Tori reads each app in a worktree and
+knows its framework, its bundler and its package manager:
+
+- When a comment has a component but no file and line, the tray shows
+  **File and line: add code-inspector-plugin to** and the config file, such
+  as `next.config.ts`, with **Copy**. Copy puts the install command, with a
+  `cd` into the app when it is not at the worktree's root, and the line for
+  that config on the clipboard.
+- The Files panel's [Scripts](/docs/editor/files/#scripts) tab shows the
+  same for each app.
+
+Neither shows once the plugin is in the app's `package.json`, or for a
+Svelte app, which marks its own lines. Tori never edits your files: you
+paste the line, install, and restart the dev server.
+
+The line the plugin gives for a component's outermost element is where the
+component is used, such as the `<Button>` in `Form.tsx`, rather than where
+that element is written inside `Button.tsx`.
+
+A line from Svelte wins over the plugin's. A file without a line, as Vue
+gives, gives way to the plugin's line.
+
+### Matched CSS rules
+
+In place of a dump of computed styles, the block lists the CSS rules that
+apply to the element, with where each one is written:
+
+- at most 12, the most specific first, and between equals the later one,
+  which is the one that wins
+- rules whose selectors are only `*` or a tag, such as a reset's
+  `*, ::before` or `button { font: inherit }`, are left out
+- rules inside `@media` and `@supports` count only when they apply, and
+  those inside `@layer` always; `@container` rules are left out
+- each rule's declarations are cut at 300 characters
+
+The place comes from Vite's dev server, which tags each stylesheet it
+serves with its file. The lines are found in that sheet, as served:
+
+| Stylesheet | Place |
+| --- | --- |
+| A CSS file on Vite | The file and its lines, such as `src/settings/tabs.css:12-18` |
+| A Vue component's `<style>` | The `.vue` file, with no line |
+| Tailwind's generated sheet | The file, with no line. Tailwind's classes are already in the HTML |
+| Any other sheet | Its address, such as `/assets/index.css`, or `inline <style>` |
+
+The lines are the sheet's as served, so a sheet a PostCSS step reshaped can
+point a little off. When the served text and the rules do not line up at
+all, the file goes alone rather than a wrong line.
+Stylesheets from another origin cannot be read and are skipped.
 
 ## What a tab can reach
 
