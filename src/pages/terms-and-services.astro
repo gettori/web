@@ -1,0 +1,8 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import { Content, frontmatter, getHeadings } from "../legal/terms-and-services.md";
+---
+
+<DocsLayout title={frontmatter.title} description={frontmatter.description} headings={getHeadings()}>
+  <Content />
+</DocsLayout>
