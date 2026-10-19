@@ -84,6 +84,14 @@ scripts in the root `package.json`, then each workspace package's, then
   each server listening from the worktree sits at the top as
   `localhost:5173`. Click to open it, or right-click for **Open in browser**
   and **Copy URL**.
+- For an app whose browser picks could carry their
+  [file and line](/docs/browser/pick-and-comment/#file-and-line) but do not
+  yet, **Browser file and line** sits under its `package.json`, saying which
+  config file the line goes in. Click it, or **Copy plugin setup**, to copy
+  the install command and the line; **Open** and the config file's name
+  opens it. It is
+  gone once `code-inspector-plugin` is in that `package.json`, and never
+  shows for Svelte. Tori writes nothing for you.
 
 With nothing to run it says **No scripts here. Tori reads package.json,
 Makefile and justfile.**
