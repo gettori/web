@@ -83,6 +83,7 @@ extension's menu in the browser (Options).
 | --- | --- |
 | Group tabs by branch | The [tab groups](#tab-groups) switch. On by default |
 | Screenshots | Whether each comment takes a screenshot of the page and of the element. On by default; off sends comments as text only, from the next comment on |
+| Console and network | Whether sends carry the [page log](/docs/browser/pick-and-comment/#the-page-log) of console errors and warnings and failed requests. On by default; a change applies from the next time a tab loads |
 | Shortcut | The key that starts and stops picking. **Change** opens the browser's shortcut page, the only place it can be set |
 | Connection | Whether Tori is running and set up for this browser. **Check again** asks once more |
 
@@ -94,7 +95,7 @@ extension's menu in the browser (Options).
 | Tabs | Reading a tab's address to find its worktree |
 | Tab groups | Grouping tabs by branch |
 | Storage | The options, and a tab's comments until they are sent |
-| Active tab, scripting | Drawing the tray and the picker on the page you clicked, and its screenshots |
+| Active tab, scripting | Drawing the tray and the picker on the page you clicked, its screenshots, and the page log on localhost pages |
 | `localhost` and `127.0.0.1` | The dev servers it reads |
 
 Debugger, web request and access to other sites are optional: nothing asks
