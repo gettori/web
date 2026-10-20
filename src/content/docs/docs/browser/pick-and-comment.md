@@ -114,20 +114,33 @@ a row is kept once with a count, such as `x3`. Errors keep the first 50,
 since the first is usually the cause; warnings and requests keep the last
 50 each.
 
-On a worktree tab the tray shows a count, such as
+On a worktree tab the tray shows a line such as
 `Page log: 2 errors, 1 failed request`, and keeps it current while open.
-Send, **New chat in Tori** and **Copy as Markdown** all add the log under
-the comments as a **Page log** section. Each line has its time from the
+Its errors are also [counted on the toolbar icon](/docs/browser/extension/#the-error-count).
+
+Click the line to open the list: every entry not yet sent, newest first,
+with its kind, its first line and its count. The kind of an entry that
+counts on the icon is in amber. Each has a checkbox, checked when it
+arrives; uncheck the ones the agent does not need. The line then says how
+many are left out, such as `2 errors, 3 left out`. When the log let go of
+entries it could not keep, the list ends with how many, such as
+`250 more not kept`. Under the list, **More in DevTools > Tori** points to
+the [DevTools panel](/docs/browser/devtools-panel/), which also shows the
+bodies of failed requests.
+
+Send, **New chat in Tori** and **Copy as Markdown** all add the checked
+entries under the comments as a **Page log** section. Each line has its time from the
 first comment, so what happened before you picked reads as negative,
 such as `-3.4s`.
 
 You can send with no comments at all. When the page is broken and the
-log has something, the toolbar icon's tray offers Send, **New chat in
-Tori** and **Copy as Markdown** under **Pick and comment**, and the agent
+log has something checked, the toolbar icon's tray offers Send, **New chat
+in Tori** and **Copy as Markdown** under **Pick and comment**, and the agent
 gets the log alone.
 
-A send takes only what came after the last send, so sending twice from
-the same page does not repeat itself. Copying does not count as a send.
+A send takes the checked entries and drops them from the list, so sending
+twice from the same page does not repeat itself. The unchecked ones stay
+for a later send. Copying does not count as a send.
 A reload starts the log over; moving between routes inside the app does
 not.
 
@@ -162,7 +175,9 @@ Never sent:
   marked `data-sensitive`. It is blanked in the HTML and hidden in the
   screenshots, and a selection inside one is not offered
 - cookies, storage, request and response headers or bodies, or anything
-  outside the element, the screenshots and the [page log](#the-page-log)
+  outside the element, the screenshots and the [page log](#the-page-log).
+  Request and response bodies go only from the
+  [DevTools panel](/docs/browser/devtools-panel/), when you open them
 
 Screenshots can be turned off in the
 [options](/docs/browser/extension/#options); comments then go as text only.
