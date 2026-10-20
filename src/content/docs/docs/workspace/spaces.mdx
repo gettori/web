@@ -320,20 +320,9 @@ From left to right:
 
   The tooltip also says when the last commit was made, and lists conflicting
   files. While a session in the branch is working or waiting on you, the marks
-  step aside for its status, except the amber files mark, which stays. While
-  the branch's pull request needs you, the red conflict mark steps aside too,
-  and the review mark's tooltip says it instead.
-- **A review mark** for the branch's open pull request, one at a time, most
-  pressing first:
-
-  | Mark | Means |
-  | --- | --- |
-  | Orange speech bubble with a dot | Your review is requested, including when the author asks you again after you requested changes |
-  | Red speech bubble with a warning | Changes requested |
-  | Green speech bubble with a tick | Approved |
-
-  Hover it for the rest: failing checks on your own pull request, a conflict
-  with the base, and the comment count.
+  step aside for its status, except the amber files mark, which stays. A
+  branch with an open pull request has no red conflict mark: its pull request
+  number turns red instead (see [the second line](#the-second-line)).
 - **A Topic tag** when the worktree belongs to a [Topic](/docs/workspace/topics/)
   and **Show Topic worktrees in Spaces** is on. Click it to open the Topic.
 - **A status bubble** for the sessions in it.
@@ -353,8 +342,23 @@ line:
 - The size of the change against the base: `+120/-14` and the number of files.
 - When it was opened (or merged or closed), and how many comments it has.
 
+An open pull request's number is coloured for what it needs, the first that
+applies:
+
+| Number | Means |
+| --- | --- |
+| Rose | Your review is requested, including when the author asks you again after you requested changes |
+| Orange | Changes requested |
+| Red | The base has moved on and some files would conflict when the branch catches up |
+| Green | Approved |
+| Grey | Nothing pending |
+
+A draft or a closed pull request stays grey under its own glyph, and a merged
+one is purple.
+
 Hover the line for the title, the author, its place in a stack (**Layer 2 of 3
-in a stack, targets main**), the review and checks in words, and the size. A branch whose pull request merged with nothing new since rests on a
+in a stack, targets main**), the review and checks in words, the size, and the
+files that would conflict with the base. A branch whose pull request merged with nothing new since rests on a
 faint teal wash; one whose pull request was closed unmerged is dimmed.
 
 ### Stacked pull requests
@@ -429,8 +433,8 @@ waiting session makes the whole rollup say so, with the count.
 
 An orange pull request in the bubble, **Pull request needs attention**, means
 it is your move on a branch's pull request. A branch row leaves it out of its
-own bubble, since its review mark already says why; a closed project and a
-space tile still show it:
+own bubble, since the colour of its pull request number already says why; a
+closed project and a space tile still show it:
 
 - Your own pull request: a check failed, or a reviewer requested changes.
 - Someone else's: it is asking for your review. It clears once you review
