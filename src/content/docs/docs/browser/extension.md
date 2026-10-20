@@ -101,6 +101,24 @@ left where it is.
 The switch is in the [options](#options), and it is on by default. Turning
 it off groups nothing new and leaves existing groups alone.
 
+## Opening a server from Tori
+
+Clicking a server's port in Tori, on the [worktree's
+row](/docs/git/ports/#links-to-running-servers) or in **Scripts**, opens it in
+your default browser. With the extension installed there, a second click does
+not stack a second tab: Tori's new tab closes and the tab already on that port
+comes to the front, in its window. When several tabs are on the port, the one
+you used last wins.
+
+Only a tab Tori opened in the last ten seconds is folded this way, and only
+when another tab is already on the same port. A tab you open yourself, a tab a
+link opened, and a tab Chrome restores or you reopen are never closed, so
+several tabs on one server stay as they are.
+
+Without the extension, or with a browser that is not your default, each click
+opens a new tab as before. A Tori older than the extension also leaves the new
+tab open.
+
 ## Options
 
 The options page opens from the tray's **Options** button, or from the

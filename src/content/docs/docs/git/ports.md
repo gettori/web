@@ -20,6 +20,10 @@ link, with nothing else to set up and whatever port it picked:
 - At the top of the **Scripts** section, as `localhost:5173`. Click to open it,
   or right-click for **Open in browser** and **Copy URL**.
 
+With the [browser extension](/docs/browser/extension/#opening-a-server-from-tori)
+installed, clicking a port that already has a tab brings that tab to the front
+instead of opening another.
+
 It is off by default, per project. Finding servers runs `lsof`, so a project
 that serves nothing, a CLI or an Android app, never pays for it. It works for
 every kind of project: a bare repo's worktrees, a normal clone, and a plain
