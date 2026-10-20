@@ -16,7 +16,8 @@ settings](/docs/workspace/project-settings/#tooling) > **Tooling** >
 link, with nothing else to set up and whatever port it picked:
 
 - On the worktree's row in the sidebar, as `:5173`. Click it to open
-  `http://localhost:5173` in your browser.
+  `http://localhost:5173` in your browser. It is amber while the [browser
+  extension](/docs/browser/extension/) is connected, grey otherwise.
 - At the top of the **Scripts** section, as `localhost:5173`. Click to open it,
   or right-click for **Open in browser** and **Copy URL**.
 
