@@ -200,6 +200,17 @@ From then on:
   restarting the run brings the tab already on that port to the front instead
   of opening another. Turn the switch off in **Project settings** >
   **Worktrees** to start servers quietly.
+- With **Start the run command when a worktree is created** on, a worktree you
+  create from the sidebar, from a branch or from an issue, starts its run
+  command by itself once its setup command finishes without an error, or at
+  once when the project has no setup command. Together with **Open the
+  browser when a server starts**, making a worktree ends with its app open in
+  the browser. A setup command that fails or runs past its 30 minute limit
+  starts nothing, and so does picking a branch that already has a worktree.
+  Worktrees made by an agent, by `tori worktree new`, for a pull request
+  review or as attempts never start it, so a fan out does not start a server
+  per worktree. It is off by default, and the switch is greyed out until the
+  project has a run command.
 - Stopping sends it a polite signal first and gives it five seconds to clean
   up, then ends it. Starting it again while it stops waits for the old one, so
   two servers never fight over one port.
