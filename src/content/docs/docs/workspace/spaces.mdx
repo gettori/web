@@ -356,6 +356,14 @@ applies:
 A draft or a closed pull request stays grey under its own glyph, and a merged
 one is purple.
 
+On the repository's default branch, such as `main` or `master`, a pull request
+is a release to another long-lived branch, so the line reads `-> stage #8020`
+under an arrowed pull request glyph. It stays grey even when approved, and
+turns rose, orange or red only when your review is requested, changes are
+requested or it would conflict. Once merged or closed it shows, grey, for a
+day, then the line goes away, and the row never takes the teal wash a finished
+branch gets.
+
 Hover the line for the title, the author, its place in a stack (**Layer 2 of 3
 in a stack, targets main**), the review and checks in words, the size, and the
 files that would conflict with the base. A branch whose pull request merged with nothing new since rests on a
