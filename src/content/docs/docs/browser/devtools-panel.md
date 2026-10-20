@@ -1,6 +1,6 @@
 ---
 title: The DevTools panel
-description: A Tori tab in the browser's DevTools that lists the page's errors and failed requests, with their bodies, and sends the ones you pick to a chat.
+description: A Tori tab in the browser's DevTools that lists the page's errors and failed requests, with their bodies, sends the ones you pick to a chat, and comments on the element selected in Elements.
 ---
 
 The extension adds a **Tori** tab to the browser's DevTools. It lists the
@@ -26,6 +26,27 @@ In place of the list, the panel can say:
 | The page log is off in the Tori options. | **Console and network** is off in the [options](/docs/browser/extension/#options) |
 | Reload the page to start the page log. | The page loaded before the extension was installed or the option was turned on |
 | Nothing on this page yet. | The log is empty |
+
+## Commenting on the selected element
+
+Select an element in the **Elements** tab, then press **Comment on
+selected element** in the Tori panel's header. The page scrolls the
+element into view and opens the comment box beside it, the same box a
+[pick](/docs/browser/pick-and-comment/#picking) opens. Click in the box and
+write the comment. It joins the comments in the tray, and you send them
+from the [tray](/docs/browser/pick-and-comment/#sending), not from the
+panel.
+
+The button shows only on a worktree tab. Instead of opening the box, the
+panel can say:
+
+| Message | Meaning |
+| --- | --- |
+| Select an element on this page in the Elements panel. One inside a frame cannot be picked. | Nothing is selected, or the element is inside a frame |
+| Select an element inside the page, not the whole document. | The selection is `html`, `head` or `body` |
+| That element has no size on the page, so there is nothing to point at. | The element is hidden or has no width or height |
+| That is Tori's own overlay. | The selection is part of Tori's tray or comment box |
+| Tori could not reach the page. Reload it and try again. | The picker did not answer on the page |
 
 ## The list
 
