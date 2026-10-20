@@ -296,6 +296,14 @@ From left to right:
   filled and brighter. While a session in it is working, the glyph traces
   itself.
 - **The name**.
+- **A play button** while the pointer is on the row, when the project has a
+  [run command](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree).
+  It turns into a stop square while the command runs. Off the row it stays
+  out of sight, and a running server shows by its port.
+- **A port**, such as `:3000`, for each [dev server](/docs/git/ports/#links-to-running-servers)
+  listening from the worktree. It is amber while the
+  [browser extension](/docs/browser/extension/) is connected and grey when it
+  is not.
 - **An issue chip**, such as **#214**, when the branch was started from an
   issue. Click it to open the issue.
 - **Sync marks**, small glyphs with counts. Hover for the full story:
@@ -312,7 +320,20 @@ From left to right:
 
   The tooltip also says when the last commit was made, and lists conflicting
   files. While a session in the branch is working or waiting on you, the marks
-  step aside for its status, except the amber files mark, which stays.
+  step aside for its status, except the amber files mark, which stays. While
+  the branch's pull request needs you, the red conflict mark steps aside too,
+  and the review mark's tooltip says it instead.
+- **A review mark** for the branch's open pull request, one at a time, most
+  pressing first:
+
+  | Mark | Means |
+  | --- | --- |
+  | Orange speech bubble with a dot | Your review is requested, including when the author asks you again after you requested changes |
+  | Red speech bubble with a warning | Changes requested |
+  | Green speech bubble with a tick | Approved |
+
+  Hover it for the rest: failing checks on your own pull request, a conflict
+  with the base, and the comment count.
 - **A Topic tag** when the worktree belongs to a [Topic](/docs/workspace/topics/)
   and **Show Topic worktrees in Spaces** is on. Click it to open the Topic.
 - **A status bubble** for the sessions in it.
@@ -326,7 +347,7 @@ line:
   place in a [stack](#stacked-pull-requests) as a stack glyph and `2/3`
   when it is one layer of a stack, an eye
   when a chat is [watching it](/docs/git/pull-requests-and-issues/#let-a-chat-watch-a-pull-request),
-  its review verdict, and its checks as passed out of the checks that ran.
+  and its checks as passed out of the checks that ran.
   Skipped checks never ran, so they count on neither side; a grey count with
   a slashed circle beside the score says how many there were.
 - The size of the change against the base: `+120/-14` and the number of files.
@@ -407,7 +428,9 @@ and a space tile shows everything in the space. Needs you always wins: one
 waiting session makes the whole rollup say so, with the count.
 
 An orange pull request in the bubble, **Pull request needs attention**, means
-it is your move on a branch's pull request:
+it is your move on a branch's pull request. A branch row leaves it out of its
+own bubble, since its review mark already says why; a closed project and a
+space tile still show it:
 
 - Your own pull request: a check failed, or a reviewer requested changes.
 - Someone else's: it is asking for your review. It clears once you review
