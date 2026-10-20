@@ -73,6 +73,8 @@ worktree's dev servers. When the port belongs to a worktree:
 - the icon carries a dot in the colour of the worktree's space, mapped onto
   the nine colours a tab group can have
 - hovering the icon shows the branch and the project, as `branch, project`
+- when the page has [errors you have not sent](#the-error-count), the dot
+  becomes their number
 
 Any other tab gets no dot. Hovering says why:
 
@@ -90,6 +92,29 @@ with the same sentence.
 
 The icon is updated each time a tab loads or changes address, so a dev
 server that moves to another worktree shows the new one on the next reload.
+
+### The error count
+
+On a worktree tab, the icon counts what the
+[page log](/docs/browser/pick-and-comment/#the-page-log) holds that points
+at the page itself and has not been sent yet:
+
+- errors nothing caught and promise rejections nothing handled, when they
+  come from the page's own scripts. One from a script on another site, such
+  as a CDN or analytics, is not counted. A rejection that says nothing about
+  where it came from is counted
+- Vite's error overlay and Next's build error dialog
+- requests to the page's own server that answer 500 or more, or get no
+  answer. A request the page cancels is not counted
+
+`console.error`, warnings, 4xx answers and requests to other sites stay in
+the log but never count. A message seen several times counts each time, and
+past 999 the icon shows `999+`.
+
+The count drops by what you send, from the tray or the
+[DevTools panel](/docs/browser/devtools-panel/), and a reload starts it
+over. Moving between routes inside the app keeps it. With **Console and
+network** off in the [options](#options), there is no log and no count.
 
 ## Tab groups
 
@@ -128,7 +153,7 @@ extension's menu in the browser (Options).
 | --- | --- |
 | Group tabs by branch | The [tab groups](#tab-groups) switch. On by default |
 | Screenshots | Whether each comment takes a screenshot of the page and of the element. On by default; off sends comments as text only, from the next comment on |
-| Console and network | Whether sends carry the [page log](/docs/browser/pick-and-comment/#the-page-log) of console errors and warnings and failed requests. On by default; a change applies from the next time a tab loads |
+| Console and network | Whether the extension keeps the [page log](/docs/browser/pick-and-comment/#the-page-log) of console errors and warnings and failed requests, counts its errors on the [toolbar icon](#the-error-count), and offers it in the tray and the [DevTools panel](/docs/browser/devtools-panel/). On by default; a change applies from the next time a tab loads |
 | Shortcut | The key that starts and stops picking. **Change** opens the browser's shortcut page, the only place it can be set |
 | Connection | Whether Tori is running and set up for this browser. **Check again** asks once more |
 
@@ -175,7 +200,9 @@ Nothing leaves the browser except to the Tori app on your own Mac:
   and send, the
   [comment and what comes with it](/docs/browser/pick-and-comment/):
   the element's HTML, text, styles and source, screenshots when they are on,
-  and the page log when it is on.
+  and the page log entries you leave checked when it is on. A failed
+  request's bodies go only from the
+  [DevTools panel](/docs/browser/devtools-panel/), when you open them.
 - Comments waiting to be sent, their screenshots, and the options stay in the
   browser's own storage for the extension.
 - The only links it opens are this page and the browser's shortcut page.
