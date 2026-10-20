@@ -189,6 +189,17 @@ From then on:
   right-click for **Stop**.
 - With [dev server links](/docs/git/ports/#links-to-running-servers) on, its
   server's port shows on the row a few seconds after it starts listening.
+- With **Open the browser when a server starts** on, which it is by default,
+  the first port its server listens on opens in your browser, as soon as it
+  answers, even with the Tori window hidden. When the server listens on more
+  than one port, the worktree's `$TORI_PORT` wins if it is one of them, and the
+  lowest port otherwise. That is one tab per start: a second port opens nothing
+  until you click it, and a run stopped before it listens opens nothing.
+  Tori watches for two minutes after the start. With the [browser
+  extension](/docs/browser/extension/#opening-a-server-from-tori) installed,
+  restarting the run brings the tab already on that port to the front instead
+  of opening another. Turn the switch off in **Project settings** >
+  **Worktrees** to start servers quietly.
 - Stopping sends it a polite signal first and gives it five seconds to clean
   up, then ends it. Starting it again while it stops waits for the old one, so
   two servers never fight over one port.
