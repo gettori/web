@@ -160,6 +160,58 @@ Every reference the autopilot shows reads as a number and a place: the
 number opens the issue or pull request on the host, the place opens that
 worktree with the worker's tab.
 
+## Schedules
+
+A schedule hands the autopilot the same work on a clock, say "every weekday
+at 7, bump the dependencies and open a pull request". Add one from a shell:
+
+```sh
+tori autopilot schedule add --name "Bump deps" --cron "0 7 * * 1-5" \
+  --prompt "Bump the dependencies and open a pull request"
+```
+
+- `--cron` is five fields in your Mac's local time: minute, hour, day of
+  month, month, day of week. Shortcuts like `@daily` work too. A seconds or
+  a year field is refused.
+- `--prompt` says what each run does, in your words. Pass `--issue` with an
+  issue's number or URL instead to have each run work on that issue. One of
+  the two, never both.
+- `--project` is the project the runs work in. Left out, it is the project
+  of the Tori terminal you run it from. A folder Tori does not trust, or that is not a git
+  repository, is refused.
+
+At each time, Tori queues a ship item named after the schedule, with your
+prompt as its contract, and wakes the autopilot, which starts it like any
+item it picked up on its own. Everything that leaves the machine still waits
+for your approval. With the autopilot off, the item waits in **Waiting at
+the dock** and starts when you set sail. With Autopilot switched off in
+Settings, nothing fires.
+
+A time your Mac slept through, or that passed while Tori's daemon was not
+running, fires once when it wakes, for the latest time missed, never once
+per missed time. Switching Autopilot on in Settings catches up the same
+way.
+
+A schedule runs one at a time. While its last run is still open, waiting,
+running or taken over, the next time is skipped, and the open item gets the
+note "skipped a run of `name` while this one is open". A schedule on an
+issue also skips while anything else holds that issue open, and pickup
+leaves an issue alone while a scheduled run holds it.
+
+A run fails when its item ends failed. The autopilot also fails a scheduled
+run whose pull request was closed without merging, with the note "PR closed
+unmerged". After three failed runs in a row the schedule pauses: it queues
+nothing, and the autopilot tells you once (once more if Tori's daemon
+restarts). Resume it from the Cockpit or with
+`tori autopilot schedule resume <id>`. The autopilot cannot resume a
+schedule itself, and only runs after the resume count towards the next
+pause.
+
+`tori autopilot schedule list` shows each schedule with its next time, or
+`paused`. `tori autopilot schedule remove <id>` removes one: a run still
+queued fails with the note "schedule removed", and a run already going
+carries on with that note.
+
 ## Approvals
 
 Nothing leaves the machine on the autopilot's say. Opening a pull request,
@@ -209,7 +261,11 @@ The Cockpit has three columns:
   of its state, with its issue number, title and place (`work -> api ->
   feat/webhooks`), the last lines of its log, and what it is doing. **Watch**
   opens the worker's session. Under it, **Waiting at the dock** lists queued
-  items, with what each waits for.
+  items, with what each waits for, and under that **Tide table** lists your
+  schedules: the name and cron, what each run does, and when it fires next,
+  or **waiting on** the open run its next time would be skipped for, and
+  how its last run ended. A paused schedule says **paused after 3 failed
+  runs** with a **Resume** button.
 - **The middle**: a banner saying where things stand, the autopilot's own chat,
   and its composer. Decision cards appear in the chat under **Captain's call**.
 - **Ship's log**: what happened, newest last, with what needs you marked.
