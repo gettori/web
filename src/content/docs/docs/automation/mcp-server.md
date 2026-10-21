@@ -89,6 +89,9 @@ included.
 | `autopilot.state` | The autopilot's queue | Everyone, phone too |
 | `autopilot.item.update`, `autopilot.project.set`, `autopilot.hold.resolve` | Update a queue item, set a project's contract, withdraw a hold | Shell, chat |
 | `autopilot.start`, `autopilot.stop` | Turn the autopilot on or off | Shell, phone. Never an agent session |
+| `autopilot.schedule.list` | The [schedules](/docs/automation/autopilot/#schedules), each with when it fires next | Everyone |
+| `autopilot.schedule.add`, `autopilot.schedule.remove` | Add or remove a schedule | Shell, chat |
+| `autopilot.schedule.resume` | Resume a schedule three failed runs paused | Shell only. Never an agent session |
 
 A few methods exist only for the phone's screens and are on no agent's tool
 list: the git standing of each worktree, the pull request line of each

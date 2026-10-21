@@ -51,6 +51,9 @@ tori autopilot project [--project <path>] [--ships pr|local]
                        [--autonomy ask-everything|auto-until-outward] [--pickup ask|auto]
                        [--agent <id>] [--account <id>] [--model <id>] [--issues <json>] [--json]
 tori autopilot hold resolve <id> [--json]
+tori autopilot schedule add --name <text> --cron <expr> (--prompt <text> | --issue <key>)
+                            [--project <path>] [--json]
+tori autopilot schedule list | remove <id> | resume <id> [--json]
 tori mcp
 tori attach <session|tab>
 tori daemon [--uninstall]
@@ -195,6 +198,13 @@ approval you gave for exactly this draft. See
 autopilot on and off. `item` adds or updates a queue item, `project` sets a
 project's contract, and `hold resolve` withdraws a pending approval card (it
 never approves one; only you do, on the card).
+
+`schedule add` makes a [schedule](/docs/automation/autopilot/#schedules): at
+each `--cron` time in your local time, a ship item for the autopilot with
+`--prompt` as its work, or `--issue` to work on that issue. `schedule list`
+prints each schedule with its next time, `remove` deletes one, and `resume`
+starts one that three failed runs paused. Only a person can resume a
+schedule.
 
 `project --issues` takes a JSON list of
 [issue sources](/docs/automation/autopilot/#issue-sources) and replaces the
