@@ -212,13 +212,51 @@ pause.
 queued fails with the note "schedule removed", and a run already going
 carries on with that note.
 
+## Pull request rules
+
+A rule hands the autopilot a pull request that needs work after the chat
+that opened it is gone: "when a review requests changes on my PR, start a
+worker to address it". Set it per project in
+[Project settings > Automations](/docs/workspace/project-settings/#automations),
+under **When a watched pull request needs work**, by ticking what it acts on:
+
+- **A review requests changes**
+- **A check fails**
+- **It conflicts with its base**
+
+A rule only hears pull requests a chat
+[watches](/docs/git/pull-requests-and-issues/#let-a-chat-watch-a-pull-request),
+so it needs **Let a chat watch a pull request** on as well as Autopilot. It
+acts only once the watching chat is closed. A chat that is open, idle,
+working or stopped at a spend limit gets its usual wake instead, so a worker
+and a chat never edit one branch at once.
+
+When it acts, Tori files a ship item named after the event, for example
+**Changes requested on #482**, under the project's contract: proposed when
+the contract's pickup is Ask, queued when it is Auto. A project with no
+contract gets nothing. The watch ends, and the chat, if you open it again,
+hears only that the pull request was handed to the autopilot. One pull
+request gets one item at a time: while an item for it is open, more news
+on it goes to that item rather than starting another.
+
+The worker gets its own worktree on the pull request's head, apart from the
+chat's, fixes what the event names and commits. The fix reaches the pull
+request through a **Push** card: Tori pushes that exact commit to the pull
+request's branch, never forced, once you approve. A pull request from a
+fork cannot be pushed to, so the card is refused there. The item ends when
+the pull request merges.
+
+**At most per hour**, 3 by default, caps how many items a rule files. Once
+it reaches the cap inside an hour the rule pauses and files nothing more
+until you resume it from the Cockpit. The autopilot cannot resume a rule.
+
 ## Approvals
 
 Nothing leaves the machine on the autopilot's say. Opening a pull request,
-submitting a review and merging each wait on a card, and the card shows
-exactly what would be posted: the title, branches and body of a pull
-request; the verdict and every line comment of a review; the method and
-head commit of a merge. You can approve it, edit it, reply to the worker,
+submitting a review, pushing to a pull request and merging each wait on a
+card, and the card shows exactly what would be posted: the title, branches
+and body of a pull request; the verdict and every line comment of a review;
+the commit and branch of a push; the method and head commit of a merge. You can approve it, edit it, reply to the worker,
 or dismiss it.
 
 An approval is spent once and is tied to that exact draft and commit. If the
@@ -265,7 +303,10 @@ The Cockpit has three columns:
   schedules: the name and cron, what each run does, and when it fires next,
   or **waiting on** the open run its next time would be skipped for, and
   how its last run ended. A paused schedule says **paused after 3 failed
-  runs** with a **Resume** button.
+  runs** with a **Resume** button. Under that, **Pull request rules** lists
+  each project with a [rule](#pull-request-rules) on: what it acts on and
+  how many items it filed this hour against its cap, for example **1 of 3
+  this hour**, or **paused at its hourly limit** with a **Resume** button.
 - **The middle**: a banner saying where things stand, the autopilot's own chat,
   and its composer. Decision cards appear in the chat under **Captain's call**.
 - **Ship's log**: what happened, newest last, with what needs you marked.
@@ -285,6 +326,7 @@ Anything that needs your call is a card:
 | --- | --- |
 | **PR** | Open this pull request: title, branches and body |
 | **Review** | Submit this review: verdict, body and every line comment |
+| **Push** | Push this commit onto a pull request's branch |
 | **Merge** | Merge with this method at this commit |
 | **Question from worker** | A worker's question the autopilot could not answer |
 
