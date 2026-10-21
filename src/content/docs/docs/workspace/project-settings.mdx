@@ -184,6 +184,15 @@ on. Those already waiting stay on the project row's
 told after the pull request's number, title, base and head. Left empty, the
 built-in prompt shown in the field runs.
 
+**When a watched pull request needs work** hands a pull request a chat
+watches to the [autopilot](/docs/automation/autopilot/#pull-request-rules)
+once that chat is closed. Tick what it acts on: **A review requests
+changes**, **A check fails**, **It conflicts with its base**. With any
+ticked, **At most per hour** (3 by default) caps how many it hands over;
+past that the rule pauses until you resume it in the Cockpit. It needs
+**Let a chat watch a pull request** and Autopilot on, and nothing is pushed
+without you.
+
 **Runs on**, with **Create a worktree and review it**: the agent, account,
 model, effort and permission mode the review chat starts on, picked the same
 way as in a new chat. Left unset, it starts on the project's
