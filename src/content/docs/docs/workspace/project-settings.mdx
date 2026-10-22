@@ -193,6 +193,14 @@ past that the rule pauses until you resume it in the Cockpit. It needs
 **Let a chat watch a pull request** and Autopilot on, and nothing is pushed
 without you.
 
+**Keep fixing until checks pass** lets the
+[autopilot](/docs/automation/autopilot/#keep-fixing-until-checks-pass) push
+fixes to its own failing pull requests in this project without asking. Turn
+on **Push fixes without asking**; then **Attempts** (3 by default) caps the
+pushes per pull request before each asks you again, and **Stop when a person
+reviews or comments** (on by default) makes every push ask once someone has.
+Merging always asks.
+
 **Runs on**, with **Create a worktree and review it**: the agent, account,
 model, effort and permission mode the review chat starts on, picked the same
 way as in a new chat. Left unset, it starts on the project's
