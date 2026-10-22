@@ -83,8 +83,9 @@ included.
 | `pr.get` | One pull request to review, with the lines a comment may anchor to | Shell, chat |
 | `pr.create` | Push an exact commit, never forced, and open a pull request | Everyone; a background session needs an approval |
 | `review.submit` | Submit a review: a verdict, a body and line comments | Everyone; a background session needs an approval |
-| `pr.push` | Push an exact commit, never forced, onto an open pull request's branch on origin | Everyone; a background session needs an approval |
+| `pr.push` | Push an exact commit, never forced, onto an open pull request's branch on origin | Everyone; a background session needs an approval, except the autopilot fixing its own pull request under a project's fix loop |
 | `pr.merge` | Merge a pull request at the head commit given | Everyone; a background session needs an approval |
+| `pr.check_log` | What a failed check left to read: the last 300 lines of a GitHub Actions job's log, or another check's summary and link | Everyone |
 | `pr.watch`, `pr.unwatch` | [Watch a pull request](/docs/git/pull-requests-and-issues/#let-a-chat-watch-a-pull-request) and be woken with its news | Chat, and only with the setting on |
 | `topic.member.promote` | Give a [Topic](/docs/workspace/topics/#chats-in-a-topic) member a worktree so the chat can change it | Chat, worker |
 | `autopilot.state` | The autopilot's queue | Everyone, phone too |

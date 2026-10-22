@@ -250,11 +250,56 @@ the pull request merges.
 it reaches the cap inside an hour the rule pauses and files nothing more
 until you resume it from the Cockpit. The autopilot cannot resume a rule.
 
+## Keep fixing until checks pass
+
+A project can let the autopilot fix a failing pull request by itself, push
+the fix without a card, and come back to you only to merge. Turn it on in
+[Project settings > Automations](/docs/workspace/project-settings/#automations)
+under **Keep fixing until checks pass**, with **Push fixes without asking**.
+It needs the Autopilot on, but not **Let a chat watch a pull request**.
+
+It covers every open ship item in that project with a pull request: one the
+autopilot opened, and one a [pull request rule](#pull-request-rules) handed
+it. Tori watches each of those pull requests itself, on the same check it
+makes of the host every 2 minutes:
+
+- **A check fails.** For a GitHub Actions job, Tori first reruns the job
+  once, so a flaky test costs nothing. Only a second failure on the same
+  commit reaches the autopilot, which tells the item's worker which check
+  failed. The worker reads the end of the job's log (the last 300 lines),
+  fixes the cause and commits, and the autopilot pushes that commit to the
+  pull request's branch, never forced, with no card. A check from another
+  service has no log Tori can read, so the worker gets its summary and link
+  instead, and it is not rerun. A log GitHub has expired says so, and a
+GitHub sign-in that cannot read Actions logs is named as the reason.
+- **The checks pass.** When GitHub says the pull request can merge, the
+  autopilot raises a **Merge** card: squash, at the commit that passed.
+  Nothing merges until you approve it, and a branch that moved after you
+  approved is refused. A pull request that still waits on a review or a
+  branch rule gets no card; the autopilot tells you instead.
+- **It conflicts with its base.** The worker brings the base in, and the fix
+  is pushed the same way.
+
+**Attempts**, 3 by default, caps how many fixes are pushed without asking on
+one pull request. After that every push asks you on a **Push** card, as
+before.
+
+**Stop when a person reviews or comments**, on by default, ends the
+unasked pushes the moment someone comments on the pull request or submits a
+review. From then on every push asks you. Comments from bots (a coverage
+report, a preview link) and approvals do not stop it.
+
+A worker or the autopilot that reaches its
+[spending ceiling](/docs/agents/limits-and-spending/#set-a-spending-ceiling)
+gets no more turns from the loop until you raise or clear it. Like the rest of the polling, the
+loop only runs while Tori is open.
+
 ## Approvals
 
 Nothing leaves the machine on the autopilot's say. Opening a pull request,
 submitting a review, pushing to a pull request and merging each wait on a
-card, and the card shows exactly what would be posted: the title, branches
+card (the one exception is a fix pushed under
+[Keep fixing until checks pass](#keep-fixing-until-checks-pass)), and the card shows exactly what would be posted: the title, branches
 and body of a pull request; the verdict and every line comment of a review;
 the commit and branch of a push; the method and head commit of a merge. You can approve it, edit it, reply to the worker,
 or dismiss it.
@@ -307,6 +352,9 @@ The Cockpit has three columns:
   each project with a [rule](#pull-request-rules) on: what it acts on and
   how many items it filed this hour against its cap, for example **1 of 3
   this hour**, or **paused at its hourly limit** with a **Resume** button.
+  An item under [Keep fixing until checks pass](#keep-fixing-until-checks-pass)
+  shows its fixes against its attempts, for example **fix 1/3**, and who
+  stopped the loop when someone did, for example **fix 1/3, stopped by @ana**.
 - **The middle**: a banner saying where things stand, the autopilot's own chat,
   and its composer. Decision cards appear in the chat under **Captain's call**.
 - **Ship's log**: what happened, newest last, with what needs you marked.
