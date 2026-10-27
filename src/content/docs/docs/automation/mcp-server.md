@@ -21,6 +21,15 @@ worker session autopilot spawned gets the same tools, with outward actions
 approval you gave beforehand rather than a permission prompt mid-task, since
 nobody is watching a background worker's chat directly.
 
+The server also tells the agent, as it connects, to use Tori's tool where
+there is one instead of the shell: `worktree_new` rather than `git worktree
+add`, `session_spawn` to start another agent, the pull request tools rather
+than `gh pr`, and `ask_create` to ask you. That keeps the sidebar, the
+project's setup command, approvals and checkpoints in step. It also says a
+refused tool is to be taken at its word, not worked around from the shell.
+Claude reads this; whether another agent does depends on the agent. It is
+guidance, not a lock: nothing stops an agent from running `git` itself.
+
 ## What it will not do without you
 
 Anything that leaves the machine, a pushed branch, a posted review, a merge,
@@ -53,7 +62,9 @@ included.
 | `sessions.list` | Sessions, newest first, with whether each is live and its state | Everyone, phone and browser too |
 | `session.tail` | The last events of a conversation, tool output capped | Everyone, phone and browser too |
 | `session.history` | A conversation a page at a time, by whole turns | Everyone, phone too |
-| `session.wait` | Wait for a session to stop working; its state, pending question and last message | Shell, chat |
+| `session.wait` | Wait for a session to stop working; its state, why it came back (`ended`, `idle`, `asking`, `needs_you`, `limited` with when the limit resets, or `timeout`), its pending question, its last message, and `handed_to` once it was handed over | Shell, chat |
+| `session.check` | What a session's work came to: the verification verdict and checks of its latest turn that changed code, and a diff stat over all its turns in files it wrote | Everyone |
+| `session.handoff` | Hand a live chat over to another agent: a new session in the same folder with a brief of the old one's work, and the old one closed once it is idle. Refused for a session the autopilot drives | Shell, chat |
 | `session.pending` | What a session is waiting on, each with its id | Shell, chat, phone, browser |
 | `session.answer` | Answer a question or permission prompt of a session you spawned | Chat, phone |
 | `session.spawn` | Start a session, optionally in a new worktree, with a first message and files | Shell, chat, phone (a plain chat only) |
@@ -90,6 +101,7 @@ included.
 | `topic.member.promote` | Give a [Topic](/docs/workspace/topics/#chats-in-a-topic) member a worktree so the chat can change it | Chat, worker |
 | `autopilot.state` | The autopilot's queue | Everyone, phone too |
 | `autopilot.item.update`, `autopilot.project.set`, `autopilot.hold.resolve` | Update a queue item, set a project's contract, withdraw a hold | Shell, chat |
+| `autopilot.loop` | Queue one ship item per entry of a list, the prompt as each one's task; an entry already open is skipped. See [Loops](/docs/automation/autopilot/#loops) | Shell, chat |
 | `autopilot.start`, `autopilot.stop` | Turn the autopilot on or off | Shell, phone. Never an agent session |
 | `autopilot.schedule.list` | The [schedules](/docs/automation/autopilot/#schedules), each with when it fires next | Everyone |
 | `autopilot.schedule.add`, `autopilot.schedule.remove` | Add or remove a schedule | Shell, chat |
@@ -102,7 +114,8 @@ Mac itself.
 
 A tool a caller may not use is left off its list rather than listed and
 refused. A worker that still reaches for one is told why: a worker never
-spawns or steers, it finishes its turn and its spawner reads the result.
+spawns or steers, it finishes its turn and its spawner reads the result. A
+worker can still check a session's work with `session.check`.
 
 ## The CLI
 
