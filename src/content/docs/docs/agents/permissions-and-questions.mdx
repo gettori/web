@@ -19,6 +19,9 @@ notification if you are looking somewhere else.
 - Open the Inbox (`Cmd+Shift+X`) on its **Needs you** tab for everything that
   needed you in the last day, answered or not. A row still waiting opens its
   chat at the prompt. See [The Inbox](/docs/git/inbox/).
+- Open the Inbox on its **Permissions** tab to answer every prompt waiting
+  right now, with one answer for workers asking for the same command. See
+  [Answer one command for every worker](#answer-one-command-for-every-worker).
 - In the sidebar, a rose dot on a branch or project rolls up from the
   sessions under it, and the space tile shows it too when you are in another
   space.
@@ -51,11 +54,22 @@ Then pick an answer:
 **Allow for this session** and **Always in this project** are remembered by the
 agent, in its own settings and its own format. Tori keeps no list of rules of
 its own, so what you allowed shows up in Claude's settings file exactly as if
-you had answered in Claude's terminal interface.
+you had answered in Claude's terminal interface. The rule is the one Claude
+suggests, which can reach further than the exact command it asked about.
 
-On Codex, OpenCode and the other agents that are not Claude, the reach is not
-remembered: every allow answer allows this one call. Those agents keep their
-own permission rules in their own config.
+Where Claude keeps an **Always in this project** rule depends on how the
+project is laid out. In a regular clone, a rule allowed from any of its
+worktrees goes into the main checkout's `.claude/settings.local.json`, and
+every worktree of that clone uses it. In a project kept as a bare repository
+with its worktrees beside it, the rule goes into the worktree that asked, and
+the other worktrees still ask.
+
+On Codex, OpenCode and the other agents that are not Claude, the answer is
+picked from what the agent offered. **Always in this project** sends the
+agent's own allow always answer, and the agent remembers it in its own config,
+its own way. **Allow once** and **Allow for this session** send its allow once
+answer, since these agents have no answer for a session. When the agent
+offered only one kind of allow, that one is sent.
 
 ### Deny with feedback
 
@@ -87,6 +101,14 @@ still wait in the queue, and so do hunk comments you send to it.
 If the prompt came from a subagent that you are not watching, it shows in the
 main transcript too, with **Read what this subagent is doing** to jump to its
 lane. See [Subagents and background work](/docs/agents/subagents/).
+
+## Answer one command for every worker
+
+When several workers ask for the same thing, say four chats each asking to run
+`pnpm test`, answer them together from the Inbox's **Permissions** tab instead
+of chat by chat. One **Always allow for all** answers each prompt with
+**Always in this project**, through its own agent. See
+[Permissions](/docs/git/inbox/#permissions).
 
 ## Answer a question
 
