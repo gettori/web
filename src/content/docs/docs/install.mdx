@@ -9,14 +9,26 @@ import Steps from "../../../components/docs/Steps.astro";
 Tori is macOS only. It is signed with a Developer ID and notarized by Apple,
 so it opens like any other app.
 
+## Install from a terminal
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/gettori/tori/main/install.sh | sh
+```
+
+The installer picks the build for your Mac, Apple Silicon or Intel, even from a
+terminal running under Rosetta. It checks the download is signed by Tori's team
+and passes Gatekeeper, puts it at `/Applications/Tori.app` and opens it. Run it
+again to reinstall the latest release. From then on Tori
+[updates itself](/docs/updates/).
+
 ## Install with Homebrew
 
 ```sh
 brew install --cask gettori/tap/tori
 ```
 
-Homebrew picks the build for your Mac. `brew upgrade --cask tori` keeps it
-current.
+Homebrew picks the build for your Mac. Tori updates itself here too, so
+`brew upgrade --cask tori` is not needed.
 
 ## Install from the DMG
 
@@ -81,16 +93,17 @@ An iOS app is planned.
 
 ## Updating
 
-Tori checks for a newer release on launch (once a day at most) and shows a
-dismissible notice in the title bar when one exists. It never downloads or
-installs anything for you: run `brew upgrade --cask tori`, or download the new
-DMG and repeat the steps above.
+Tori checks for a newer release when it opens and every six hours, and offers
+**Install** in the title bar when one exists. It downloads and checks the new
+build and puts it in place of the running one; nothing installs without that
+click. See [Updates](/docs/updates/).
 
 To stop the check entirely, use the app offline; a failed check is silent.
 
 ## Uninstalling
 
-`brew uninstall --cask tori`, or drag `/Applications/Tori.app` to the Trash.
+`brew uninstall --cask tori` for a Homebrew install; otherwise drag
+`/Applications/Tori.app` to the Trash.
 Everything else Tori writes lives under a single directory, `~/.config/tori/`:
 
 - `settings.json`, appearance, typography and layout preferences

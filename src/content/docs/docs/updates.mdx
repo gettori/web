@@ -1,6 +1,6 @@
 ---
 title: Updates and crash reports
-description: How Tori tells you about a new version, how to update with Homebrew or a DMG, and what happens when Tori closes on its own.
+description: How Tori tells you about a new version and installs it, and what happens when Tori closes on its own.
 ---
 
 import Aside from "../../../components/docs/Aside.astro";
@@ -8,12 +8,22 @@ import Steps from "../../../components/docs/Steps.astro";
 
 ## When a new version is out
 
-Tori checks for a new release now and then and, when there is one, shows a
-pill in the title bar: **Tori 26.1005.0-alpha is available**. While you run an
-alpha, it tells you about newer alphas too.
+Tori checks for a new release when it opens and every six hours after, and when
+there is one shows **Update available** in the title bar.
 
-- Click the pill to open that release's page on GitHub, with its notes and
-  downloads.
+<Steps>
+
+1. Click **Install**. Tori downloads the build for your Mac and the pill counts
+   up, **Updating 40%**.
+2. Before it replaces anything, Tori checks the download is signed by Tori's
+   team, passes Gatekeeper and is the version the release names. A download
+   that fails any of these is thrown away and the running Tori is left alone.
+3. Click **Restart to update**. Tori reopens on the new version.
+
+</Steps>
+
+- Click **Update available** to open that release's page on GitHub, with its
+  notes and downloads.
 - Click the **x** to dismiss the notice.
 
 To check right away, choose **Tori > Check for Updates...** in the menu bar. It
@@ -21,35 +31,22 @@ says so when you are up to date or when GitHub cannot be reached, and brings
 the notice back if you dismissed it. **Help > Release Notes** opens the
 [changelog](/changelog/).
 
-Tori never installs an update on its own.
-
-### Update with Homebrew
-
-If you installed Tori with Homebrew, the pill offers **Install with
-Homebrew**.
-
-<Steps>
-
-1. Click **Install with Homebrew**.
-2. A terminal tab runs `brew upgrade --cask tori`, so you can watch it and
-   answer any prompt.
-3. When it finishes, Tori offers to relaunch into the new version.
-
-</Steps>
-
-You can also run `brew upgrade --cask tori` yourself from any terminal, then
-quit and reopen Tori.
+Nothing installs without your click. Where Tori cannot replace itself the pill
+says **Can't install here** instead, and its tooltip says why: Tori is running
+from the DMG, or from a folder it cannot write to. Drag Tori into Applications
+and open it from there.
 
 Your sessions keep running through an update: the old
 [daemon](/docs/daemon/) holds them and moves to the new version once none is
 working. See [Updates](/docs/daemon/#updates) for the pill that shows while it
 waits.
 
-### Update from a DMG
+### Builds up to 26.1022
 
-Download the new DMG for your Mac from the release page (`_aarch64` on Apple
-Silicon, `_x64` on Intel), drag Tori into Applications to replace the old one,
-and reopen it. See [Install](/docs/install/#install-from-the-dmg).
+Those builds cannot update themselves. Install the next release once by any
+route on [Install](/docs/install/): the one-line installer, Homebrew
+(`brew upgrade --cask tori`) or the DMG. From then on, **Install** in the title
+bar does it.
 
 Your settings, sessions, spaces and everything under `~/.config/tori/` are kept
 across updates.
