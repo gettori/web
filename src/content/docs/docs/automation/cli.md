@@ -15,7 +15,10 @@ tori sessions [--live] [--cwd <path>] [--limit <n>] [--json]
 tori projects [--json]
 tori ports [--json]
 tori session tail <id> [--lines <n>] [--agent <id>] [--json]
+tori wait <id> [--timeout <secs>] [--json]
 tori session wait <id> [--timeout <secs>] [--json]
+tori check <id> [--json]
+tori handoff <id> --to <agent> [--account <id>] [--model <id>] [--note <text>] [--json]
 tori session pending <id> [--json]
 tori session answer <session> <id> <text>...
 tori session answer <session> <id> --each <text>...
@@ -54,6 +57,7 @@ tori autopilot hold resolve <id> [--json]
 tori autopilot schedule add --name <text> --cron <expr> (--prompt <text> | --issue <key>)
                             [--project <path>] [--json]
 tori autopilot schedule list | remove <id> | resume <id> [--json]
+tori loop --prompt <text> [--project <path>] [<entry>...] [--json]
 tori mcp
 tori attach <session|tab>
 tori daemon [--uninstall]
@@ -92,9 +96,13 @@ d4b80c13-9e7f-4a55-8c02-61f0e3a9b7d2  codex   default  working    fix/rate-limit
   branch, folder, port block and the ports listening.
 - `tori session tail <id>` prints the last events of a conversation, with
   tool output capped.
-- `tori session wait <id>` blocks until a session stops working, then
-  prints its state, the question it is waiting on if any, and its last
-  message.
+- `tori wait <id>` (or `tori session wait <id>`) blocks until a session
+  stops working, then prints why it came back, the question it is waiting
+  on if any, and its last message. See [Waiting on a
+  session](#waiting-on-a-session).
+- `tori check <id>` prints what a session's work came to: the verdict of
+  its latest turn that changed code, each check that turn ran, and a diff
+  stat over all its turns. See [Checking a session's work](#checking-a-sessions-work).
 - `tori session pending <id>` lists what a session is waiting on: questions
   and permission prompts, each with the id `session answer` takes.
 - `tori events` streams what happens in the app as lines of JSON, until you
@@ -148,6 +156,9 @@ worktree, against the working tree.
 - `tori steer <id> <text>` sends a message to a live chat: a steer if a turn
   is running, its next turn if not.
 - `tori interrupt <id>` stops a chat's current turn.
+- `tori handoff <id> --to <agent>` hands a live chat over to another agent
+  and prints the new session's id. See [Handing a session
+  over](#handing-a-session-over).
 - `tori session answer` answers a question or a permission prompt by id.
   `--each` answers a question that has several parts, one answer per part.
 - `tori worktree new <branch>` creates a worktree and prints its path.
@@ -161,6 +172,94 @@ worktree, against the working tree.
 $ tori spawn --agent codex --new-worktree fix/retry --prompt "retry 5xx deliveries"
 0f3b7d5e-8c2a-4b1e-9d6f-2a7c4e1b9f30
 $ tori steer 0f3b7d5e-8c2a-4b1e-9d6f-2a7c4e1b9f30 "also cover 429s"
+```
+
+## Waiting on a session
+
+`tori wait <id>` waits up to `--timeout` seconds (60 by default) and prints
+the reason on its first line:
+
+- `idle`: the session finished its turn.
+- `asking`: it is waiting on a question, printed on the next line as
+  `asking <id>: <question>`. Answer it with `tori session answer`.
+- `needs_you`: it is waiting on a permission prompt or a question of its
+  agent's own. `tori session pending <id>` lists it.
+- `limited until <time>`: its turn was refused by a usage limit, which
+  resets at that time. Claude only for now.
+- `ended`: the session is gone. A session that was handed over says where,
+  as `handed_to` in `--json`.
+- `timeout`: it was still working when the wait ran out.
+
+Then comes the session's last message. `--json` prints the whole answer:
+`state`, `reason`, `resets_at` when limited, `handed_to` when handed over,
+`question` and `last`.
+
+## Checking a session's work
+
+```sh
+$ tori check 0f3b7d5e-8c2a-4b1e-9d6f-2a7c4e1b9f30
+failed
+  failed   cargo test
+3 files, +48 -6
+```
+
+The first line is the [verification verdict](/docs/reference/security/#verification) of
+the session's latest turn that changed code: `verified`, `failed` or
+`unverified`, or `no code changed` when no turn did. Each check that turn ran
+follows with how it came back. The last line counts every turn's changes,
+only in files the session wrote itself, so another session's edits in the
+same worktree are left out. With **Mark unverified turns** off in Settings > Chat it says
+`verification off` instead of a verdict.
+
+A worker may run `tori check`, so a reviewer can read its writer's verdict
+before reading the diff.
+
+## Handing a session over
+
+`tori handoff <id> --to <agent>` starts a new session of that agent in the
+same folder and closes the old one. The new session's first message is a
+brief Tori writes from the old one: its first prompt, its last reply, what
+it was waiting on, its `tori check` result, your `--note`, and a reference
+to the old session that the new agent reads the rest of with its
+`session_history` tool. Nothing spends a turn summarising, so it works when
+the old session hit its usage limit. `--account` and `--model` pick the new
+session's account and model.
+
+The old session closes once it is idle, never while it waits on a question
+or a permission prompt. A session can hand itself over: its own turn
+finishes first. The new session takes the old one's place: it belongs to
+the same spawner and runs in the background if the old one did. Waiting on
+the old id answers `ended`, with the new id as `handed_to`.
+
+Only a live chat can be handed over. A worker cannot hand anything over, and
+a session the autopilot is driving is refused, the autopilot included.
+
+## A writer and a reviewer
+
+A chat writing a change can ask a second agent to review it, wait for the
+verdict, and hand itself over when it runs out of room. From the writer's
+shell:
+
+```sh
+$ me=$(tori whoami --json | jq -r .caller.id)
+$ reviewer=$(tori spawn --agent codex --prompt "Review the change in this folder. \
+    Run tori check $me first, then read the diff. Reply with blocking issues only.")
+$ tori wait "$reviewer" --timeout 600
+idle
+Blocking: the retry loop never stops on a 4xx.
+```
+
+The reviewer is a worker: it runs `tori check` on the writer and reads the
+diff, and it cannot spawn, steer, wait or hand off. If it asks a question,
+`tori wait` comes back with `asking` and the writer answers it with
+`tori session answer`.
+
+When the writer's context is nearly full, it hands the fix to a fresh agent
+and finishes its turn:
+
+```sh
+$ tori handoff "$me" --to claude --note "Stop retrying on a 4xx, the reviewer's one blocking issue"
+6a1d0c94-2f7e-4b3a-8e51-9c0d7f2b4a68
 ```
 
 ## Asking you
@@ -206,6 +305,24 @@ prints each schedule with its next time, `remove` deletes one, and `resume`
 starts one that three failed runs paused. Only a person can resume a
 schedule.
 
+`tori loop --prompt <text> <entry>...` queues one ship item per entry, each
+with the prompt as its task: `{item}` in the prompt is replaced by the entry,
+or the entry is appended when there is no `{item}`. With no entries it reads
+one per line from stdin, so a list pipes in:
+
+```sh
+$ ls packages | tori loop --prompt "Move {item} to the new logger"
+queued item-3f1c8e20d5a94b7c  api
+queued item-9a0e47b1c2d6f853  web
+skipped cli  (already open)
+```
+
+An entry whose item is still open in the project is skipped, so running the
+same loop twice queues nothing new. A loop never starts work itself: the
+autopilot picks the items up, each in its own worktree, up to its worker
+limit. With the autopilot off they wait, and `tori loop` says so. See
+[Loops](/docs/automation/autopilot/#loops).
+
 `project --issues` takes a JSON list of
 [issue sources](/docs/automation/autopilot/#issue-sources) and replaces the
 project's list. Each source has a `repo` and optional `labels`,
@@ -216,7 +333,8 @@ to the issues assigned to you in the project's repo. A contract printed by
 ## What a caller may do
 
 Not every caller gets every command. A session another session spawned (a
-worker) can ask you questions but cannot spawn or steer. No agent session,
+worker) can ask you questions and run `tori check`, but cannot spawn, steer,
+wait, hand off or queue a loop. No agent session,
 worker or not, can turn the autopilot on or off: that takes a person at a
 shell or on a paired phone. A paired phone can read, steer, interrupt,
 answer and approve, and start a plain chat in a folder, but cannot pair
