@@ -5,9 +5,11 @@ description: What happened since you last looked, what needed you in the last da
 
 import Aside from "../../../../components/docs/Aside.astro";
 
-The Inbox has three views, listed down its left side. **Since you looked** is one screen for everything
+The Inbox has four views, listed down its left side. **Since you looked** is one screen for everything
 that happened while you were away. **Needs you** lists what needed you in the
-last 24 hours, so a notification you missed is still there. **Review** lists
+last 24 hours, so a notification you missed is still there. **Permissions**
+lists every permission prompt waiting right now, so one answer can cover every
+worker asking for the same command. **Review** lists
 the sessions whose work is waiting for you to read it, across every space, with
 the riskiest at the top.
 
@@ -104,6 +106,39 @@ see what happened while it was closed. A session still waiting gets a new row.
 
 Click a row to go to its session. A chat still waiting on an approval or a
 question opens with that card in view. A pull request row opens its worktree.
+
+## Permissions
+
+The view lists every permission prompt a live session is waiting on, in every
+space. Rows are grouped by project, then by what was asked: the same tool
+asking to run the same command, or to touch the same file, path, URL or
+pattern, from the same kind of agent. Two Claude chats asking for `pnpm test`
+in different worktrees of a project share a group even when they described the
+command differently. A prompt outside every project groups only with prompts
+from the same folder, under **Other:** and the folder's name. A prompt with
+nothing to compare, such as Codex's **Edit files**, always stands alone.
+
+Each group shows the command, the agent, the tool and how many are waiting,
+and for Claude the rule it will keep, such as **Claude will remember
+Bash(pnpm test)**. Under it is one row per waiting chat, named by its folder.
+
+- **Always allow for all** and a number (**Always allow** when only one
+  waits) answers every prompt in the group with **Always in this project**,
+  each through its own agent. What each agent remembers, and where, is in
+  [Answer a permission prompt](/docs/agents/permissions-and-questions/#answer-a-permission-prompt).
+- **Deny**, at the end of a row, denies that one prompt. There is no deny for
+  a whole group.
+- Click a row to open its chat at the prompt, for **Allow once**, **Allow for
+  this session** or **Deny with feedback**.
+
+The allow covers the prompts on screen when you click. A prompt that arrives
+in the meantime stays waiting, and one answered or timed out in the meantime
+is skipped. If an answer does not reach its agent, a message at the bottom of
+the window says so. The list keeps itself up to date as prompts come and go,
+and with nothing waiting it says **No worker is waiting on a permission.**
+
+A waiting permission still shows in **Needs you** as **Waiting for approval**,
+and the Inbox button counts it there, once.
 
 ## Review
 
@@ -212,7 +247,8 @@ work, and the row shows how it went. Marking the row reviewed deletes its findin
 
 ## On the phone
 
-A paired phone has the same three views, as tabs. On **Review**, **Approve** is **Mark
+A paired phone has the same four views, as tabs. On **Permissions**, the groups
+and buttons are the same as on the Mac. On **Review**, **Approve** is **Mark
 reviewed** and **Reply** messages a live session. See
 [Using the phone app](/docs/phone/using-the-phone-app/). An agent cannot read
 or mark either list itself: only you, at the Mac or on a paired phone.

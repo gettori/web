@@ -397,7 +397,10 @@ before a session starts or resumes. See
 
 Tori keeps no permission rules of its own. When you answer an agent's
 prompt with "always in this project", that choice travels back to the agent
-in its own format and lives in the agent's own files.
+in its own format and lives in the agent's own files. The Inbox's
+**Permissions** tab, which allows one command for every waiting worker at
+once, works the same way: each prompt is answered through its own agent, and
+Tori stores nothing.
 
 ## Sessions nobody is watching
 
