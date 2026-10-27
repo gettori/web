@@ -212,6 +212,31 @@ pause.
 queued fails with the note "schedule removed", and a run already going
 carries on with that note.
 
+## Loops
+
+A loop hands the autopilot the same task over a list, say "move each package
+to the new logger". Queue one from a shell:
+
+```sh
+ls packages | tori loop --prompt "Move {item} to the new logger"
+```
+
+Tori queues one ship item per entry, named after the entry, with the prompt
+as its contract: `{item}` is replaced by the entry, or the entry is appended
+when the prompt has no `{item}`. Entries come as arguments or one per line on
+stdin, blank lines dropped. `--project` is the project the items work in, the
+project of the Tori terminal you run it from when left out.
+
+The autopilot is woken with each entry and starts the items like a scheduled
+run that names no issue: each in a worktree of its own, up to its worker
+limit, the rest waiting in the queue. Everything that leaves the machine still
+waits for your approval. With the autopilot off they wait in **Waiting at the
+dock**, and `tori loop` says so.
+
+An entry whose item is still open in the project, waiting, running or taken
+over, is skipped, so running the same loop again queues only what finished or
+was never queued. A list that repeats an entry queues it once.
+
 ## Pull request rules
 
 A rule hands the autopilot a pull request that needs work after the chat
