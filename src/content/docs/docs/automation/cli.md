@@ -35,7 +35,7 @@ tori spawn [--agent <id>] [--account <id>] [--model <id>] [--mode <id>] [--effor
            [--prompt <text>] [--attach <path>]... [--background] [--json]
 tori open <path> [--line <n>]
 tori open --browser [<branch>]
-tori budget [<id>] [--folder <path>] [--json]
+tori budget [<id>] [--folder <path>] [--item <id>] [--pr <n|url>] [--json]
 tori ask <question>... [--option <text>]... [--timeout <secs>] [--approval <json> [--project <path>]]
 tori ask --wait <id> [--timeout <secs>]
 tori ask --answer <id> <text>...
@@ -109,7 +109,9 @@ d4b80c13-9e7f-4a55-8c02-61f0e3a9b7d2  codex   default  working    fix/rate-limit
   stop it. `--topic` narrows it, and can be repeated.
 - `tori budget` prints spend for a session and its project against your
   [ceilings](/docs/agents/limits-and-spending/), and the agent's
-  quota windows.
+  quota windows. `--item` adds what an autopilot item cost, and `--pr` what a
+  pull request's branch cost (see
+  [What work costs](/docs/agents/what-work-costs/#from-a-shell)).
 - `tori checkpoints <id>` lists a session's checkpoints, numbered by turn.
   `tori checkpoint diff <id> <n>` prints what turn `n` changed, and
   `<n> <m>` spans a run of turns. `--why` says who wrote each hunk (below),

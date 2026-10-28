@@ -9,7 +9,8 @@ import Steps from "../../../../components/docs/Steps.astro";
 Two kinds of limit stop a chat:
 
 - **Your own ceilings**, set in Settings > Chat > Spending: a dollar amount per
-  chat, a dollar amount per project, and a share of the model's context.
+  chat, a dollar amount per project, a dollar amount per autopilot item, and a
+  share of the model's context.
 - **Your subscription's usage limits**, set by the agent's vendor, such as
   Claude's five hour and weekly windows. Tori shows how close each account is
   (see [Accounts and usage](/docs/agents/accounts-and-usage/)) and can continue a
@@ -20,7 +21,7 @@ Two kinds of limit stop a chat:
 <Steps>
 
 1. Open Settings (the gear in the title bar) and go to **Chat**, then the **Spending** group.
-2. Fill in any of the three fields. Leave a field blank for no limit, which is
+2. Fill in any of the four fields. Leave a field blank for no limit, which is
    the default.
 3. Move **Warn at** to how full a ceiling may get before Tori warns you.
 
@@ -30,6 +31,7 @@ Two kinds of limit stop a chat:
 | --- | --- |
 | **Stop this chat after** | Dollars one chat may spend |
 | **Stop this project after** | Dollars across every chat in one project. Two chats on the same repository spend one budget |
+| **Stop an autopilot item after** | Dollars across every session the autopilot runs for one item. See [What work costs](/docs/agents/what-work-costs/#cap-what-one-autopilot-item-spends) |
 | **Stop at context** | Percent of the model's context window one chat may fill |
 | **Warn at** | How full a ceiling gets before Tori warns, from 50% to 100%. 80% by default. At 100% there is no early warning |
 
@@ -129,5 +131,7 @@ chat its own [worktree](/docs/git/worktrees-and-branches/).
 
 The session menu's usage line shows the last turn's tokens and cost and the
 session's total. See [Reading the transcript](/docs/agents/transcript/#usage).
+For what a branch, an autopilot item or a pull request cost, see
+[What work costs](/docs/agents/what-work-costs/).
 
 </Aside>

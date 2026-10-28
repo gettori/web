@@ -36,6 +36,7 @@ export const NAV: NavGroup[] = [
       page("Subagents and background work", "agents/subagents"),
       page("Rewind and fork", "agents/rewind-and-fork"),
       page("Limits and spending", "agents/limits-and-spending"),
+      page("What work costs", "agents/what-work-costs"),
       page("Accounts and usage", "agents/accounts-and-usage"),
       page("Agents in Settings", "agents/agent-settings"),
       page("Supported agents and adapters", "agents/adapters"),

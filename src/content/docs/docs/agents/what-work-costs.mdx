@@ -1,0 +1,130 @@
+---
+title: What work costs
+description: See what a branch, an autopilot item and a pull request have cost, cap what one autopilot item may spend, and see what a waiting item is likely to cost before it starts.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+Every turn a chat finishes is counted against the branch that was checked out
+when it ended, and against the autopilot item it worked for, if any. Tori adds
+those up into what a branch, an item, an issue and a pull request cost, shows
+the figure where you already look, and lets you cap what one autopilot item
+may spend.
+
+The figures count from the version that brought them in. Turns from before
+that are in your [session and project totals](/docs/agents/limits-and-spending/)
+but count toward no branch or item, so nothing is guessed after the fact.
+
+## Where the figures show
+
+| Where | What it adds up |
+| --- | --- |
+| A branch's row in the sidebar | Every chat's turns that ended on that branch of the repository, from any worktree or the main checkout |
+| An autopilot worker's card, beside its branch | Every session the autopilot ran for that item, retries and second opinions included |
+| The pull request panel, after the meta line | The turns on the pull request's head branch in this project's repository |
+
+Each figure is the dollars spent, for example **$2.25**. Hover it for the
+sentence, for example **$2.25 spent on this branch across 3 turns**. A
+branch with nothing recorded shows nothing.
+
+The figures update a moment after each turn ends, with no reload. A
+worktree's spend still counts after the worktree is deleted, since it is kept
+by repository rather than by folder.
+
+A chat that switches branch partway splits its spend: the turns before the
+switch stay on the first branch.
+
+### Agents that report no cost
+
+Claude reports what each turn cost. Codex, OpenCode and the other agents
+report how full the context is but not what it cost, so their figure is the
+turns instead, for example **5 turns**. Hovering it says **no cost reported:
+this agent reports context, not dollars**. Tori never shows those as $0.00,
+which would read as free.
+
+## From a shell
+
+`tori budget` takes two more flags:
+
+```
+tori budget [<id>] [--folder <path>] [--item <id>] [--pr <n|url>] [--json]
+```
+
+- `--item <id>` adds an `item` line with what that autopilot item cost. For an
+  item that came from an issue it also adds an `issue` line, which counts
+  every item from that issue plus the branches linked to it, each turn once.
+- `--pr <n|url>` adds a `pr` line with what the pull request's head branch
+  cost, named by number or by its URL.
+
+```
+item     $4.50  item-k3j9
+issue    $6.10  212
+pr       $4.50  #318 fix-launch-flicker
+```
+
+An item or branch whose agent reports no cost prints `12 turns, no cost
+reported`, and one with nothing recorded prints `nothing recorded`. With
+`--json` the same figures come back under `item`, `issue` and `pr`, each with
+`costUsd`, which is `null` when no cost was reported, plus `turns` and
+`tokens`. The [`budget` tool](/docs/automation/mcp-server/) takes `item`
+and `pr` the same way.
+
+## Cap what one autopilot item spends
+
+**Stop an autopilot item after**, in Settings > Chat > Spending, is a dollar
+ceiling across every session the autopilot runs for one item, retries and
+second opinions included. Leave it blank for no limit, which is the default.
+
+A project or a single item can set its own ceiling, as `itemUsd`. Tell the
+autopilot, for example `cap items in this project at $8` or `let #212 spend up
+to $20`, and it records the ceiling on the
+[project's contract](/docs/automation/autopilot/#per-project-contract) or on
+the item. The first one set wins, in this order:
+
+1. The item's own ceiling.
+2. Its project's ceiling.
+3. **Stop an autopilot item after**.
+
+The ceiling is checked between turns, like the
+[other ceilings](/docs/agents/limits-and-spending/#how-a-ceiling-stops-a-chat):
+the turn that crosses it finishes. After that:
+
+- The autopilot can no longer steer that item's workers or start a new one
+  for it. It is told once that the item went over, with what it spent against
+  the ceiling, for example **$8.40 of $8.00**, and brings it to you.
+- A pull request change on the item does not wake its worker.
+- Raise the ceiling and the item can carry on.
+
+The item ceiling applies while the autopilot drives. A chat you run by hand
+is held only by the per chat and per project ceilings.
+
+<Aside type="note" title="ACP workers are exempt">
+
+A worker on an ACP agent reports no cost, so it never reaches an item
+ceiling. Its card shows its turns instead.
+
+</Aside>
+
+## What a waiting item will likely cost
+
+A proposed or queued item that came from an issue shows a projection on its
+row under **Waiting at the dock**: **~$3.50**, the median of what finished
+items like it cost. Hover it for how many items it is drawn from.
+
+"Like it" means the same project and an issue body of the same size, counted
+in characters:
+
+| Size | Issue body |
+| --- | --- |
+| Small | Under 500 |
+| Medium | 500 to 1999 |
+| Large | 2000 and over |
+
+Only finished items count. A failed item, an item someone took over, and an
+item one of whose sessions reported no cost (an ACP agent) are left out, as
+are items from before this version. Until five items of the same size have
+finished in the project, the row says **no history yet**.
+
+The size is read once, when the item is made, from the issue as it was then.
+Items from schedules, loops and review requests have no issue body, so they
+show no projection.
