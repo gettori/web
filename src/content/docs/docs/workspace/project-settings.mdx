@@ -103,7 +103,10 @@ Bare projects only. What every worktree gets:
   the socket wait for it**, the **Run command**, whether to **Open the
   browser when a server starts** (on by default), whether to **Start the run
   command when a worktree is created** (off by default) and the **Teardown
-  command**.
+  command**. Under a command you left empty, each value the repository's
+  accepted [`.tori/project.json`](/docs/git/project-config/) sets is listed
+  with a **repo** mark and the worktrees that run it. Typing your own hides
+  them.
   See [A setup command for new worktrees](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees),
   [A run command for each worktree](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree)
   and [A teardown command before removal](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal).
@@ -248,6 +251,14 @@ the project's own code may start. See [Project trust](/docs/reference/security/#
   so it is not revoked from here: **Open trusted projects** takes you to the
   list in Settings > Projects.
 
+**Repo proposals**, shown while a worktree has a
+[`.tori/project.json`](/docs/git/project-config/) you have not accepted: one
+row per worktree, saying whether it waits for an answer or you declined it,
+with **Review**, and **Accept** on a declined one.
+
+**Commands**, for repos: the same commands a bare project has under
+[Worktrees](#worktrees), for the worktrees Tori makes of the repo.
+
 **Execution** > **Sandbox**: when this project's Claude and Codex sessions
 run in the agent's own sandbox, **As me**, **Boxed when unattended** (the
 default) or **Always boxed**. The line under it says what the level does. See
@@ -257,13 +268,20 @@ default) or **Always boxed**. The line under it says what the level does. See
 this project show as links on their worktree's row and in Scripts. Off by
 default. See [Ports and dev servers](/docs/git/ports/#links-to-running-servers).
 
+**Dev servers** > **Ports per worktree**: how many ports of each worktree's
+[block of ten](/docs/git/ports/#a-block-of-ports-per-worktree) are exported,
+from 1 to 10. Unset, it is the repository's accepted count, listed under it
+with a **repo** mark, or all ten. **Reset** clears your own.
+
 **Verification commands**: the commands that count as a check for the
 [verification badge](/docs/reference/security/#what-counts-as-a-check), one
 per line. The heading says whether the project uses the **Built-in list** or
 its **Project's own list**, and the line under the field says what saving
 will do. **Save** makes the field the project's own list. **Reset to
 defaults** fills the field with the built-in list, and **Save** after it goes
-back to the built-in list.
+back to the built-in list. While the project has no list of its own, a list
+from an accepted [`.tori/project.json`](/docs/git/project-config/) is shown
+above the field with a **repo** mark and the worktrees that use it.
 
 **Workspace settings**, for repos and folders: whether the repo has its own
 `.tori/settings.json`, the keys it sets as chips, and **Open file**, which
