@@ -146,6 +146,53 @@ A permission prompt or a question still waiting on you is never folded.
 Switch it from the [session menu](#the-session-menu) or in Settings > Chat. It
 applies to every chat.
 
+## Read a reply aloud
+
+Hover a reply and a speaker button, **Read aloud**, appears in the gutter to
+its left. Click it and Tori reads the reply to you in the voice and at the
+speed set in [Settings > Chat > Read aloud](/docs/reference/settings/#chat).
+The speech is your Mac's own, so nothing leaves the machine.
+
+What gets read is the reply as it is drawn, not its Markdown source:
+
+- Paragraphs, list items, headings and quotes are read one after another.
+- A table is read row by row, the header row first, with its cells read as a
+  list.
+- A code block is not read out. Tori says **Code block skipped.** in its
+  place, so a sentence like "run this:" does not run into the next one.
+- Inline code is read as plain words, and a link is read as its text, without
+  the address.
+
+A reply still being written is read as far as it has got, and the reading
+stops there rather than following it.
+
+While it reads, the paragraph being read is highlighted, and a chip at the top
+of the window says **Reading aloud**. On the chip:
+
+- The speed button, **1x** to start with, steps through 0.75x, 1x, 1.25x,
+  1.5x and 2x, then back to 0.75x. The new speed starts from the paragraph
+  being read, and it is the same setting as **Speed** in Settings.
+- **Stop reading** stops it.
+
+The reading carries on when you switch to another tab, and the chip stays so
+you can stop it from anywhere. Reading something else replaces what is being
+read. Closing the window or quitting Tori stops it. There is no pause.
+
+To read only part of a reply, select it and click **Read** on the toolbar that
+appears beside the selection, next to **Quote**. A selection is read paragraph
+by paragraph too, without the highlight. The same toolbar appears on a
+selection in a [PDF](/docs/editor/editor/).
+
+From the command palette (`Cmd+K`):
+
+| Command | What it does |
+| --- | --- |
+| Read Selection Aloud | Reads what was selected when you opened the palette. Listed only when something outside a text box was selected |
+| Read Last Reply Aloud | Reads the latest reply in the chat in front. Greyed out with **No chat in front** when no chat is, and says **There is no reply on screen to read.** when the chat has none yet |
+| Stop Reading Aloud | Stops it. Greyed out with **Nothing is being read** otherwise |
+
+If the speech engine refuses, a notice says **Couldn't read aloud:** and why.
+
 ## Long chats
 
 A long chat opens on its most recent turns, so it is quick to open. Click

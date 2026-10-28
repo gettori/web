@@ -180,7 +180,9 @@ later without ever staging it.
 - **Images** open as images.
 - **PDFs** open as pages you can scroll. The bar has zoom out, an editable
   percentage, zoom in, fit (**Page**, **Width** or **100%**) and a page field.
-  Select text and **Quote** sends it, with its page, to the selected session.
+  Select text and a toolbar offers **Quote**, which sends it with its page to
+  the selected session, and **Read**, which
+  [reads it aloud](/docs/agents/transcript/#read-a-reply-aloud).
 
 ## Files Tori will not open as text
 
