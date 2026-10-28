@@ -56,6 +56,7 @@ request, ask before everything.
 | Picking up work | Propose and wait, or start on its own | Propose and wait |
 | Workers run on | The agent, account and model you pick for this project | Not set |
 | Where issues come from | The project's own repo, or the issue sources you list | Issues assigned to you in the project's repo |
+| What one item may spend | A dollar ceiling for each item, set by telling the autopilot ([What work costs](/docs/agents/what-work-costs/#cap-what-one-autopilot-item-spends)) | **Stop an autopilot item after** in Settings > Chat |
 
 Tell the autopilot how a project should work and it records the contract,
 or set it yourself in the project's
@@ -368,8 +369,10 @@ The Cockpit has three columns:
 - **Crew on deck**: the workers running now, each a card ringed in the colour
   of its state, with its issue number, title and place (`work -> api ->
   feat/webhooks`), the last lines of its log, and what it is doing. **Watch**
-  opens the worker's session. Under it, **Waiting at the dock** lists queued
-  items, with what each waits for, and under that **Tide table** lists your
+  opens the worker's session. Beside a worker's branch is what the item has
+  cost so far. Under it, **Waiting at the dock** lists queued
+  items, with what each waits for and, for one from an issue, what it will
+  [likely cost](/docs/agents/what-work-costs/#what-a-waiting-item-will-likely-cost), and under that **Tide table** lists your
   schedules: the name and cron, what each run does, and when it fires next,
   or **waiting on** the open run its next time would be skipped for, and
   how its last run ended. A paused schedule says **paused after 3 failed

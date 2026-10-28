@@ -69,6 +69,7 @@ account usage controls. See
 | Warn above | 4 chats | Live chats at once before Tori warns; 0 turns it off |
 | Stop this chat after | No limit | Dollar ceiling for one session |
 | Stop this project after | No limit | Dollar ceiling summed across every chat in a project |
+| Stop an autopilot item after | No limit | Dollar ceiling across every session the autopilot runs for one item; a project or item can set its own ([What work costs](/docs/agents/what-work-costs/#cap-what-one-autopilot-item-spends)) |
 | Stop at context | No limit | Percentage of context window; recovers after compaction |
 | Warn at | 80% | Fraction of a ceiling before Tori warns |
 
