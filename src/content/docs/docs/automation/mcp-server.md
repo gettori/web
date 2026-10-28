@@ -82,7 +82,7 @@ included.
 | `chat.draft` | Open a new chat draft in Tori in the tab's worktree, with text and files as chips, for you to send | Browser |
 | `web.setup` | The tab's app in its worktree: framework, bundler, and the code-inspector-plugin line and install command, or nothing | Browser |
 | `attachment.write` | Write a file into Tori's attachments in base64 chunks, at most 8 MB, for `session.steer` and `chat.draft` to carry | Browser |
-| `budget` | Spend against your ceilings, and the agent's quota windows | Everyone |
+| `budget` | Spend against your ceilings, the agent's quota windows, and with `item` or `pr` what an autopilot item or a pull request cost | Everyone |
 | `checkpoints.list`, `checkpoint.diff`, `checkpoint.revert` | A session's per-turn checkpoints: list, diff, revert. `checkpoint.diff` with `why` also says who wrote each hunk | Everyone |
 | `provenance.hunks` | Who wrote each hunk of a file in a worktree: the turn, the tool call and the agent's words before it, or why nothing recorded can say | Everyone |
 | `ask.create` | Ask you a question in the calling chat and wait | Chat, worker |
