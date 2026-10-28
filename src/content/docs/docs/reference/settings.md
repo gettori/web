@@ -62,6 +62,13 @@ account usage controls. See
 | --- | --- | --- |
 | Snapshot on each prompt | On | One checkpoint per prompt, for diff and revert |
 
+**Read aloud**
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| Voice | System voice | The voice replies are read in, from the voices installed on your Mac. System voice follows the one set in macOS, and a voice since removed falls back to it. The play button, **Hear this voice**, reads a sample, or says **That voice is not installed any more.** If the list cannot be read, only System voice is offered and a notice says so |
+| Speed | 1.0x | From 0.5x to 2x. The speed button on the reading chip changes this same setting. See [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud) |
+
 **Spending**
 
 | Setting | Default | Effect |
