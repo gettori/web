@@ -52,6 +52,7 @@ Everything Tori itself writes is a plain file, mostly under
 | `themes/*.json` | Custom theme palettes |
 | `checkpoint-index/`, `checkpoint-touched/` | Per-turn checkpoint bookkeeping |
 | `trusted.json` | Projects you have marked trusted to run project code |
+| `proposals.json` | Which [`.tori/project.json`](/docs/git/project-config/) contents you accepted or declined, per trusted project |
 | `hot-exit.json` | Unsaved editor buffers, stashed across a quit |
 | `accounts.json` | Registered agent accounts |
 | `devices.json` | Paired phones (never the plaintext credential) |

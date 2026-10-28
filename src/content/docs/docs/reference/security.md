@@ -56,8 +56,14 @@ itself anything:
   [setup](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees),
   [run](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree)
   and [teardown](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal)
-  commands are stored in your own settings, not in the repository, and never
-  run for a worktree made from a fork's pull request.
+  commands are stored in your own settings, and never run for a worktree
+  made from a fork's pull request.
+- A repository can [propose its own](/docs/git/project-config/) in
+  `.tori/project.json`. Tori reads it only in a trusted project, runs none of
+  it until you accept that exact content, and asks again when it changes.
+  Your answer lives in `~/.config/tori/proposals.json`, which nothing over
+  the socket, the CLI or the MCP server can write, and your own non-empty
+  value always wins over the file's.
 
 ## What leaves the machine
 
@@ -297,8 +303,10 @@ over its parent's, and a change applies from the agent's next turn without a
 restart. A reopened chat is checked against the list as it is now.
 
 The list lives in your own `~/.config/tori/settings.json`, under
-`verification.commands`, keyed by the project's path. Tori never reads one
-from the repository, so a project cannot claim its own work is verified.
+`verification.commands`, keyed by the project's path. A repository can
+[propose a list](/docs/git/project-config/) in `.tori/project.json`, used
+only where you have accepted it and set no list of your own, so a project
+cannot claim its own work is verified without you agreeing to what counts.
 
 ## Your terminal
 
