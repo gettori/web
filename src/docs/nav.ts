@@ -35,6 +35,7 @@ export const NAV: NavGroup[] = [
       page("Reading the transcript", "agents/transcript"),
       page("Subagents and background work", "agents/subagents"),
       page("Rewind and fork", "agents/rewind-and-fork"),
+      page("Side chats", "agents/side-chats"),
       page("Limits and spending", "agents/limits-and-spending"),
       page("What work costs", "agents/what-work-costs"),
       page("Accounts and usage", "agents/accounts-and-usage"),
