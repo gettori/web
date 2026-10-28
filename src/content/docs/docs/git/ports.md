@@ -62,6 +62,11 @@ Tori starts in a checkout gets ten ports in its environment:
 | `TORI_PORT` | The first port of the block, for example `40010` |
 | `TORI_PORT_1` to `TORI_PORT_9` | The nine after it |
 
+To export fewer, set **Ports per worktree** under Project settings >
+Tooling > **Dev servers**, or let the repository propose a count in
+[`.tori/project.json`](/docs/git/project-config/). With 3, only `TORI_PORT`,
+`TORI_PORT_1` and `TORI_PORT_2` are set. The block itself stays ten wide.
+
 The block stays the same for the life of the worktree, so a server that uses
 it keeps the same URL. The main checkout gets one too, and a submodule uses its
 worktree's block. A folder outside any git checkout gets no block.

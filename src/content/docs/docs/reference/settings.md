@@ -226,13 +226,14 @@ that thing is rather than in the Settings window.
 | Setting | Where | Effect |
 | --- | --- | --- |
 | Project icon | Project settings > General | [Automatic, an image or a picked glyph](/docs/workspace/project-settings/#general) |
-| Setup command, and whether scripted sessions wait for it | Project settings > Worktrees | [Runs in every new worktree](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees) |
-| Run command | Project settings > Worktrees | [Started and stopped by hand in a worktree](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree) |
-| Teardown command | Project settings > Worktrees | [Runs before a worktree is removed](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal) |
+| Setup command, and whether scripted sessions wait for it | Project settings > Worktrees, or Tooling for a repo | [Runs in every new worktree](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees) |
+| Run command | Project settings > Worktrees, or Tooling for a repo | [Started and stopped by hand in a worktree](/docs/git/worktrees-and-branches/#a-run-command-for-each-worktree) |
+| Teardown command | Project settings > Worktrees, or Tooling for a repo | [Runs before a worktree is removed](/docs/git/worktrees-and-branches/#a-teardown-command-before-removal) |
 | Shared files | Project settings > Worktrees | [Links untracked files into every worktree](/docs/git/shared-files) |
 | Agents allowed in a project | Project settings > Agents | [Limits agents and accounts](/docs/agents/accounts-and-usage/#limiting-agents-per-project) |
 | Remembered chat picks | Project settings > Agents | [Shown per worktree, with Forget all](/docs/workspace/project-settings/#agents) |
 | Second opinion reviewer | Project settings > Agents | [A different agent from the session's, or one fixed agent and account](/docs/git/second-opinion/#pick-the-reviewer) |
+| Ports per worktree | Project settings > Tooling | [How many of the block are exported](/docs/git/ports/#a-block-of-ports-per-worktree) |
 | Verification commands | Project settings > Tooling | [What counts as a check](/docs/reference/security/#what-counts-as-a-check) |
 | Host account for a repository | Project settings > General | Which login its pull requests and pushes use, kept per remote |
 | When a chat needs a worktree | Topic menu | [Ask, create or refuse](/docs/workspace/topics/#chats-in-a-topic) |
