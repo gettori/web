@@ -1,0 +1,100 @@
+---
+title: Side chats
+description: Ask about a chat beside it, in a read-only copy of the session that cannot change anything, and send an answer back when you want it.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+import Steps from "../../../../components/docs/Steps.astro";
+
+A side chat is a copy of a chat's session that opens next to it. It knows
+everything the chat knows up to that point, so you can ask why it did
+something, or what a file does, without putting the question into the
+chat itself. A side chat can read and answer. It cannot change anything.
+
+## Open one
+
+<Steps>
+
+1. Open a running chat that has at least one turn.
+2. Click **Side chat**, next to **Fork this chat**.
+3. Ask your question in the drawer that opens on the right.
+
+</Steps>
+
+You can do this while the chat is mid-turn. The main chat keeps going, and
+the side chat answers from the history it has.
+
+Each side chat is a tab in the drawer, named **Side 1**, **Side 2** and so
+on. Click **+** (**Open another side chat**) for another one. Drag the
+drawer's left edge to make it wider or narrower.
+
+## Read-only
+
+A side chat cannot write files or change anything else, and Tori enforces
+that itself. You cannot turn it off.
+
+- It runs in the agent's read-only mode: plan mode for Claude, **read-only**
+  for Codex. It has no mode picker. If the agent ever leaves that mode, the
+  side chat is closed with **This side chat left read-only mode (the new
+  mode), so it was closed.**
+- Every permission ask is denied before you see it. A side chat that tries
+  to edit a file gets a refusal and answers in text instead.
+- With Claude it cannot run shell commands at all, even ones your settings
+  allow. It can still read and search files.
+- Of Tori's own tools it can only use the ones that read, such as looking up
+  a pull request or a checkpoint's diff. Anything that would change a
+  session, a checkpoint, the autopilot or the forge is refused.
+- Questions the agent asks you still reach you in the drawer.
+
+When Claude in plan mode hands its answer over as a plan, the plan text is
+shown as the reply.
+
+Codex opens in its own default mode, and Tori switches it to read-only before
+anything is sent. Until Codex confirms the switch, a send is refused with
+**This side chat is still switching to read-only mode.**
+
+## Send an answer to the chat
+
+Every finished reply in a side chat has **Send to chat**. Clicking it sends
+the reply to the main chat as your next message, starting with **From a side
+chat:** so the agent knows where it came from. The button then reads **Sent**,
+so one reply cannot go twice.
+
+If the main chat cannot take a message right now (it has ended, the autopilot
+is driving it, it is past its spending limit, or it is still opening), the
+reason shows next to the button and nothing is sent.
+
+Nothing goes from a side chat to the main chat unless you click **Send to
+chat**.
+
+## Spending and limits
+
+What a side chat spends counts toward the main chat's
+[spending limit](/docs/agents/limits-and-spending/#set-a-spending-ceiling) and
+toward its autopilot item, if it has one. Once the two together pass the limit,
+both stop at their next turn.
+
+A side chat is not a worker. It does count toward
+[how many chats are running at once](/docs/agents/limits-and-spending/#too-many-chats-at-once),
+but not toward the notice about two chats in one worktree.
+
+## Close and relaunch
+
+Close a side chat with its tab's **x**. Its session ends, and its transcript
+stays in History. Closing the main chat's tab closes its side chats too.
+
+Side chats come back when Tori restores your tabs after a relaunch, in the same
+order, still read-only. A restored side chat shows its transcript and starts
+again on your next message.
+
+<Aside>
+A side chat's transcript opened from History is an ordinary chat, not a side
+chat. It is no longer read-only, and its spending no longer counts toward the
+chat it came from.
+</Aside>
+
+## Which agents
+
+Side chats work on Claude, and on Codex when it has told Tori it can fork a
+session. Other agents do not show the button, because Tori has no read-only
+mode for them that it can check.
