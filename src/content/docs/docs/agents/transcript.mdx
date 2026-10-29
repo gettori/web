@@ -341,37 +341,51 @@ Starts a new chat that carries this conversation up to now, so you can try a
 different direction and keep the original. Only offered once the chat has some
 history, and only on agents that can fork (Claude today).
 
+### Side chats
+
+**New side chat** opens a read-only copy of this session in a drawer beside
+it. Once a chat has side chats, they are listed here to bring to the front,
+reopen or remove. See [Side chats](/docs/agents/side-chats/).
+
 ### Usage
 
-One line with the last turn's tokens and cost, and the session's cost. Hover
-it for the detail: the session's tokens, over how many turns, and its cost.
-For a chat you reopened, it says when the total only counts turns this window
-watched finish.
+Two lines: **Last turn** with that turn's tokens and cost, and **This chat**
+with the session's cost and turn count. Hover them for the detail: the
+session's tokens, over how many turns, and its cost. For a chat you reopened,
+it says when the total only counts turns this window watched finish.
 
-### Session
+### Session details
 
-Click **Session** to see what the chat is working with. The heading already
-tells you how many MCP servers it has, how many are not connected, and how
-many skills it loaded.
+The last row of the menu. Under its name it already tells you how many MCP
+servers need you to sign in or are not connected, how many servers there are,
+and how many skills the session loaded. Click it to open the details in a panel
+beside the menu.
 
-- **Account**: which of your accounts it runs on, and the plan and
-  organisation the agent reports.
-- **Chat capabilities**: what this agent can do in a Tori chat, such as
-  rewind, steering, approvals, diffs, spending ceilings, subagents and
-  attachments.
-- **MCP servers**: the servers the agent connected to, each with its status
-  and how many tools it offers. One that failed shows its error.
-- **Configured MCP servers**: the servers configured for this project, and
-  their scope. A server in the project's `.mcp.json` that Claude has not
-  approved yet says **pending approval (run `claude` to approve)**.
-- **Skills**, **Agents** and **Plugins** the session loaded.
+- **The account** at the top: the plan the agent reports, which of your
+  accounts the chat runs on, and the organisation.
+- **MCP servers**, with how many are connected. Each server has a dot (green
+  when connected) and, on the right, how many tools it offers, **Needs
+  sign-in**, or the agent's own word for what went wrong. A server that failed
+  shows its error under it. Servers configured for this project that the chat
+  did not load are listed too: one in the project's `.mcp.json` that Claude
+  has not approved yet says **pending approval (run `claude` to approve)**.
+- **Skills**, grouped by the plugin that brought them, with your project's
+  and your own under **Project & user**. Click a group to show or hide its
+  skills.
+- **Plugins**, with their versions.
+- **Agents** and **Chat capabilities**, folded until you click them. Chat
+  capabilities is what this agent can do in a Tori chat, such as rewind,
+  steering, approvals, diffs, spending ceilings, subagents and attachments.
+
+A server that needs signing in is signed into from the agent's own interface;
+Tori shows the state but has no sign-in of its own.
 
 ### Add an MCP server to the project
 
 <Steps>
 
-1. Open the session menu and click **Session**.
-2. Under **Configured MCP servers**, click **Add server**.
+1. Open the session menu and click **Session details**.
+2. Under **MCP servers**, click **Add server**.
 3. Type a name and the command that starts it, for example
    `npx -y @scope/server`.
 4. Click **Save**.
@@ -379,9 +393,9 @@ many skills it loaded.
 </Steps>
 
 The server is written to the project's `.mcp.json`, the same file
-`claude mcp add --scope project` writes. **Remove** takes a project server out
-of that file again. Servers configured at user level are listed but not
-editable here.
+`claude mcp add --scope project` writes. Hover a project server and click
+**Remove** to take it out of that file again. Servers configured at user level
+are listed but not editable here.
 
 <Aside type="note" title="New servers and running chats">
 
