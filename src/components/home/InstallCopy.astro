@@ -7,14 +7,14 @@ interface Props {
 const { tone = "glass" } = Astro.props;
 ---
 
-<div class:list={["brew", tone]}>
+<div class:list={["install", tone]}>
   <span class="dollar">$</span>
-  <span class="cmd">{SITE.brew}</span>
-  <button type="button" data-copy={SITE.brew}>Copy</button>
+  <span class="cmd">{SITE.install}</span>
+  <button type="button" data-copy={SITE.install}>Copy</button>
 </div>
 
 <style>
-  .brew {
+  .install {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -30,7 +30,7 @@ const { tone = "glass" } = Astro.props;
     color: var(--soft);
     overflow: hidden;
   }
-  .brew.night {
+  .install.night {
     color-scheme: dark;
     height: 54px;
     background: rgba(10, 8, 24, 0.45);
@@ -67,7 +67,7 @@ const { tone = "glass" } = Astro.props;
     height: 40px;
     background: rgba(216, 180, 254, 0.14);
   }
-  :global([data-theme="light"]) .brew.night {
+  :global([data-theme="light"]) .install.night {
     color-scheme: light;
     background: var(--glass);
     border-color: var(--line);
