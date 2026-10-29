@@ -64,6 +64,8 @@ account usage controls. See
 
 **Read aloud**
 
+On an Intel Mac this group is one row, **Voice model**, saying **Needs an Apple Silicon Mac**.
+
 | Setting | Default | Effect |
 | --- | --- | --- |
 | Voice size | Not downloaded | Which voice model is installed: **Smaller** (107 MB) or **Larger** (340 MB), the natural voice with 28 voices, or **Fastest** (60 MB), which starts quickest with eight voices and sounds a little less natural. The row shows the installed one with **Change**, which opens the download dialog, and **Delete**, which asks first. While a download runs it shows the progress and **Cancel**. See [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud) |
@@ -72,6 +74,8 @@ account usage controls. See
 | Speed | 1.0x | From 0.5x to 2x. The speed button on the reading chip changes this same setting. See [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud) |
 
 **Dictation**
+
+On an Intel Mac the row says **Needs an Apple Silicon Mac**.
 
 | Setting | Default | Effect |
 | --- | --- | --- |
