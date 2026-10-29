@@ -1,6 +1,6 @@
 ---
 title: The composer
-description: Write and send prompts, mention files, reference sessions, projects, spaces and pull requests, attach images and documents, recall earlier messages, and draft long prompts in the editor.
+description: Write and send prompts, mention files, reference sessions, projects, spaces and pull requests, attach images and documents, recall earlier messages, dictate, and draft long prompts in the editor.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -8,7 +8,7 @@ import Steps from "../../../../components/docs/Steps.astro";
 
 The composer is the box at the bottom of every chat. It starts three lines
 tall and grows with what you type, up to nine lines, then scrolls. Under the
-box is a bar with the attach and editor buttons on the left, the
+box is a bar with the attach, editor and mic buttons on the left, the
 [model, effort and mode pills](/docs/agents/models-and-modes/), any switches
 the agent publishes, the **Follow live edits** toggle, and the send button
 on the right.
@@ -54,7 +54,7 @@ so you can tell before sending that a paste is bigger than you thought.
 | `Option+ArrowUp` | At the start of the box, edit the newest queued message |
 | `Ctrl+C` | Empty the box, the way a shell prompt does |
 | `Cmd+S` | Stash the draft and empty the box. In an empty box, bring a stashed draft back (see [Stash a draft for later](#stash-a-draft-for-later)) |
-| `Escape` | Close an open menu. Otherwise cancel a queue edit, or stop the running turn |
+| `Escape` | Close an open menu. Otherwise drop a recording, cancel a queue edit, or stop the running turn |
 | `Tab` | With a menu open, accept the highlighted row |
 
 ## Recall what you sent
@@ -332,6 +332,64 @@ whatever you last saved. The scratch file is deleted when the link ends.
 
 While a draft is open in the editor you cannot start editing a
 [queued message](/docs/agents/steering-and-the-queue/#edit-a-queued-message).
+
+## Dictate a message
+
+Click the mic button on the composer's bar, **Dictate a message**, and talk.
+Click it again to stop. What you said is turned into text on this Mac and put
+into the box at the caret, after a space unless the caret is at the start of
+the text or of a line. Nothing is sent: the words wait in the box like
+anything you typed.
+
+The button has three states:
+
+- Idle, the mic.
+- Recording, red, counting the seconds since you started. Click it, **Stop
+  and put the words in the message**, to finish.
+- Transcribing, a spinner, while the words are worked out. A click does
+  nothing here; the text lands in a moment.
+
+`Escape` while recording drops the recording and inserts nothing. While a
+turn is running, that first `Escape` goes to the recording and the next one
+stops the turn.
+
+### Downloading a model
+
+The first click with no model downloaded opens **Download a dictation
+model**. Like the voice for [Read aloud](/docs/agents/transcript/#read-a-reply-aloud),
+it runs on your Mac and your voice never leaves it. Pick one:
+
+| Choice | Size | What it trades |
+| --- | --- | --- |
+| **Moonshine** | 67 MB | Small and quick. Good for a sentence or a paragraph at a time. The default |
+| **Parakeet** | 661 MB | More accurate, and ten times the download. Parakeet by NVIDIA, CC BY 4.0 |
+
+**Download** fetches it and the dialog shows the progress, **Downloading, 40
+of 67 MB**, with **Cancel download**. **Not now** closes the dialog, and a
+download already running carries on. A download that fails says why, with
+**Retry**. Once it lands, click the mic again to record. One model is
+installed at a time; **Change** in Settings swaps it for the other, and
+**Delete** removes it. See [Settings](/docs/reference/settings/#chat).
+
+### The first time
+
+macOS asks whether Tori may use the microphone the first time you record. If
+you refuse, or turned it off later, the mic says **Tori can't use the
+microphone. Allow it under System Settings, Privacy & Security, Microphone.**
+
+### What happens to the clip
+
+- A clip that never rises above the room's noise is dropped without a word:
+  nothing is inserted and nothing is said.
+- A long clip is cut at its quietest gaps into pieces under fifty seconds
+  before the model sees it, and the pieces are joined with a space. A
+  recording left running is cut at fifteen minutes.
+- The model loads on the first use, about half a second for Moonshine and a
+  second or two for Parakeet, and is dropped after five idle minutes.
+- A transcription that fails says so in a notice, **Couldn't transcribe**,
+  with the reason.
+
+The mic is greyed out while the draft is open in the editor.
 
 ## Quote from the transcript
 
