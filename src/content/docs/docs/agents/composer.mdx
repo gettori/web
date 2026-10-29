@@ -8,7 +8,7 @@ import Steps from "../../../../components/docs/Steps.astro";
 
 The composer is the box at the bottom of every chat. It starts three lines
 tall and grows with what you type, up to nine lines, then scrolls. Under the
-box is a bar with the attach, editor and mic buttons on the left, the
+box is a bar with the attach, editor and dictation buttons on the left, the
 [model, effort and mode pills](/docs/agents/models-and-modes/), any switches
 the agent publishes, the **Follow live edits** toggle, and the send button
 on the right.
@@ -335,19 +335,19 @@ While a draft is open in the editor you cannot start editing a
 
 ## Dictate a message
 
-Click the mic button on the composer's bar, **Dictate a message**, and talk.
+Click the waveform button on the composer's bar, **Dictate a message**, and talk.
 Click it again to stop. What you said is turned into text on this Mac and put
 into the box at the caret, after a space unless the caret is at the start of
 the text or of a line. Nothing is sent: the words wait in the box like
 anything you typed.
 
-The button has three states:
-
-- Idle, the mic.
-- Recording, red, counting the seconds since you started. Click it, **Stop
-  and put the words in the message**, to finish.
-- Transcribing, a spinner, while the words are worked out. A click does
-  nothing here; the text lands in a moment.
+While you talk, a waveform covers the text box and moves with your voice,
+with **Listening. Press Escape to drop it** under it, and the button turns
+red. Click it again, **Stop and put the words in the message**, to finish.
+The bars then stop following your voice and roll across the box, **Turning
+what you said into text**, while the model works. A click does nothing here;
+the text lands in a moment and the box comes back. The box takes no typing
+while the waveform covers it.
 
 `Escape` while recording drops the recording and inserts nothing. While a
 turn is running, that first `Escape` goes to the recording and the next one
@@ -367,15 +367,17 @@ it runs on your Mac and your voice never leaves it. Pick one:
 **Download** fetches it and the dialog shows the progress, **Downloading, 40
 of 67 MB**, with **Cancel download**. **Not now** closes the dialog, and a
 download already running carries on. A download that fails says why, with
-**Retry**. Once it lands, click the mic again to record. One model is
+**Retry**. Once it lands, click the waveform button again to record. One model is
 installed at a time; **Change** in Settings swaps it for the other, and
 **Delete** removes it. See [Settings](/docs/reference/settings/#chat).
 
 ### The first time
 
 macOS asks whether Tori may use the microphone the first time you record. If
-you refuse, or turned it off later, the mic says **Tori can't use the
-microphone. Allow it under System Settings, Privacy & Security, Microphone.**
+you refuse, or turned it off later, or macOS gives Tori silence instead of
+sound, the recording stops within a couple of seconds and a notice says
+**Tori isn't getting sound from the microphone. Allow it under System
+Settings, Privacy & Security, Microphone.**
 
 ### What happens to the clip
 
@@ -389,7 +391,7 @@ microphone. Allow it under System Settings, Privacy & Security, Microphone.**
 - A transcription that fails says so in a notice, **Couldn't transcribe**,
   with the reason.
 
-The mic is greyed out while the draft is open in the editor.
+The dictation button is greyed out while the draft is open in the editor.
 
 ## Quote from the transcript
 
