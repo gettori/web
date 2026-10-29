@@ -151,23 +151,88 @@ applies to every chat.
 Hover a reply and a speaker button, **Read aloud**, appears in the gutter to
 its left. Click it and Tori reads the reply to you in the voice and at the
 speed set in [Settings > Chat > Read aloud](/docs/reference/settings/#chat).
-The speech is your Mac's own, so nothing leaves the machine.
+The voice is a model that runs on your Mac, so nothing you read leaves the
+machine. It needs macOS 13.4 or later.
+
+### Downloading a voice
+
+The first Read opens **Download a voice**, since the model is not part of
+Tori. Pick one of three:
+
+| Choice | Download | What you get |
+| --- | --- | --- |
+| Smaller | 107 MB | The natural voice. Sounds nearly the same as Larger, and 28 voices to pick from |
+| Larger | 340 MB | The natural voice at full quality. The same 28 voices |
+| Fastest | 60 MB | Starts quickest. Eight voices, and a little less natural |
+
+**Download** fetches it, with the progress shown as **Downloading, 40 of
+107 MB**, and the reply is read once it lands. **Not now** closes the dialog:
+a download already started carries on, but the reply waiting on it is not
+read. Reading something else while the dialog is open replaces the waiting
+reply. If the download fails, the dialog says **Couldn't download the voice:**
+and why, with **Retry**. One model is installed at a time; you change or
+delete it in Settings.
+
+The model loads on the first Read, about half a second, and Tori starts
+loading it as soon as a chat with a reply is in front so the wait is usually
+gone by the time you click. After five idle minutes it is dropped to free the
+memory.
+
+### What gets read
 
 What gets read is the reply as it is drawn, not its Markdown source:
 
-- Paragraphs, list items, headings and quotes are read one after another.
+- Paragraphs, list items, headings and quotes are read one after another,
+  with a short pause after a heading and after each list item.
 - A table is read row by row, the header row first, with its cells read as a
   list.
+- A task list item is read with its state first, **to do,** or **done,**.
 - A code block is not read out. Tori says **Code block skipped.** in its
   place, so a sentence like "run this:" does not run into the next one.
 - Inline code is read as plain words, and a link is read as its text, without
   the address.
+- A check, cross or warning emoji is said as **check**, **cross** or
+  **warning**. Other emoji are skipped.
 
 A reply still being written is read as far as it has got, and the reading
 stops there rather than following it.
 
-While it reads, the paragraph being read is highlighted, and a chip at the top
-of the window says **Reading aloud**. On the chip:
+### How code is said
+
+A reply about code is rewritten into what a developer would say before it is
+spoken, so a path or a flag is not spelled out letter by letter:
+
+| Written | Said |
+| --- | --- |
+| `src/utils/speech.ts` | speech dot T S, in src utils |
+| `Omnibox.tsx:703` | Omnibox dot T S X, line 703 |
+| `config/corne.keymap`, `.gitignore`, `desktop/` | corne dot keymap, in config; dot gitignore; desktop folder |
+| `https://github.com/gettori/tori/issues/103` | github dot com |
+| `3c492711`, a commit hash | a hash |
+| `3.4.2`, `v0.3` | 3 point 4 point 2; version 0 point 3 |
+| `--no-verify`, `-q` | dash dash no verify; dash q |
+| `a != b && c == d`, `->`, `std::env::var` | a not equal b and c equals d; to; std env var |
+| `speech_speak`, `speakableBlocks`, `read-a-reply-aloud` | speech speak; speakable Blocks; read a reply aloud |
+| `Cmd+Shift+P`, `LCTRL`, `BSPC`, `KP_SLASH` | Command Shift P; Left Control; Backspace; Keypad Slash |
+| `107 MB`, `450ms`, `15%`, `~2 GB`, `3x6`, `#101` | 107 megabytes; 450 milliseconds; 15 percent; about 2 gigabytes; 3 by 6; number 101 |
+| `e.g.`, `i.e.`, `vs`, `w/o`, `LCTRL / TAB` | for example; that is; versus; without; Left Control or Tab |
+| `localhost:3000` | localhost, port 3000 |
+
+A colon or a parenthesis is read as a pause. Words developers say their own
+way are said that way: JSON is "Jason", `src` is "source", SQL is "sequel",
+`config`, `plugin`, `enum`, `yaml`, `toml`, `github`, `sudo` and `nginx` are
+words, and `npm`, `CLI`, `API`, `URL`, `HTML`, `CSS`, `SSH`, `CPU`, `GPU`,
+`DNS`, `TCP`, `JWT`, `DOM`, `UUID`, `ID` and the like are spelled, as is any
+word of up to five capital letters.
+
+A word Tori does not know is spelled out letter by letter, unless
+[espeak-ng](/docs/reference/settings/#chat) is installed, in which case it
+sounds the word out instead.
+
+### While it reads
+
+The paragraph being read is highlighted, and a chip at the top of the window
+says **Reading aloud**. On the chip:
 
 - The speed button, **1x** to start with, steps through 0.75x, 1x, 1.25x,
   1.5x and 2x, then back to 0.75x. The new speed starts from the paragraph
@@ -177,6 +242,8 @@ of the window says **Reading aloud**. On the chip:
 The reading carries on when you switch to another tab, and the chip stays so
 you can stop it from anywhere. Reading something else replaces what is being
 read. Closing the window or quitting Tori stops it. There is no pause.
+
+### A selection, and the palette
 
 To read only part of a reply, select it and click **Read** on the toolbar that
 appears beside the selection, next to **Quote**. A selection is read paragraph
@@ -191,7 +258,8 @@ From the command palette (`Cmd+K`):
 | Read Last Reply Aloud | Reads the latest reply in the chat in front. Greyed out with **No chat in front** when no chat is, and says **There is no reply on screen to read.** when the chat has none yet |
 | Stop Reading Aloud | Stops it. Greyed out with **Nothing is being read** otherwise |
 
-If the speech engine refuses, a notice says **Couldn't read aloud:** and why.
+If the voice cannot play, a notice says **Couldn't read aloud:** and why, for
+example when no audio output can be opened.
 
 ## Long chats
 

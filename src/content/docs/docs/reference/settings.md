@@ -66,7 +66,9 @@ account usage controls. See
 
 | Setting | Default | Effect |
 | --- | --- | --- |
-| Voice | System voice | The voice replies are read in, from the voices installed on your Mac. System voice follows the one set in macOS, and a voice since removed falls back to it. The play button, **Hear this voice**, reads a sample, or says **That voice is not installed any more.** If the list cannot be read, only System voice is offered and a notice says so |
+| Voice size | Not downloaded | Which voice model is installed: **Smaller** (107 MB) or **Larger** (340 MB), the natural voice with 28 voices, or **Fastest** (60 MB), which starts quickest with eight voices and sounds a little less natural. The row shows the installed one with **Change**, which opens the download dialog, and **Delete**, which asks first. While a download runs it shows the progress and **Cancel**. See [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud) |
+| Pronunciation | Spelled out | A word Tori does not know is spelled out letter by letter. **Install espeak-ng** runs `brew install espeak-ng` in a dock terminal, and once it has, the row says **espeak-ng says the words Tori does not know** with **Uninstall** beside it. Without Homebrew the row only names espeak-ng. espeak-ng is not part of Tori, which is why it is a separate install |
+| Voice | Heart, or Bella on Fastest | The voices of the installed model: 28 with Smaller or Larger, American English first and then British, eight with Fastest. A voice since removed falls back to the default. The play button, **Hear this voice**, reads a sample. With no model downloaded the row shows **Download** instead of the list |
 | Speed | 1.0x | From 0.5x to 2x. The speed button on the reading chip changes this same setting. See [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud) |
 
 **Spending**
