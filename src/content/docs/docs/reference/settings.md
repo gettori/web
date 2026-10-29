@@ -71,6 +71,12 @@ account usage controls. See
 | Voice | Heart, or Bella on Fastest | The voices of the installed model: 28 with Smaller or Larger, American English first and then British, eight with Fastest. A voice since removed falls back to the default. The play button, **Hear this voice**, reads a sample. With no model downloaded the row shows **Download** instead of the list |
 | Speed | 1.0x | From 0.5x to 2x. The speed button on the reading chip changes this same setting. See [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud) |
 
+**Dictation**
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| Model | Not downloaded | Which speech to text model is installed for the composer's mic button: **Moonshine** (67 MB), small and quick, or **Parakeet** (661 MB), more accurate. While Parakeet is installed the row carries its credit, Parakeet by NVIDIA, CC BY 4.0. With none downloaded the row shows **Download**; with one it shows the model with **Change**, which opens the download dialog, and **Delete**, which asks first. While a download runs it shows the progress and **Cancel**. See [Dictate a message](/docs/agents/composer/#dictate-a-message) |
+
 **Spending**
 
 | Setting | Default | Effect |
