@@ -81,6 +81,7 @@ account usage controls. See
 
 | Setting | Default | Effect |
 | --- | --- | --- |
+| Show what work costs | On | What a branch, a pull request and an autopilot item have cost, and a waiting item's estimate. Off hides them; the limits below still apply ([What work costs](/docs/agents/what-work-costs/#where-the-figures-show)) |
 | Warn above | 4 chats | Live chats at once before Tori warns; 0 turns it off |
 | Stop this chat after | No limit | Dollar ceiling for one session |
 | Stop this project after | No limit | Dollar ceiling summed across every chat in a project |
