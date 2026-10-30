@@ -26,7 +26,9 @@ there is one instead of the shell: `worktree_new` rather than `git worktree
 add`, `session_spawn` to start another agent, the pull request tools rather
 than `gh pr`, and `ask_create` to ask you. That keeps the sidebar, the
 project's setup command, approvals and checkpoints in step. It also says a
-refused tool is to be taken at its word, not worked around from the shell.
+refused tool is to be taken at its word, not worked around from the shell,
+and asks the main agent, never a subagent, to publish a plan of several steps
+with `plan_set` and keep it up to date.
 Claude reads this; whether another agent does depends on the agent. It is
 guidance, not a lock: nothing stops an agent from running `git` itself.
 
@@ -86,6 +88,7 @@ included.
 | `checkpoints.list`, `checkpoint.diff`, `checkpoint.revert` | A session's per-turn checkpoints: list, diff, revert. `checkpoint.diff` with `why` also says who wrote each hunk | Everyone |
 | `provenance.hunks` | Who wrote each hunk of a file in a worktree: the turn, the tool call and the agent's words before it, or why nothing recorded can say | Everyone |
 | `ask.create` | Ask you a question in the calling chat and wait | Chat, worker |
+| `plan.set` | Show the calling chat's plan in its [plan card](/docs/agents/permissions-and-questions/#the-plan-above-the-composer): every step each call, pending, in progress or completed, replacing the last list. An empty list hides it. Refused outside a turn | Chat |
 | `ask.wait` | Wait for the answer to a question asked earlier | Everyone |
 | `ask.answer` | Answer another session's question on your behalf | Shell, chat, phone, browser |
 | `issues.assigned` | Open issues from the project's [issue sources](/docs/automation/autopilot/#issue-sources), or with none those assigned to you, then pull requests waiting on your review | Everyone |
