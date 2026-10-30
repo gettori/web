@@ -1,6 +1,6 @@
 ---
 title: Using the phone app
-description: Follow every session from your phone, answer prompts and questions, steer or stop a turn, start a chat, and run the autopilot.
+description: Follow every session from your phone, answer prompts and questions, steer or stop a turn, start work in a new worktree or from an issue, and run the autopilot.
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
@@ -39,7 +39,36 @@ autopilot is working in is tinted violet.
 A worktree shows its branch and standing, then its sessions in two groups:
 **Now**, what is running, and the rest as history. Tap a session to open it.
 
-**New chat** starts a chat in this worktree, on the agent last used there.
+**New** opens the **New session** sheet. Pick where the session runs, then
+tap **Start**:
+
+- **Here**: in this worktree.
+- **New worktree**: on a new **Branch**, made **From** the ref you type, or
+  the default branch when **From** is empty. The project's setup command runs
+  in it first, as on the Mac.
+- **From an issue**: pick one of the issues assigned to you. Tori makes a
+  worktree on the issue's suggested branch, the worktree remembers the issue,
+  and an empty **First message** sends the issue's title and body.
+- **Review a PR**: pick one of the pull requests waiting on your review. Tori
+  makes a worktree on its head, forks included.
+
+**New worktree**, **From an issue** and **Review a PR** show only for a
+worktree that belongs to a project.
+
+The sheet also has:
+
+- **Agent**: the agents that run as a chat, starting on the one last used in
+  this worktree.
+- **Account**: shown when the agent has more than one account, with each
+  account's email when Tori knows it.
+- **First message**: optional; the session starts and waits when it is empty.
+- **Run in background**: starts the session as background work. At the
+  default execution level it runs boxed, in the agent's own sandbox. See
+  [Unattended sessions](/docs/agents/unattended/).
+
+A session you start in the foreground counts as watched while the app is
+open, so at the default level it is not boxed even with the Mac's lid
+closed. Pick its model and mode in the chat once it opens.
 
 ## Read and steer a chat
 
@@ -146,9 +175,10 @@ one to update in a banner instead of failing:
 
 ## What the phone cannot do
 
-The phone can read everything, steer, stop, answer, approve, review finished work, start a plain chat
-in a folder, switch a chat's model and mode, and start or stop the autopilot.
-It cannot attach files, create worktrees, start background sessions, or pair
+The phone can read everything, steer, stop, answer, approve, review finished
+work, start a session here, in a new worktree, from an issue or as a pull
+request review, in the foreground or the background, switch a chat's model
+and mode, and start or stop the autopilot. It cannot attach files or pair
 another device. Those stay on the Mac.
 
 ## Platform
