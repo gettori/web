@@ -178,3 +178,14 @@ progress and a check when done, and the header shows how many are done, like
 Click the header to fold the plan into a small **3/7** pill on the composer's
 edge; hover the pill to see the list, click it to open the card again. Every
 agent that publishes a plan gets one; Codex and the other ACP agents do.
+
+Claude has no todo list of its own, so it publishes through Tori's
+[`plan_set`](/docs/automation/mcp-server/#every-tool) tool instead. Tori asks it
+to when it connects: send the whole plan as it starts a task of several steps,
+send it again as each step starts and finishes, and send an empty list when it
+is done. Each call replaces the card, and an empty list hides it. Otherwise the
+card stays between turns until the next call. A subagent is asked not to
+publish; one that does anyway replaces the main agent's plan.
+
+The card is not saved with the conversation. After you reopen Tori's window or
+restart, a Claude chat has no card until its next `plan_set` call.
