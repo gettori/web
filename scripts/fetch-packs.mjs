@@ -77,14 +77,21 @@ async function bundled() {
     .map((m) => `${m[1]}/${m[2]}`);
 }
 
-async function release() {
+// Releases were tagged v<version>, with every platform's files, before each
+// platform got its own prefix.
+async function releases() {
   const feed = (await get(RELEASES)).toString("utf8");
-  return feed.match(/\/releases\/tag\/v([^"<]+)"/)?.[1] ?? fail(`${RELEASES} names no release`);
+  const tags = [...feed.matchAll(/\/releases\/tag\/([^"<]+)"/g)].map((m) => m[1]);
+  const newest = (platform) => {
+    const tag = tags.find((t) => t.startsWith(`${platform}-v`) || t.startsWith("v")) ?? fail(`${RELEASES} names no ${platform} release`);
+    return { tag, version: tag.replace(/^([a-z]+-)?v/, "") };
+  };
+  return { macos: newest("macos"), android: newest("android") };
 }
 
 const { index, sig, repo } = await source();
 const ids = await bundled();
-const version = await release();
+const { macos, android } = await releases();
 if (ids.length === 0) fail("packs.lock lists no packs");
 const rows = JSON.parse(index.toString("utf8")).rows;
 if (!Array.isArray(rows) || rows.length === 0) fail("index.json has no rows");
@@ -104,7 +111,7 @@ for (const { path, bytes } of files) {
 writeFileSync(join(next, "index.json"), index);
 if (sig) writeFileSync(join(next, "index.json.sig"), sig);
 writeFileSync(join(next, "bundled.json"), JSON.stringify(ids));
-writeFileSync(join(next, "release.json"), JSON.stringify({ version }));
+writeFileSync(join(next, "release.json"), JSON.stringify({ ...macos, android }));
 rmSync(OUT, { recursive: true, force: true });
 renameSync(next, OUT);
-console.log(`fetch-packs: ${rows.length} rows, ${files.length} files, ${ids.length} bundled, Tori ${version}, ${sig ? "signed" : "unsigned"}`);
+console.log(`fetch-packs: ${rows.length} rows, ${files.length} files, ${ids.length} bundled, Tori ${macos.version}, Android ${android.version}, ${sig ? "signed" : "unsigned"}`);

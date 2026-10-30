@@ -43,7 +43,10 @@ export const iconPath = (p: Pack) => (p.icon_url ? new URL(p.icon_url).pathname 
 const index = JSON.parse(readFileSync(".packs/index.json", "utf8"));
 export const sourceUrl = (p: Pack) => `https://github.com/gettori/packs/blob/${index.packs_commit}/${p.kind}/${fileName(p)}`;
 
-export const RELEASE: string = JSON.parse(readFileSync(".packs/release.json", "utf8")).version;
+const release = JSON.parse(readFileSync(".packs/release.json", "utf8"));
+export const RELEASE: string = release.version;
+export const RELEASE_TAG: string = release.tag;
+export const ANDROID_RELEASE: { tag: string; version: string } = release.android;
 const numbers = (v: string) => v.split("-")[0].split(".").map(Number);
 export const shortVersion = (v: string) => v.split("-")[0];
 
