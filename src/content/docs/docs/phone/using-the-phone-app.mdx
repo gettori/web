@@ -130,14 +130,46 @@ Scroll up and earlier history loads in pages.
 - **Send a message.** While a turn runs, the box reads **Steer the running
   turn**: what you send goes into that turn, as a steer. Otherwise it starts the
   next turn.
-- **Switch model or mode** from the pickers above the box. A switch applies from
-  the next turn.
+- **Switch model, effort or mode** from the pickers in the box. Effort shows
+  for a model that lists effort levels. A switch applies from the next turn.
+- **The agent's own options**, when it has any, sit beside them: a picker for a
+  choice, a chip that turns on or off for a switch. They are the same options
+  the Mac shows for that agent.
+- **Slash commands.** Type `/` and the agent's commands show above the box,
+  narrowing as you type. Tap one to put it in the box.
+- **The plan card** shows above the box while the agent has a plan, the same
+  steps the Mac shows.
+- **Context and cost** show in one line above the box: the context used out of
+  the model's window, with its share, and what the session has cost so far.
 - **More** has **Stop** (stop the running turn), **Rename**, **Close
-  session**, **Copy session id** and **Open worktree**.
+  session**, **Changes**, **Send to a new chat**, **Fork this chat**, **Copy
+  session id** and **Open worktree**.
 - **Rename** names the session on the Mac too. Leave the name empty to go back
   to its title.
 - **Close session** ends a running chat, as closing its tab on the Mac does.
   It moves to the worktree's history, and a message there resumes it.
+- **Send to a new chat** starts a new chat in the same folder, on the same
+  agent, with what is in the box (and its attachments) as its first message.
+- **Fork this chat** starts a new session that carries this conversation on,
+  on the same agent. It shows once the chat has a turn.
+
+### Changes and reverts
+
+**More > Changes** lists the session's turns that changed files, each with how
+many files. **All changes** at the top is everything the session changed, as
+one diff. Tap a turn for that turn's diff.
+
+**Rewind** on a turn puts the worktree's files back to how they were before
+that turn: what the session wrote in it and in every turn after it is undone.
+The phone asks **Rewind the files to before turn N?** first. Tori takes a
+backstop before rewinding, so the Mac's checkpoint timeline can bring the
+files back. Unlike a rewind on the Mac, the conversation is not cut: it goes
+on as it was, and the agent still remembers writing what was undone. A rewind
+is refused while another live session works in the same folder.
+
+A tool call that edited files opens to its diff, the same as on the Mac.
+**Revert** on one hunk asks **Revert this hunk of name?** and puts only those
+lines back.
 
 ### Attach photos and files
 
@@ -269,7 +301,8 @@ work, start a session here, in a new worktree, from an issue or as a pull
 request review, in the foreground or the background, attach photos and files,
 switch a chat's model and mode, rename, close and resume sessions, remove a
 worktree, attach a branch, make, edit and reorder spaces, make and change
-Topics, fan out, and start or stop the autopilot. It cannot delete a session or
+Topics, fan out, fork a chat, read and revert a session's changes, and start or
+stop the autopilot. It cannot delete a session or
 a space, promote an attempt, delete or check out a branch, or pair another
 device. Those stay on the Mac.
 
