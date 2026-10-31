@@ -1,6 +1,6 @@
 ---
 title: Using the phone app
-description: Follow every session from your phone, answer prompts and questions, steer or stop a turn, start work in a new worktree or from an issue, and run the autopilot.
+description: Follow every session from your phone, answer prompts and questions, steer or stop a turn with photos and files attached, start work in a new worktree or from an issue, and run the autopilot.
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
@@ -82,6 +82,39 @@ Scroll up and earlier history loads in pages.
   the next turn.
 - **More** has **Stop** (stop the running turn), **Copy session id** and **Open
   worktree**.
+
+### Attach photos and files
+
+The paperclip next to the pickers attaches files to your next message:
+
+- **Photo library**: one or more photos or images from the phone.
+- **Camera**: take a photo now.
+- **File**: one or more files from the phone's file picker.
+
+Each file uploads to your Mac as soon as you pick it, into
+`~/.config/tori/attachments/`, the same place the Mac's composer writes to.
+Its chip reads **Uploading** until the upload finishes, then shows its label
+and name; the **x** removes it. Send waits until every upload has finished, and
+a message can be attachments alone.
+
+Labels are numbered by kind within the message, `[Image 1]`, `[PDF 1]`,
+`[File 1]`, and Tori adds them at the end of your text, so you can write
+"compare `[Image 1]` with `[Image 2]`". The agent reads each file from its path
+on the Mac.
+
+Limits:
+
+- A photo larger than 2048 pixels on its long edge is scaled down on the phone
+  and sent as a JPEG, so camera photos fit.
+- The phone sends files up to 8 MB; a larger one is refused with its size.
+  Images and other files are also held to the Mac's 5 MB limit.
+- Up to 10 attachments per message, and the same kinds the Mac refuses (video,
+  audio, archives, Office documents) are refused here.
+- Claude takes images, PDFs and any other file. The other agents take files
+  only, and refuse an image or a PDF when you send.
+
+See [Attach files and images](/docs/agents/composer/#attach-files-and-images)
+for the Mac's side.
 
 ## Answer what is waiting
 
@@ -177,9 +210,9 @@ one to update in a banner instead of failing:
 
 The phone can read everything, steer, stop, answer, approve, review finished
 work, start a session here, in a new worktree, from an issue or as a pull
-request review, in the foreground or the background, switch a chat's model
-and mode, and start or stop the autopilot. It cannot attach files or pair
-another device. Those stay on the Mac.
+request review, in the foreground or the background, attach photos and files,
+switch a chat's model and mode, and start or stop the autopilot. It cannot
+pair another device; that stays on the Mac.
 
 ## Platform
 
