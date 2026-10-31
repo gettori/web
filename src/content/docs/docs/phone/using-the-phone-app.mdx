@@ -34,10 +34,47 @@ lines changed, its commits ahead and behind, its pull request and checks, and
 an issue chip, the same facts the desktop sidebar shows. A worktree the
 autopilot is working in is tinted violet.
 
+A git project also has **Fan out**, the same as on the Mac: say what the
+attempts are for, pick **2**, **3** or **4**, and Tori makes that many
+attempts, each a worktree on its own branch named from the goal. Promoting one
+attempt deletes the others, so **Promote this attempt** stays on the Mac. See
+[Fan out](/docs/git/worktrees-and-branches/#fan-out-several-attempts).
+
 In a project that shows branches rather than worktrees, **Attach a branch**
 under the list shows an existing local branch there, the same as picking a
 local branch in the Mac's add branch dialog. Type its name and tap
 **Attach**.
+
+## Spaces and Topics
+
+Tap **Spaces** next to the space's name for the **Spaces** sheet:
+
+- The arrows move a space up or down, in the order the Mac shows too.
+- **Edit** sets a space's colour (**Auto** derives it from the name) and icon
+  (the first tile wears the space's initials).
+- **New space** makes a folder of that name in Tori's base folder, with the
+  colour and icon you pick.
+
+Deleting a space removes its folder and everything in it, so it stays on the
+Mac. See [Spaces](/docs/workspace/spaces/).
+
+The **Topics** tab ends with **New Topic**: a name, a branch, and the
+repositories in it, each **Worktree** (its own worktree on the branch) or
+**Reference** (read only, the repository's own checkout). The branch is
+needed only when a repository is a worktree.
+
+A Topic's **More** has:
+
+- **Rename**.
+- **Add a repository**: one of your projects not in the Topic yet, as a
+  worktree or a reference.
+- **Promote a member**: a reference member gets its own worktree on the Topic
+  branch.
+- **Move a member up**: one place, in the order the Mac shows too.
+- **Delete Topic**: only the Topic goes; its worktrees and branches stay.
+
+A worktree's **More** has **Move to Topic**, which adds the worktree to a
+Topic as it is, on its own branch. See [Topics](/docs/workspace/topics/).
 
 ## A worktree
 
@@ -47,8 +84,8 @@ last active, the same sessions as the Mac's History dropdown. Tap a session to
 open it. An ended chat opens with its transcript and a box that reads
 **Message to resume**: what you send there resumes it, on the Mac too.
 
-**More** (the three dots) has **Remove worktree**, for a worktree in a
-project. The phone asks **Remove worktree "name"?** first. The branch stays,
+**More** (the three dots) has **Move to Topic** and **Remove worktree**, for a
+worktree in a project. The phone asks **Remove worktree "name"?** first. The branch stays,
 and so does everything committed on it. The phone never forces the removal:
 a worktree with uncommitted changes, or with a session still running in it, is
 refused with the reason, so commit, or close the session, first. Deleting the
@@ -231,9 +268,10 @@ The phone can read everything, steer, stop, answer, approve, review finished
 work, start a session here, in a new worktree, from an issue or as a pull
 request review, in the foreground or the background, attach photos and files,
 switch a chat's model and mode, rename, close and resume sessions, remove a
-worktree, attach a branch, and start or stop the autopilot. It cannot delete a
-session, delete or check out a branch, or pair another device. Those stay on
-the Mac.
+worktree, attach a branch, make, edit and reorder spaces, make and change
+Topics, fan out, and start or stop the autopilot. It cannot delete a session or
+a space, promote an attempt, delete or check out a branch, or pair another
+device. Those stay on the Mac.
 
 ## Platform
 
