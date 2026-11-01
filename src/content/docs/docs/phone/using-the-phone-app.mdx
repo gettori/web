@@ -1,6 +1,6 @@
 ---
 title: Using the phone app
-description: Follow every session from your phone, answer prompts and questions, steer or stop a turn with photos and files attached, start work in a new worktree or from an issue, and run the autopilot.
+description: Follow every session from your phone, get an alert when one needs you even with the app closed, answer prompts and questions, steer or stop a turn with photos and files attached, start work in a new worktree or from an issue, and run the autopilot.
 ---
 
 import Demo from "../../../../components/docs/Demo.astro";
@@ -268,6 +268,69 @@ as the Cockpit:
 
 See [Autopilot](/docs/automation/autopilot/).
 
+## Alerts with the app closed
+
+The app only hears what happens while it is open and connected. To hear about
+a session that needs you with the app closed, turn on **Settings > Alerts when
+closed**. The phone asks for permission to show notifications the first time.
+
+When a session needs you or finishes, the phone shows a notification with the
+project's name and what happened:
+
+- **A session needs approval**, **A session has a question**, **A session is
+  waiting**, **A session hit its budget**, **A session had a command
+  blocked**, or **A pull request needs a look**.
+- **A session finished** when a turn ends.
+
+Tap it and the app opens that session's chat, saying **Opening a session in**
+and the project's name while it connects. Answer the session on the Mac
+instead, and the notification goes away on the phone by itself. A session
+that alerts again replaces its earlier notification rather than adding one.
+
+The Mac sends nothing for:
+
+- a session you are looking at on the Mac, with its window focused;
+- a worker whose question reaches you through the chat that spawned it, or
+  through the autopilot;
+- anything at all while **Remote** is off in the Mac's Settings.
+
+The Mac's own notification switches do not change what the phone gets. An
+alert the phone cannot receive within an hour, because it is off or offline,
+is dropped.
+
+**Disconnect** in Settings turns alerts off on the phone. Removing the phone
+in Settings > Remote on the Mac stops them as well.
+
+### What leaves your Mac
+
+Alerts travel through Google's push service (FCM) and a small relay Tori runs
+at `relay.gettori.app`, because only a push service can wake an Android app
+that is closed. Each alert is encrypted on the Mac with a key the phone made
+and sent to the Mac when you turned alerts on, so neither Google nor the
+relay can read it. The relay stores nothing.
+
+- **The relay sees** your Mac's IP address, when an alert is sent, and how
+  large it is.
+- **Google sees** your phone's push token and when an alert is sent.
+- **Neither sees** the project, the session, what it needs you for, or any
+  path. Those are inside the encrypted alert, and only the phone opens it.
+
+### When the switch stays off
+
+The switch turns back off and says why when alerts cannot work:
+
+- **Notifications are off for Tori. Turn them on in Android settings.** You
+  declined the permission. Allow notifications for Tori in Android's settings,
+  then turn the switch on again.
+- **This phone has no working Google Play services, which alerts with the app
+  closed need.** Phones without Google's services, such as many de-Googled
+  ROMs, cannot get alerts with the app closed.
+- **Tori on your Mac is too old for alerts with the app closed: update Tori**.
+- **Connect to Tori first.** Turning alerts on needs the phone connected to
+  the Mac.
+- **This build of Tori has no push setup.** An app built from source without
+  Tori's Firebase config cannot get alerts. The release APK has it.
+
 ## Settings
 
 The gear opens a sheet:
@@ -275,6 +338,8 @@ The gear opens a sheet:
 - **Connection**: the Mac's address, this phone's name, the status, and
   **Disconnect**, which forgets the Mac on the phone. Revoke the phone in
   Settings > Remote on the Mac too, to remove it there.
+- **Alerts when closed**: notifications on this phone while the app is
+  closed. See [Alerts with the app closed](#alerts-with-the-app-closed).
 - **Appearance**: **Tori Dark** or **Tori Light**, kept on this phone.
 - **Autopilot button**: whether the wheel shows in the bottom bar.
 
