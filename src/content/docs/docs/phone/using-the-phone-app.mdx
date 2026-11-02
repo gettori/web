@@ -23,10 +23,13 @@ The app opens on your projects.
 
 - The space switcher along the bottom picks a space, like the tiles on the
   Mac. Each space shows its status bubble.
-- **Projects** lists the space's projects, each with its status rollup and how
-  many sessions are running.
-- **Topics**, in the bottom bar, lists your [Topics](/docs/workspace/topics/)
-  with their members.
+- **Projects** lists the space's own [Topics](/docs/workspace/topics/#topics-in-a-space)
+  first, under **Topics** with a **+** for a new one, each naming its members.
+  Then the space's projects, each with its status rollup and how many sessions
+  are running.
+- **Topics**, in the bottom bar, is titled **Topics**, **all spaces**, and
+  lists the Topics that belong to no space, each naming the spaces its members
+  come from.
 - The search button searches **Projects, worktrees, sessions** at once.
 
 Tap a project for its worktrees. Each worktree card shows its branch, the
@@ -58,23 +61,33 @@ Tap **Spaces** next to the space's name for the **Spaces** sheet:
 Deleting a space removes its folder and everything in it, so it stays on the
 Mac. See [Spaces](/docs/workspace/spaces/).
 
-The **Topics** tab ends with **New Topic**: a name, a branch, and the
-repositories in it, each **Worktree** (its own worktree on the branch) or
-**Reference** (read only, the repository's own checkout). The branch is
-needed only when a repository is a worktree.
+**New Topic**, at the end of the Topics tab or the **+** over a space's
+Topics, takes a name and the repositories in it, each **Worktree** (its own
+worktree on the branch) or **Reference** (read only, the repository's own
+checkout). The branch is made from the name, as on the Mac. **Where** puts
+the Topic in the space you are on, the default, and lists **Projects in work**
+only; or in **Topics**, listing every space's projects under its space.
+
+A Topic shows the space it belongs to under its name, or **Topics** for one of
+no space.
 
 A Topic's **More** has:
 
 - **Rename**.
 - **Add a repository**: one of your projects not in the Topic yet, as a
-  worktree or a reference.
+  worktree or a reference. A Topic in a space offers only that space's
+  projects.
+- **Move to**: **Topics** or a space. A space that does not hold every member
+  is greyed, saying which members are elsewhere, the same as
+  [on the Mac](/docs/workspace/topics/#move-a-topic).
 - **Promote a member**: a reference member gets its own worktree on the Topic
   branch.
 - **Move a member up**: one place, in the order the Mac shows too.
 - **Delete Topic**: only the Topic goes; its worktrees and branches stay.
 
 A worktree's **More** has **Move to Topic**, which adds the worktree to a
-Topic as it is, on its own branch. See [Topics](/docs/workspace/topics/).
+Topic as it is, on its own branch. It lists the Topics of the worktree's space
+first, then those of no space. See [Topics](/docs/workspace/topics/).
 
 ## A worktree
 
