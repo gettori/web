@@ -46,7 +46,8 @@ disk moves when you do.
 - **The filter**: the search button at the right of the heading, or
   `Cmd+Shift+E`, opens a field that filters the tree by project name (by
   Topic or member name in Topics mode). `Escape` closes it and clears it.
-- **The tree** of the active space's projects and branches.
+- **The tree** of the active space: its [Topics](#topics), when it has any,
+  then its projects and branches.
 - **The space strip** at the bottom: a tile per space, then the **Topics**
   tile, then the **dock** button at the far right, which shows or hides the
   [dock](/docs/editor/terminal/#the-dock) (`Cmd+Ctrl+J`) and counts the dock's
@@ -120,6 +121,18 @@ commits, and every folder inside it, with **uncommitted** and **unpushed**
 marked and those sorted first. Type the space's name, in any case, to enable
 the button.
 Running agents and terminals in it are stopped first.
+
+When the space has [Topics](/docs/workspace/topics/#topics-in-a-space), the
+confirmation also lists them:
+
+- **Topics deleted with it**: the space's own Topics, each with how many
+  members it has. They are deleted before the folder. If Tori cannot delete
+  one, it stops there and the folder stays.
+- **Global Topics that lose members**: each Topic of no space with a member in
+  this space, such as **Loses web, api**, and **left empty** when it has no
+  other member. The lost members' chips are struck through. Those members stay
+  in the Topic and read **Repository unavailable**, with **Locate** to point
+  them at a copy elsewhere. A Topic left empty is not deleted.
 
 ## Projects
 
@@ -453,6 +466,12 @@ closed project and a space tile still show it:
 
 The **Topics** tile in the strip switches the tree to Topics, a branch shared
 across several repositories. See [Topics](/docs/workspace/topics/).
+
+A Topic can also belong to a space, holding only that space's projects. **New
+Topic** in the space menu, **Groups worktrees from work's projects**, makes
+one. The space's Topics are listed at the top of its tree, under a **Topics**
+heading with a **+** for another; the projects follow under **Projects**. See
+[Topics in a space](/docs/workspace/topics/#topics-in-a-space).
 
 ## Find a project
 
