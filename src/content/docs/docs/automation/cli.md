@@ -91,7 +91,8 @@ d4b80c13-9e7f-4a55-8c02-61f0e3a9b7d2  codex   default  working    fix/rate-limit
 - `tori sessions` lists sessions, newest first. `--live` keeps only the
   running ones and `--cwd` only those in a folder.
 - `tori projects` prints the tree the sidebar draws: spaces, projects and
-  branch rows, then Topics with their members.
+  branch rows, then Topics with their members. A Topic in a space has the
+  space's name after its branch.
 - `tori ports` lists each worktree's [dev servers](/docs/git/ports/#from-a-shell-or-an-agent):
   branch, folder, port block and the ports listening.
 - `tori session tail <id>` prints the last events of a conversation, with

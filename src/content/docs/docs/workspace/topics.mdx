@@ -43,7 +43,9 @@ a **+** for a new one. Click a space tile to go back.
 </Steps>
 
 The new Topic is selected straight away, with a chat draft at its home ready
-to type in, unless something is already open there.
+to type in, unless something is already open there. A Topic made here belongs
+to no space; to make one inside a space, see
+[Topics in a space](#topics-in-a-space).
 
 Worktrees are made under each repository's `.tori/worktrees/` folder (a plain
 repo) or beside its other worktrees (a bare one). A member that fails to set up
@@ -57,19 +59,65 @@ worktree when the work reaches it.
 
 </Aside>
 
+## Topics in a space
+
+A Topic can belong to one space. It is then listed in that space's tree, under
+a **Topics** heading above the space's projects, and can hold that space's
+projects only. A Topic that belongs to no space is listed in Topics and can
+hold projects from any space. Topics mode lists only those.
+
+To make one, open the space menu and pick **New Topic** (**Groups worktrees
+from work's projects**), or click the **+** on the space's **Topics** heading,
+**New Topic in work**. The dialog is titled **New Topic in work** and lists
+**Projects in work** only, with how many are picked, each project naming the
+branch its checkout is on, such as **from main**. Under the list: **Only
+work's projects can join. For projects from several spaces, make the Topic
+from Topics.** The new Topic opens in the space's tree.
+
+In the space's tree:
+
+- The **Topics** heading counts the space's Topics. Click it to collapse the
+  group; each space remembers its own. Collapsed, the heading carries a status
+  bubble for the Topics under it.
+- While there is a Topics group, the projects below it get a **Projects**
+  heading.
+- The filter narrows both groups, and each heading counts what is left.
+- The title bar reads the space, the Topic and the member in front, such as
+  **work > webhooks > api**.
+
+Adding a project from another space to a space's Topic is refused, from the
+phone and the command line too: **api is not in work, and webhooks holds
+work's projects only. Use Move to... on the Topic to list it in Topics
+first.**
+
+### When a space's folder is gone
+
+A space is its folder, so renaming or deleting the folder outside Tori leaves
+its Topics with no tree to be listed in. Such a Topic shows in Topics mode,
+with a note under its row: **From work, which Tori can't find. Its folder was
+renamed or deleted outside Tori.** **Keep in Topics** makes it a Topic of no
+space; **Delete** opens the usual [delete](#delete-a-topic). Until then its
+members can still be repaired.
+
 ## Move a worktree into a Topic
 
 Work that started as an ordinary worktree can join a Topic as it is. Right-click
 the worktree in Spaces and pick **Move to topic...**. The dialog has two tabs:
 
-- **Existing**: pick a Topic and click **Move to Topic**.
+- **Existing**: one list, filtered with **Search Topics**, in two groups:
+  **In work**, the Topics of the worktree's own space, then **Topics**, those
+  that belong to no space. Topics of other spaces cannot take it, so they are
+  not offered. Pick one and click **Move**.
 - **New**: the New Topic form with this worktree already in it, shown as **This
-  worktree, on** its branch. **Branch** starts as the worktree's branch. Pick
-  any other repositories and click **Create Topic**. The dialog opens on New
-  when there are no Topics yet, and switching tabs keeps what you typed.
+  worktree, on** its branch. **Branch** starts as the worktree's branch.
+  **Where** puts the new Topic in the worktree's space (**Lives in work's tree.
+  Can hold work's projects only.**), the default, or in **Topics** (**Listed in
+  Topics. Can hold projects from any space.**). Pick any other repositories and
+  click **Create and move**. The dialog opens on New when there are no Topics
+  yet, and switching tabs keeps what you typed.
 
-After the move the sidebar switches to **Topics** and selects the Topic, with
-the moved worktree in front. Tabs open in the worktree move with it. A chat
+After the move the sidebar opens the Topic where it is listed, the space's
+tree or Topics, with the moved worktree in front. Tabs open in the worktree move with it. A chat
 that was already started keeps working in that one repository, since it keeps
 the folders it launched with; the dialog says so before you move, for example
 **1 chat here moves with it and keeps working in this repo only. New chats in
@@ -128,9 +176,23 @@ Right-click a Topic, or use its actions button:
 | Item | What it does |
 | --- | --- |
 | **Rename...** | Changes the Topic's name. The branch stays as it is |
+| **Move to...** | Lists the Topic in Topics or in a space's tree, see [Move a Topic](#move-a-topic) |
 | **Add repository...** | Opens the same picker to add members, **Add to Topic** |
 | **When a chat needs a worktree** | **Ask me first**, **Create it** or **Refuse**, see [Chats in a Topic](#chats-in-a-topic) |
 | **Delete...** | Deletes the Topic, see below |
+
+## Move a Topic
+
+**Move to...** on the Topic menu opens **Move webhooks**, which says where it
+is now, **Now in Topics** or **Now in work**. Pick **Topics** (**Any space's
+projects**) or one of your spaces, then click the button, which names the
+choice: **Move to work**. The place it is now is marked **Current**.
+
+A space can take the Topic only when every member is one of its projects. Any
+other space stays in the list, greyed, saying which members are elsewhere and
+where: **api and web are in saga**, or **api is in saga; cms is in craft** for
+members from more than one space. Moving changes nothing about the members.
+After the move the Topic opens where it now lives.
 
 ## The member menu
 
@@ -150,7 +212,8 @@ Right-click a member:
 **Delete...** lists every member with what git says about its worktree,
 **clean**, **uncommitted changes** or **unpushed commits**, before you confirm.
 Deleting the Topic itself loses nothing: make it again over the same
-repositories and the branches are still there.
+repositories and the branches are still there. Deleting a space deletes its
+own Topics with it, see [Delete a space](/docs/workspace/spaces/#delete-a-space).
 
 Then a second question, **webhooks is deleted. Its worktrees?**, asks per
 member whether to **Keep** or **Remove** its worktree, with a **Delete
