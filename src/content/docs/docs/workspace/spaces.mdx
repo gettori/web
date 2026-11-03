@@ -44,10 +44,11 @@ disk moves when you do.
   space's menu. In [Home](/docs/workspace/home/) it reads **Home**, and its
   menu offers a new chat, Topic or attached folder.
 - **The filter**: the search button at the right of the heading, or
-  `Cmd+Shift+E`, opens a field that filters the tree by project name (by
-  Topic, folder or chat name in Home). `Escape` closes it and clears it.
-- **The tree** of the active space: its [Topics](#topics), when it has any,
-  then its projects and branches.
+  `Cmd+Shift+E`, opens a field that filters the tree by chat, Topic and
+  project name. `Escape` closes it and clears it.
+- **The tree** of the active space, in three groups: **Chats** and
+  [Topics](#topics) when the space has any, then **Projects** with their
+  branches.
 - **The space strip** at the bottom: the **Home** tile, then a tile per
   space, then the **dock** button at the far right, which shows or hides the
   [dock](/docs/editor/terminal/#the-dock) (`Cmd+Ctrl+J`) and counts the dock's
@@ -57,9 +58,8 @@ Right-click the empty part of the tree, or the heading, for the space menu.
 
 ### Long groups
 
-A space with [Topics](#topics) lists them under a **Topics** heading and its
-projects under a **Projects** heading, and Home adds **Chats**. Each group
-shows six. The rest fold into a row at the bottom of the group, such as
+Each group in a space's tree, **Chats**, **Topics** and **Projects**, shows
+six. The rest fold into a row at the bottom of the group, such as
 **3 more chats**, **2 more Topics** or **4 more projects**, which carries a
 status bubble for what it hides. Click it to show them all, and **Show less**
 to fold them again; Tori remembers.
@@ -68,8 +68,21 @@ Folding never hides what you are using. A Topic or project you have open,
 the one you have selected, and one with an agent working, waiting on you or a
 pull request needing you stay in the list past the six, in their own place.
 
-A space without Topics has no headings, and lists every project. While the
-filter has text, every match shows and nothing folds.
+While the filter has text, every match shows and nothing folds.
+
+### Chats in a space
+
+A space has chats of its own, which work exactly like
+[Home's chats](/docs/workspace/home/#chats) and list under its **Chats**
+heading. `Cmd+N`, the **+** on the **Chats** heading and **New chat** in the
+space menu all start one in the space on screen. **Send to a new chat** in a
+space's chat starts the new one in the same space.
+
+A space's chats live in their own folder under `~/.config/tori/chats/`, named
+after the space. When a space's folder is renamed outside Tori, its chats
+show in Home instead. Opening them still works, but resuming or forking one
+started before the rename cannot find its history, since the agent finds a
+conversation by the folder it ran in.
 
 ## Spaces
 
@@ -151,6 +164,10 @@ confirmation also lists them:
   other member. The lost members' chips are struck through. Those members stay
   in the Topic and read **Repository unavailable**, with **Locate** to point
   them at a copy elsewhere. A Topic left empty is not deleted.
+
+When the space has [chats](#chats-in-a-space), the confirmation lists them
+under **Chats deleted with it**. Their sessions are stopped and deleted, and
+their folders go with the space.
 
 ## Projects
 
