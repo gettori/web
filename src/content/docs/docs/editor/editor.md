@@ -17,7 +17,7 @@ completions, errors and navigation from
 - Click a path in a chat, a search result, a diff or a terminal.
 - Drag it from the Files tree onto a pane, or from Finder onto a tab strip.
 
-`Cmd+N` opens a scratch buffer, `Untitled-1`, kept under
+`Cmd+Shift+N` opens a scratch buffer, `Untitled-1`, kept under
 `~/.config/tori/scratch/` until you save it somewhere with **Save as a new
 file** in the command palette.
 
