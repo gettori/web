@@ -78,11 +78,13 @@ in Home.** The new Topic opens in the space's tree.
 
 In the space's tree:
 
-- The **Topics** heading counts the space's Topics. Click it to collapse the
-  group; each space remembers its own. Collapsed, the heading carries a status
-  bubble for the Topics under it.
+- Click the **Topics** heading to collapse the group; each space remembers its
+  own. Collapsed, the heading counts the Topics and carries a status bubble for
+  them.
 - While there is a Topics group, the projects below it get a **Projects**
-  heading.
+  heading, which counts them.
+- Past six, Topics and projects fold into a **N more** row, see
+  [Long groups](/docs/workspace/spaces/#long-groups).
 - The filter narrows both groups, and each heading counts what is left.
 - The title bar reads the space, the Topic and the member in front, such as
   **work > webhooks > api**.
@@ -163,8 +165,11 @@ fast-forward only.
 ## The Topic in the sidebar
 
 A Topic is a row with its members under it, like a project with its branches.
-Collapsed, it is one line with a chip per member and a status for the Topic's
-chat. A new Topic opens expanded, and the list remembers which are open.
+Collapsed, it is one line with the Topic's name and a status for its chat. The
+chips, one per member, show while you hover the row or tab into it, on the
+selected Topic, and always while a member needs repair. They keep their room
+when hidden, so nothing in the row moves when they appear. A new Topic opens
+expanded, and the list remembers which are open.
 
 - Click a member to open the Topic with that member in front.
 - An expanded member shows its pull request on a second line. A failing check
