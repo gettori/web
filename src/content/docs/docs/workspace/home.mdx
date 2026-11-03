@@ -177,12 +177,13 @@ worktree. Ask a question, draft a document, work through a CSV.
 
 ### Start a chat
 
-Press `Cmd+N` from any space, click the **+** on the **Chats** heading, or
-pick **New chat** from Home's **...** menu. **New Chat** is also in the File menu and the
+In Home, press `Cmd+N`, click the **+** on the **Chats** heading, or pick
+**New chat** from Home's **...** menu. In a named space the same keys start a
+chat in that space, see [Chats in a space](/docs/workspace/spaces/#chats-in-a-space). **New Chat** is also in the File menu and the
 command palette. While a terminal has the focus, `Cmd+N` goes to the program
 running in it.
 
-Tori switches to Home and adds a row, **New chat**, at the top of **Chats**.
+Tori adds a row, **New chat**, at the top of **Chats**.
 The composer sits at the bottom of the window, as in any chat, reading **Ask
 anything. Drop files here to attach them.** Pick the agent and model as in any
 [new chat](/docs/agents/starting-a-chat/).
@@ -191,7 +192,7 @@ The first send starts the session, and the row takes its name from your first
 message.
 
 Each chat runs in its own folder that Tori keeps for it, under
-`~/.config/tori/chats/`. You never pick it or see it in the tree. Forks,
+`~/.config/tori/chats/.home/` for Home's. You never pick it or see it in the tree. Forks,
 rewinds and handoffs made in a chat stay in that chat: they run in the same
 folder and see the same files, and the row shows the newest.
 
