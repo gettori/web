@@ -182,7 +182,6 @@ Right-click a Topic, or use its actions button:
 | **Rename...** | Changes the Topic's name. The branch stays as it is |
 | **Move to...** | Lists the Topic in Home or in a space's tree, see [Move a Topic](#move-a-topic) |
 | **Add repository...** | Opens the same picker to add members, **Add to Topic** |
-| **When a chat needs a worktree** | **Ask me first**, **Create it** or **Refuse**, see [Chats in a Topic](#chats-in-a-topic) |
 | **Delete...** | Deletes the Topic, see below |
 
 ## Move a Topic
@@ -270,7 +269,9 @@ Topic**.
 
 A Topic chat cannot write in a member's repository outside the Topic's own
 worktrees. When it needs to change a reference, it asks for a worktree, and
-the Topic's **When a chat needs a worktree** setting decides what happens:
+**When a chat needs a worktree**, in Settings > Integrations under **Topics**,
+decides what happens. It is one setting for every Topic, and a chat already
+running follows a change at once:
 
 | Setting | What happens |
 | --- | --- |
