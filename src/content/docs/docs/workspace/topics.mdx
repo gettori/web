@@ -219,19 +219,27 @@ Deleting the Topic itself loses nothing: make it again over the same
 repositories and the branches are still there. Deleting a space deletes its
 own Topics with it, see [Delete a space](/docs/workspace/spaces/#delete-a-space).
 
-The same dialog decides each worktree. Under a member with one, tick **Remove
-worktree auth** (its folder's name) to remove it; left unticked, it stays on
-its branch and shows up in Spaces as an ordinary branch. Once ticked, **Also
-delete branch feat/auth** appears under it, ticked for a **clean** worktree and
-unticked for one with work at risk. A [moved worktree](#move-a-worktree-into-a-topic)
-never offers its branch. A worktree with terminals running in it says so, since
-removing it stops them.
+The same dialog decides what goes with it, as a table of **Repository**,
+**Worktree** and **Branch**. Each member shows its branch, its folder and a
+tag: **clean**, **merged**, **uncommitted**, **unpushed**, or **main checkout**
+for a reference, which reads **Not a worktree** and offers nothing to remove.
 
-The button says what it does, such as **Delete Topic and 2 worktrees**, and
-reads **Deleting...** until the record and the chosen worktrees are gone. The
-record goes first; if Tori cannot delete it, nothing is removed. A worktree git
-refuses to remove opens again on its own, **webhooks is deleted. Its
-worktrees?**, with git's reason, to retry or **Keep all**.
+Tick **Worktree** to remove that worktree, and **Branch** to delete its branch
+too; a branch can only go with its worktree. A clean or merged row starts
+ticked, and a row with work at risk starts unticked. Ticking one that would
+lose something says so under it, such as **Uncommitted changes in this worktree
+will be lost.** or **Commits on feat/auth aren't pushed and will be lost.**, and
+a worktree with terminals running in it says they will stop. A
+[moved worktree](#move-a-worktree-into-a-topic) never offers its branch, which
+reads **Kept**. Anything left unticked stays in its repository and shows up in
+Spaces.
+
+The foot of the dialog sums it up, such as **Removes 2 worktrees and 2
+branches**, and **Delete Topic** reads **Deleting...** until the record and
+what was ticked are gone. The record goes first; if Tori cannot delete it,
+nothing is removed. A worktree git refuses to remove opens again on its own,
+**webhooks is deleted. Its worktrees?**, with git's reason, to retry or **Keep
+all**.
 
 ## One workspace
 
