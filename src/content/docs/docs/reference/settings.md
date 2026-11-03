@@ -183,6 +183,7 @@ line, each with **Reset to defaults**. See
 | --- | --- | --- |
 | Git fetch every | 10 min | How often `git fetch` runs in the background; 0 turns it off. Pull request status and review requests refresh every 2 minutes either way |
 | Show Topic worktrees in Spaces | Off | Also lists a [Topic's](/docs/workspace/topics/) worktrees under their repository in Spaces |
+| When a chat needs a worktree | Ask me first | What a Topic chat gets when it asks for a worktree in a repository it can only read: **Ask me first**, **Create it** or **Refuse**. See [Chats in a Topic](/docs/workspace/topics/#chats-in-a-topic) |
 | Remove worktrees after merge | Off | Removes a clean worktree once its pull request merged, active Space only. See [Remove worktrees automatically](/docs/git/worktrees-and-branches/#remove-worktrees-automatically) |
 | Remove idle worktrees after | Off | Removes a clean, pushed worktree idle for 3, 7, 14 or 30 days. The branch is kept |
 
@@ -257,7 +258,6 @@ that thing is rather than in the Settings window.
 | Ports per worktree | Project settings > Tooling | [How many of the block are exported](/docs/git/ports/#a-block-of-ports-per-worktree) |
 | Verification commands | Project settings > Tooling | [What counts as a check](/docs/reference/security/#what-counts-as-a-check) |
 | Host account for a repository | Project settings > General | Which login its pull requests and pushes use, kept per remote |
-| When a chat needs a worktree | Topic menu | [Ask, create or refuse](/docs/workspace/topics/#chats-in-a-topic) |
 | Autopilot contract | Project settings > Agents | [How work ships and how far it goes](/docs/automation/autopilot/#per-project-contract) |
 | Usage windows, warn threshold, notify | Settings > Agents, per account | Which quota bars show and when they warn |
 | Sandbox level | Project settings > Tooling | [As me, boxed when unattended, or always boxed](/docs/agents/unattended/#pick-a-level) |
