@@ -34,20 +34,28 @@ space's tile.
 
 From the top:
 
-- **The heading** reads **Home**. Its **+** opens a menu: **New chat**,
-  **New topic**, and **Attach folder...** (**Use a folder from anywhere on
-  disk. Nothing is moved.**). The search button, or `Cmd+Shift+E`, filters
-  the tree: **Filter topics, folders and chats**.
-- **New chat**, a row pinned under the heading with its key, `Cmd+N`, at its right end. It
-  stays in place while the tree scrolls.
+- **The heading** reads **Home**. The **...** beside it is Home's menu:
+  **New chat**, **New topic**, **Attach folder...** (**Use a folder from
+  anywhere on disk. Nothing is moved.**) and **Edit icon and colour**.
+  Right-click the heading, or the empty part of the tree, for the same menu.
+  The search button, or `Cmd+Shift+E`, filters the tree: **Filter topics,
+  folders and chats**.
+- **Chats**: your chats, newest first, with a **+** for a new one.
 - **Topics**: the Topics that belong to no space, with a **+** for a new one.
 - **Projects**: the attached folders, with a **+** that goes straight to the
   folder picker.
-- **Chats**: your chats, newest first.
 
-Each group shows only when it has something in it. Click a group's heading to
-collapse it; Tori remembers. Collapsed, the heading carries a status bubble for
-what is under it.
+Each group shows only when it has something in it, with a little space above
+its heading. Click a group's heading to collapse it; Tori remembers. Collapsed,
+the heading shows how many it holds and a status bubble for what is under it.
+
+Each group lists six and folds the rest, see
+[Long groups](/docs/workspace/spaces/#long-groups). Chats also fold by age:
+chats untouched for a week go under an **Older** row at the bottom of
+**Chats**, closed until you open it, and with a status bubble for what it hides
+while it is closed. The chat you have selected, and a chat whose agent is
+working or waiting on you, never go into **Older**. While the filter has text,
+every matching chat shows, old ones included.
 
 Like any space, Home remembers where you were: switch back to it and the
 Topic, folder or chat you left on is selected again. With a Topic of Home
@@ -174,13 +182,13 @@ worktree. Ask a question, draft a document, work through a CSV.
 
 ### Start a chat
 
-Press `Cmd+N` from any space, click the pinned **New chat** row, or pick **New
-chat** from Home's **+** menu. **New Chat** is also in the File menu and the
+Press `Cmd+N` from any space, click the **+** on the **Chats** heading, or
+pick **New chat** from Home's **...** menu. **New Chat** is also in the File menu and the
 command palette. While a terminal has the focus, `Cmd+N` goes to the program
 running in it.
 
-Tori switches to Home and adds a row, **New chat** in italics, at the top of
-**Chats**. The composer sits in the middle of the window, reading **Ask
+Tori switches to Home and adds a row, **New chat**, at the top of **Chats**.
+The composer sits at the bottom of the window, as in any chat, reading **Ask
 anything. Drop files here to attach them.** Pick the agent and model as in any
 [new chat](/docs/agents/starting-a-chat/).
 
@@ -198,12 +206,23 @@ The title bar reads **Home**, then the chat's name. The chat is a tab like
 any other, so files you open sit beside it, but a chat's tab strip has no
 launch button and no **Session history**: one chat is one conversation.
 
+The chat's menu works as in any chat, with two differences:
+
+- [Send to a new chat](/docs/agents/transcript/#send-to-a-new-chat) starts a
+  new chat of its own in Home, at the top of **Chats**, and sends the
+  composer's text there.
+- [Fork this chat](/docs/agents/transcript/#fork-this-chat) keeps the fork in
+  the same chat, so the row shows the fork as its newest.
+
+A Home chat never shows the **Another chat is already running in this
+worktree.** note: it has no worktree to share.
+
 ### The chat row
 
 Each row shows the chat's name and when it was last active: **now** within
 the hour, **2h**, **Yesterday**, a weekday such as **Mon** for the last week,
 then a date such as **Oct 28**. While its agent is working or waiting on you,
-the time gives way to its status. Hover the row for its actions button.
+the time gives way to its status. Right-click the row for its menu.
 
 The row menu:
 
