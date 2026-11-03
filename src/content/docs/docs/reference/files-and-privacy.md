@@ -45,7 +45,7 @@ Everything Tori itself writes is a plain file, mostly under
 | Path | What |
 | --- | --- |
 | `settings.json` | Every setting on the [Settings](/docs/reference/settings) page |
-| `tori.toml` | Your spaces, projects and folders, Global's icon and colour, and the folders [attached](/docs/workspace/global/#attached-folders) to it |
+| `tori.toml` | Your spaces, projects and folders, Home's icon and colour, and the folders [attached](/docs/workspace/home/#attached-folders) to it |
 | `state.json` | First-run flag and a couple of one-time notice flags |
 | `agents/*.toml` | Custom or overridden agent adapters |
 | `lsp/*.toml`, `dap/*.toml`, `formatters/*.toml` | Custom language server, debugger and formatter overrides |
@@ -58,7 +58,7 @@ Everything Tori itself writes is a plain file, mostly under
 | `devices.json` | Paired phones (never the plaintext credential) |
 | `scratch/` | Untitled scratch buffers |
 | `attachments/` | Files you pasted or dropped into a chat, handed to the agent by path |
-| `chats/` | One folder per [chat](/docs/workspace/global/#chats), where its sessions run and what its agent writes. Deleted with the chat |
+| `chats/` | One folder per [chat](/docs/workspace/home/#chats), where its sessions run and what its agent writes. Deleted with the chat |
 | `chat-queues/` | Each chat's queued messages, one file per session, removed when the queue empties or the session is deleted |
 | `stash.json` | Drafts stashed from the composer with `Cmd+S`, up to 20 |
 | `crashes/` | A file per crash: version, thread, message and backtrace. Never sent anywhere |
