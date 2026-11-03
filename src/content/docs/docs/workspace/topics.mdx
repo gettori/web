@@ -19,17 +19,19 @@ Each repository joins a Topic in one of two ways:
 - **Reference**: no branch and no worktree. A read only view of the
   repository's own checkout, for code the change needs to read but not touch.
 
-## Switch to Topics
+## Where Topics are listed
 
-Click the **Topics** tile at the end of the space strip, or run **Toggle Spaces
-/ Topics** from the command palette. The sidebar heading reads **Topics**, with
-a **+** for a new one. Click a space tile to go back.
+A Topic that belongs to no space is listed in [Global](/docs/workspace/global/),
+the first tile in the space strip, under its **Topics** heading. A Topic that
+belongs to a space is listed in that space's tree, see
+[Topics in a space](#topics-in-a-space).
 
 ## Create a Topic
 
 <Steps>
 
-1. In Topics, click **+**, **New Topic**.
+1. In Global, click **+** by the heading and pick **New topic**, or click the
+   **+** on the **Topics** heading.
 2. Type a name. **Branch** fills in from the name as you type, with no prefix
    added, until you change it yourself. It is the exact branch every worktree
    member will use. A name git would not accept says **not a valid branch name**.
@@ -63,8 +65,8 @@ worktree when the work reaches it.
 
 A Topic can belong to one space. It is then listed in that space's tree, under
 a **Topics** heading above the space's projects, and can hold that space's
-projects only. A Topic that belongs to no space is listed in Topics and can
-hold projects from any space. Topics mode lists only those.
+projects only. A Topic that belongs to no space is listed in Global and can
+hold projects from any space.
 
 To make one, open the space menu and pick **New Topic** (**Groups worktrees
 from work's projects**), or click the **+** on the space's **Topics** heading,
@@ -72,7 +74,7 @@ from work's projects**), or click the **+** on the space's **Topics** heading,
 **Projects in work** only, with how many are picked, each project naming the
 branch its checkout is on, such as **from main**. Under the list: **Only
 work's projects can join. For projects from several spaces, make the Topic
-from Topics.** The new Topic opens in the space's tree.
+in Global.** The new Topic opens in the space's tree.
 
 In the space's tree:
 
@@ -87,15 +89,15 @@ In the space's tree:
 
 Adding a project from another space to a space's Topic is refused, from the
 phone and the command line too: **api is not in work, and webhooks holds
-work's projects only. Use Move to... on the Topic to list it in Topics
+work's projects only. Use Move to... on the Topic to list it in Global
 first.**
 
 ### When a space's folder is gone
 
 A space is its folder, so renaming or deleting the folder outside Tori leaves
-its Topics with no tree to be listed in. Such a Topic shows in Topics mode,
-with a note under its row: **From work, which Tori can't find. Its folder was
-renamed or deleted outside Tori.** **Keep in Topics** makes it a Topic of no
+its Topics with no tree to be listed in. Such a Topic shows in Global, with a
+note under its row: **From work, which Tori can't find. Its folder was
+renamed or deleted outside Tori.** **Keep in Global** makes it a Topic of no
 space; **Delete** opens the usual [delete](#delete-a-topic). Until then its
 members can still be repaired.
 
@@ -105,19 +107,19 @@ Work that started as an ordinary worktree can join a Topic as it is. Right-click
 the worktree in Spaces and pick **Move to topic...**. The dialog has two tabs:
 
 - **Existing**: one list, filtered with **Search Topics**, in two groups:
-  **In work**, the Topics of the worktree's own space, then **Topics**, those
+  **In work**, the Topics of the worktree's own space, then **Global**, those
   that belong to no space. Topics of other spaces cannot take it, so they are
   not offered. Pick one and click **Move**.
 - **New**: the New Topic form with this worktree already in it, shown as **This
   worktree, on** its branch. **Branch** starts as the worktree's branch.
   **Where** puts the new Topic in the worktree's space (**Lives in work's tree.
-  Can hold work's projects only.**), the default, or in **Topics** (**Listed in
-  Topics. Can hold projects from any space.**). Pick any other repositories and
+  Can hold work's projects only.**), the default, or in **Global** (**Listed in
+  Global. Can hold projects from any space.**). Pick any other repositories and
   click **Create and move**. The dialog opens on New when there are no Topics
   yet, and switching tabs keeps what you typed.
 
 After the move the sidebar opens the Topic where it is listed, the space's
-tree or Topics, with the moved worktree in front. Tabs open in the worktree move with it. A chat
+tree or Global, with the moved worktree in front. Tabs open in the worktree move with it. A chat
 that was already started keeps working in that one repository, since it keeps
 the folders it launched with; the dialog says so before you move, for example
 **1 chat here moves with it and keeps working in this repo only. New chats in
@@ -176,7 +178,7 @@ Right-click a Topic, or use its actions button:
 | Item | What it does |
 | --- | --- |
 | **Rename...** | Changes the Topic's name. The branch stays as it is |
-| **Move to...** | Lists the Topic in Topics or in a space's tree, see [Move a Topic](#move-a-topic) |
+| **Move to...** | Lists the Topic in Global or in a space's tree, see [Move a Topic](#move-a-topic) |
 | **Add repository...** | Opens the same picker to add members, **Add to Topic** |
 | **When a chat needs a worktree** | **Ask me first**, **Create it** or **Refuse**, see [Chats in a Topic](#chats-in-a-topic) |
 | **Delete...** | Deletes the Topic, see below |
@@ -184,8 +186,8 @@ Right-click a Topic, or use its actions button:
 ## Move a Topic
 
 **Move to...** on the Topic menu opens **Move webhooks**, which says where it
-is now, **Now in Topics** or **Now in work**. Pick **Topics** (**Any space's
-projects**) or one of your spaces, then click the button, which names the
+is now, **Now in Global** or **Now in work**. Pick **Global** (**Any space's
+projects**), listed first, or one of your spaces, then click the button, which names the
 choice: **Move to work**. The place it is now is marked **Current**.
 
 A space can take the Topic only when every member is one of its projects. Any

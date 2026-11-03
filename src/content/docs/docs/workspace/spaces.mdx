@@ -40,16 +40,16 @@ disk moves when you do.
 
 ## The parts of the sidebar
 
-- **The heading**: the active space's name, followed by **Spaces** in a quieter tone. The **...**
-  beside it is the space's menu. In Topics mode it reads **Topics** and has a
-  **+** for a new Topic.
+- **The heading**: the active space's name. The **...** beside it is the
+  space's menu. In [Global](/docs/workspace/global/) it reads **Global** and
+  has a **+** for a new chat, Topic or attached folder.
 - **The filter**: the search button at the right of the heading, or
   `Cmd+Shift+E`, opens a field that filters the tree by project name (by
-  Topic or member name in Topics mode). `Escape` closes it and clears it.
+  Topic, folder or chat name in Global). `Escape` closes it and clears it.
 - **The tree** of the active space: its [Topics](#topics), when it has any,
   then its projects and branches.
-- **The space strip** at the bottom: a tile per space, then the **Topics**
-  tile, then the **dock** button at the far right, which shows or hides the
+- **The space strip** at the bottom: the **Global** tile, then a tile per
+  space, then the **dock** button at the far right, which shows or hides the
   [dock](/docs/editor/terminal/#the-dock) (`Cmd+Ctrl+J`) and counts the dock's
   tabs while it is hidden.
 
@@ -70,7 +70,9 @@ Every tile you are not looking at carries one status bubble for everything in
 that space, so a space in the background still tells you when something in it
 needs you or is working.
 
-Drag a tile left or right to reorder the spaces.
+Drag a tile left or right to reorder the spaces. The
+[Global](/docs/workspace/global/) tile comes first, set apart by a thin line,
+and does not move.
 
 **Space tiles**, in Settings > Appearance, puts the tiles in a strip along the
 **Bottom** of the sidebar (the default) or in a rail down its **Left** edge.
@@ -175,7 +177,8 @@ clone finishes, or stays open with the exit code when it fails. A URL starting
 with `-` is refused, so it can never be read as a git option.
 
 To add a project that already exists on disk, move or create its folder
-inside the space's folder.
+inside the space's folder, or leave it where it is and
+[attach it to Global](/docs/workspace/global/#attach-a-folder).
 
 ### The project menu
 
@@ -192,7 +195,7 @@ Right-click a project row, or hover it and click its actions button:
 | **Prune worktrees** | Bare | Clears git's records of worktree folders deleted outside Tori, and says how many it pruned |
 | **Set origin**, **Change origin** | Repo, Bare | Points `origin` at a remote. Accepts `https://`, `git@` and `ssh://` URLs. Existing branches keep their names |
 | **Project settings** | Any | Opens the project's [settings dialog](/docs/workspace/project-settings/): icon, setup, run and teardown commands and shared files, allowed agents, verification commands, trust, origin and account, the repo's workspace settings and the autopilot contract |
-| **Remove project**, **Remove folder** | Any | Deletes it, see below |
+| **Remove project**, **Remove folder** | Any | Deletes it, see below. The row's second line says so: **Deletes the folder from disk** |
 
 ### Convert a clone to the worktree layout
 
@@ -260,8 +263,10 @@ for a bare project every worktree in it. Push what you want to keep first.
 
 </Aside>
 
-The confirmation shows the folder's size, running agents, and anything
-uncommitted or unpushed, and asks you to type the project's name, in any case.
+The confirmation shows the folder's path, **And everything in it, including
+.git** for a project, tagged **Deleted**, then its size, running agents, and
+anything uncommitted or unpushed, and asks you to type the project's name, in
+any case.
 Agents and terminals running in it are stopped first.
 
 A bare project whose setup never finished, with a `.bare` and no worktree,
@@ -464,8 +469,9 @@ closed project and a space tile still show it:
 
 ## Topics
 
-The **Topics** tile in the strip switches the tree to Topics, a branch shared
-across several repositories. See [Topics](/docs/workspace/topics/).
+A Topic is a branch shared across several repositories. One that holds projects
+from more than one space is listed in [Global](/docs/workspace/global/). See
+[Topics](/docs/workspace/topics/).
 
 A Topic can also belong to a space, holding only that space's projects. **New
 Topic** in the space menu, **Groups worktrees from work's projects**, makes

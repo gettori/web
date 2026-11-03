@@ -1,0 +1,250 @@
+---
+title: The Global space
+description: "Global, the built-in space: Topics that cross spaces, folders attached from anywhere on disk, and chats with no project, each with its Artefacts panel."
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+import Steps from "../../../../components/docs/Steps.astro";
+
+**Global** is a space that is always there. It holds what belongs to no one
+space:
+
+- [Topics](/docs/workspace/topics/) that hold projects from any space.
+- **Attached folders**: projects that live anywhere on disk, outside your base
+  folder, used where they are.
+- **Chats**: conversations with an agent that need no project at all.
+
+Global has no folder of its own, so it cannot be renamed or deleted.
+
+## The Global tile
+
+Global is the first tile in the space strip, set apart from your spaces by a
+thin line. It wears a globe on a teal tile by default and never moves when you
+reorder the other spaces. Click it to show Global's tree.
+
+Right-click the tile for its menu. **Edit icon and colour**, under the note
+**Global is built in. It can't be renamed or deleted.**, opens the space
+dialog with the name locked, so you can pick another icon or colour.
+
+While you are in another space, the Global tile carries a status bubble for
+the sessions in Global's Topics, attached folders and chats, the same as any
+space's tile.
+
+## Global's tree
+
+From the top:
+
+- **The heading** reads **Global**. Its **+** opens a menu: **New chat**,
+  **New topic**, and **Attach folder...** (**Use a folder from anywhere on
+  disk. Nothing is moved.**). The search button, or `Cmd+Shift+E`, filters
+  the tree: **Filter topics, folders and chats**.
+- **New chat**, a row pinned under the heading with its key, `Cmd+N`, at its right end. It
+  stays in place while the tree scrolls.
+- **Topics**: the Topics that belong to no space, with a **+** for a new one.
+- **Projects**: the attached folders, with a **+** that goes straight to the
+  folder picker.
+- **Chats**: your chats, newest first.
+
+Each group shows only when it has something in it. Click a group's heading to
+collapse it; Tori remembers. Collapsed, the heading carries a status bubble for
+what is under it.
+
+Like any space, Global remembers where you were: switch back to it and the
+Topic, folder or chat you left on is selected again. With a Topic of Global
+selected, the title bar reads **Global**, then the Topic.
+
+With nothing in Global yet, the tree says **Chats you start, folders you
+attach and Topics that cross spaces show up here.**, with an **Attach
+folder...** button.
+
+## Attached folders
+
+An attached folder is a project that stays where it is: a client folder in
+Documents, a clone in Downloads, a repository on another drive. Tori uses it in
+place and never moves or copies it. Once attached it works like any project:
+its branches, worktrees, sessions and [Topic](/docs/workspace/topics/)
+membership behave the same.
+
+Attached folders live in Global only.
+
+### Attach a folder
+
+<Steps>
+
+1. Click **+** by the **Global** heading and pick **Attach folder...**, or
+   click the **+** on the **Projects** heading.
+2. Pick the folder in the system folder picker.
+3. The **Attach folder** dialog shows the **Folder**, with **Change...** to
+   pick another, and what Tori found in it (below).
+4. **Name** is filled in from the folder's name, without `.git`. Change it if
+   you like.
+5. Click **Attach**.
+
+</Steps>
+
+Under the name: **Tori uses the folder where it is. Nothing is moved or
+copied, and detaching later leaves it untouched.**
+
+What the dialog says it found:
+
+| Found | Card | Also shows |
+| --- | --- | --- |
+| A plain folder | **Plain folder**: **Not a git repository. Sessions run in this folder; there are no branches or worktrees to show.** | Nothing |
+| An ordinary clone | **Git repository on main**: **A clone with 4 local branches. It appears with its branches and worktrees like any project.** | **Remote**, such as `github.com/acme/site`, and **Worktrees**, such as **none besides main** |
+| A bare repository | **Bare repository with 3 worktrees**: **All three are attached with it.** | Each worktree's branch and folder. They can be anywhere on disk |
+
+Reading the folder never runs git in it. If it takes a moment, the card says
+**Reading folder...**.
+
+Attaching trusts the folder and its worktrees, since you picked it yourself in
+the system dialog. See [Project trust](/docs/reference/security/#project-trust).
+
+**Attach** stays disabled, under **Tori can't attach this folder**, when the
+folder is:
+
+- your home folder or the whole disk: **Pick a project folder, not your home
+  folder or the whole disk.**
+- inside your base folder: **This folder is inside your base folder, so it's
+  already in a space.**
+- the folder that holds your base folder: **This folder holds your base
+  folder. Pick a project folder inside it.**
+- Tori's own folder: **This folder holds Tori's own files.**
+- already attached: **Already attached as acme-site.**
+- inside an attached folder, or holding one: **This folder is inside
+  acme-site, which is already attached.**, or **This folder holds acme-site,
+  which is already attached.**
+- a worktree of another repository: **This is a worktree of acme-site. Attach
+  that repository instead.**
+
+New worktrees for an attached repository go where they go for any project:
+into `.tori/worktrees/` for an ordinary clone, beside the others for a bare
+repository.
+
+### How an attached folder looks
+
+An attached project's tile wears a small arrow badge, read out as **Attached
+folder**. It shows wherever the project appears: in the tree, on a Topic's
+member rows and in the pickers. Hover the row and its right end shows the
+folder it sits in, such as `~/Documents/clients`, in place of its status.
+
+### When the folder is missing
+
+When the folder is gone, or the drive it is on is unplugged, the row's tile
+turns dashed and faint, and a warning mark, read out as **Folder missing**,
+takes its right end. The menu's heading reads **Missing**. Open or select the
+row for the note:
+
+**Tori can't find /Volumes/Archive/thesis. The drive may be unplugged, or the
+folder was moved. Sessions from the old place stay there.**
+
+- **Locate...** opens the folder picker. Pick where the folder is now and the
+  project follows it, with its name, settings, trust, branch records and
+  issue links.
+  Sessions recorded at the old path stay there, so they drop out of its
+  history.
+- **Detach** forgets it, see below.
+
+The row's menu holds only those two. Tori checks again when the window comes
+to the front, so a folder that comes back, a drive plugged in again, returns to
+normal by itself.
+
+### Detach a folder
+
+Detaching never touches the disk. The last row of an attached project's menu is
+**Detach...**, **The folder stays where it is**, in place of **Remove
+project**.
+
+The confirmation is titled **Detach acme-site?** and shows the folder's path,
+**And everything in it, including .git**, tagged **Stays on disk**. It says
+what Tori forgets, for example **Tori forgets this folder: its 2 sessions
+close and it leaves onboarding-v2. Attach it again any time.**
+
+On **Detach**:
+
+- the project's sessions close and its tabs go;
+- it leaves every Topic it is in. A Topic it was the only project of is
+  deleted with it, and the confirmation names it first: **onboarding-v2 has no
+  other project, so it is deleted with the detach.**
+- the folder, its `.git` and every transcript stay where they are.
+
+## Chats
+
+A chat is a conversation with an agent that needs no project, branch or
+worktree. Ask a question, draft a document, work through a CSV.
+
+### Start a chat
+
+Press `Cmd+N` from any space, click the pinned **New chat** row, or pick **New
+chat** from Global's **+** menu. **New Chat** is also in the File menu and the
+command palette. While a terminal has the focus, `Cmd+N` goes to the program
+running in it.
+
+Tori switches to Global and adds a row, **New chat** in italics, at the top of
+**Chats**. The composer sits in the middle of the window, reading **Ask
+anything. Drop files here to attach them.** Pick the agent and model as in any
+[new chat](/docs/agents/starting-a-chat/).
+
+The first send starts the session, and the row takes its name from your first
+message.
+
+Each chat runs in its own folder that Tori keeps for it, under
+`~/.config/tori/chats/`. You never pick it or see it in the tree. Forks,
+rewinds and handoffs made in a chat stay in that chat: they run in the same
+folder and see the same files, and the row shows the newest.
+
+### A chat open
+
+The title bar reads **Global**, then the chat's name. The chat is a tab like
+any other, so files you open sit beside it, but a chat's tab strip has no
+launch button and no **Session history**: one chat is one conversation.
+
+### The chat row
+
+Each row shows the chat's name and when it was last active: **now** within
+the hour, **2h**, **Yesterday**, a weekday such as **Mon** for the last week,
+then a date such as **Oct 28**. While its agent is working or waiting on you,
+the time gives way to its status. Hover the row for its actions button.
+
+The row menu:
+
+| Item | What it does |
+| --- | --- |
+| **Rename...** | Renames the chat. Before the first send it reads **Named from its first message** and does nothing |
+| **Delete chat** | Asks **Delete Plan a trip?**: **Its conversation and the files it made are removed. This cannot be undone.** **Delete chat** stops and deletes every session in the chat, then its folder with everything the agent wrote there |
+
+## Artefacts
+
+With a chat selected, the right panel has one mode, **Artefacts**: the files
+the chat produced and the files you gave it. Show or hide the panel as usual.
+
+The heading says how many there are. Below it, two groups:
+
+- **Made in this chat**: files the agent wrote to the chat's folder. The
+  agent's own settings folder, `.claude`, and other names starting with a dot
+  are left out.
+- **Added by you**: files you pasted or dropped into any of the chat's
+  sessions.
+
+Each row shows the file's kind and size, such as **Markdown** and **1.2 KB**,
+or **CSV** and **2.1 MB**. While the agent is writing a file, its row reads
+**editing** with a spinner.
+
+Click a row to open the file as a tab beside the chat: Markdown renders,
+images show, and anything else opens in the editor. The row for the file in
+front is highlighted. The list follows the chat's folder as files appear and
+change, and picks up new attachments when a turn ends.
+
+With nothing yet, the panel says **Nothing here yet**: **Files this chat
+writes, and files you drop into it, show up here.**
+
+<Aside type="note" title="Files outside the chat's folder">
+
+Artefacts lists the chat's own folder and its attachments only. A file the
+agent writes somewhere else is not listed.
+
+</Aside>
+
+## On the phone
+
+The phone shows Global in its space switcher when it has attached folders,
+with their worktrees and sessions as for any space. Chats stay on the Mac.
