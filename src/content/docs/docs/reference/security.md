@@ -359,6 +359,12 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
   device can only be done at the Mac. The
   [table](/docs/automation/mcp-server/#every-tool) lists every method.
 - A tool a caller may not use is left off its tool list entirely.
+- A chat can steer or read another chat only along a relation Tori recorded
+  (it started it, made its worktree, handed over to it, shares its Topic) or
+  one you made (a link, or an @ reference to that session), never by id
+  alone. A chat that read something hostile, like an issue or a web page,
+  cannot push instructions into an unrelated chat: the message waits for you.
+  See [Chats that work together](/docs/agents/related-chats/).
 - A phone connects with its own device credential, which is not accepted
   on the local socket, and the local token is not accepted from the
   network.
