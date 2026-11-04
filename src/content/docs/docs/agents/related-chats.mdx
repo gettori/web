@@ -1,0 +1,111 @@
+---
+title: Chats that work together
+description: See which chats started or prompted a chat, follow a worktree an agent made, and decide when one agent may message or read another chat.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+An agent can start other chats, make worktrees and message other chats
+through [Tori's MCP server](/docs/automation/mcp-server/) or the
+[`tori` CLI](/docs/automation/cli/). Tori keeps track of who did what, shows it
+on both sides, and only lets an agent reach the chats it is tied to.
+
+## A worktree an agent made
+
+When an agent makes a worktree with `worktree_new`, or starts a chat in a new
+worktree with `session_spawn`, the call shows as a worktree card instead of a
+plain tool row. It reads **Making worktree** while it runs, then **Worktree**
+with the branch, and:
+
+- the project's name, when the worktree is in another project than the chat;
+- **with a chat**, when the agent started a chat there in the same call;
+- the pull request's number and state, like **PR #482 open**, once the
+  branch has one;
+- **Removed** once the worktree is gone;
+- **Setup failed** when the project's
+  [setup command](/docs/git/worktrees-and-branches/#a-setup-command-for-new-worktrees)
+  failed in it.
+
+**Open** goes to the worktree, or to the chat the agent started there. A call
+that waits for your approval, was refused or failed stays a plain tool row,
+which is where the prompt or the error is.
+
+## From and To
+
+The strip above the composer, beside **main** and the
+[subagents](/docs/agents/subagents/), also shows the chats tied to this one:
+
+- **From** is what led to this chat: the chat that started it or made the
+  worktree it runs in, and chats that sent it a prompt.
+- **To** is what came out of it: chats it started, chats in worktrees it made,
+  chats it prompted, and chats you linked to it.
+
+Each chip has a dot for that chat's state and a mark for how it is tied. Hover
+it for the chat's name, how it is tied (like **Started this chat** or
+**Runs in a worktree made here**), whether it is **Working**, **Needs you**,
+**Idle** or **Done**, and its project and branch. Click it to open that chat.
+
+Each side shows two chips, the chat that started this one always first. The
+rest are behind a **+3** chip, which opens the whole list grouped as
+**Started this chat**, **Prompted this chat**, **Started from here**,
+**Prompted from here** and **Linked**.
+
+## Prompts from another chat
+
+A message another chat sent shows on the right like one of yours, with a
+**from** line naming that chat. Click the name to open it. The first prompt of
+a chat another chat started shows its sender the same way.
+
+## Who an agent can reach
+
+An agent can steer or read a chat only when the two are related:
+
+- one started the other, or made the worktree the other runs in;
+- the Autopilot and the chats it runs for its items;
+- a chat and the one it was [handed over](/docs/automation/cli/#handing-a-session-over) to;
+- chats in the same [Topic](/docs/workspace/topics/);
+- chats you linked.
+
+Reading is refused outright for any other chat, and the agent is told to ask
+you. To let a chat read one session without linking them,
+[reference that session with @](/docs/agents/composer/#reference-a-session-with-)
+in the chat: the reference is your permission.
+
+A message goes straight in when it goes down the tree (to a chat the sender
+started or whose worktree it made, or the Autopilot to its items), to a linked
+chat, or to a related chat that is in the middle of a turn. Anything else
+waits for you, including a message to a chat that is not related at all, and
+a worker writing to its idle parent: a chat never starts a turn only because
+another agent asked.
+
+<Aside type="note" title="Two agents talking in circles">
+
+After five messages between the same two chats with nobody typing in either,
+the next one waits for you too. Typing in either chat starts the count again.
+
+</Aside>
+
+Terminal tabs are not held to this. A tab's token cannot tell you at the shell
+from an agent running in it, so `tori steer` from a terminal tab works as
+before. A worker still cannot steer anyone.
+
+## Messages waiting for you
+
+A message that waits shows above the receiving chat's composer as
+**From Retry worker:** and the text, with how many files came with it:
+
+| Button | Does |
+| --- | --- |
+| **Accept** | Delivers this message, once |
+| **Link** | Delivers it and links the two chats |
+| **Discard** | Drops it |
+
+The sender is told its message is waiting for a person, so it does not try
+again.
+
+## Link two chats
+
+Linked chats can message and read each other from then on, both ways. The
+linked chat shows as a **To** chip in both. **Unlink** sits beside it in the
+list behind the **+3** chip, and removes the link on both sides. Only you
+can link or unlink chats; there is no tool for an agent to do it.

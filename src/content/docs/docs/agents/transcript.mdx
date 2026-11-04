@@ -22,6 +22,10 @@ small above the text. A [steer](/docs/agents/steering-and-the-queue/) is a
 bubble too, inset and labelled **Steer**, because it went into the turn above
 it rather than starting a new one.
 
+A prompt another chat sent is a bubble on the right too, with a **from** line
+naming that chat; click the name to open it. See
+[Chats that work together](/docs/agents/related-chats/#prompts-from-another-chat).
+
 Hover a past prompt to see **Rewind to here** on agents that can rewind. See
 [Rewind and fork](/docs/agents/rewind-and-fork/).
 
@@ -76,6 +80,10 @@ tool that edits a file, the diff of exactly what this call changed.
 - **Several writes to one file** in a row fold onto the first card, which then
   shows each write's diff in turn.
 
+A call that makes a worktree shows as a worktree card with the branch and an
+**Open** button. See
+[Chats that work together](/docs/agents/related-chats/#a-worktree-an-agent-made).
+
 ### Undo one hunk from the transcript
 
 An edit card can show what is on disk now, and undo part of it.
@@ -120,7 +128,6 @@ mark, so it never reads as something you said:
   [Resume at reset](/docs/agents/limits-and-spending/#resume-at-reset).
 - **Tori told this chat about its Topic**, and **its Topic changed**, in a
   [Topic](/docs/workspace/topics/) chat.
-- **From Retry worker**, a steer sent by another session.
 - The Autopilot's brief, resumes and wake ups, in the
   [Cockpit](/docs/automation/autopilot/).
 
@@ -265,9 +272,11 @@ example when no audio output can be opened.
 
 ## Long chats
 
-A long chat opens on its most recent turns, so it is quick to open. Click
-**Load earlier** at the top of the transcript to read further back; each click
-brings in more, from disk if needed. The figures on the status strip always
+A long chat opens on its most recent turns, so it is quick to open. Scroll up
+and earlier turns load by themselves before you reach the top, a page at a
+time, from disk if needed, until the start of the chat. **Load earlier** at the
+top does the same with a click or `Enter`, and is how to try again if a page
+did not come in. The figures on the status strip always
 count the whole conversation, not just what is loaded.
 
 ## The status strip

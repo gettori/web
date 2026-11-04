@@ -157,7 +157,9 @@ worktree, against the working tree.
   when that is turned on). `--prompt` is its first message and `--attach`
   adds files to it.
 - `tori steer <id> <text>` sends a message to a live chat: a steer if a turn
-  is running, its next turn if not.
+  is running, its next turn if not. Run by an agent, a message to a chat it is
+  not [allowed to reach](/docs/agents/related-chats/#who-an-agent-can-reach)
+  prints `queued` and waits for you to accept it.
 - `tori interrupt <id>` stops a chat's current turn.
 - `tori handoff <id> --to <agent>` hands a live chat over to another agent
   and prints the new session's id. See [Handing a session
@@ -341,6 +343,7 @@ wait, hand off or queue a loop. No agent session,
 worker or not, can turn the autopilot on or off: that takes a person at a
 shell or on a paired phone. A paired phone can read, steer, interrupt,
 answer and approve, and start a plain chat in a folder, but cannot pair
-another device. The full table is on the
+another device. A chat can steer or read only the chats it is
+[related to](/docs/agents/related-chats/#who-an-agent-can-reach). The full table is on the
 [MCP server](/docs/automation/mcp-server/#every-tool) page, since both
 fronts share it.
