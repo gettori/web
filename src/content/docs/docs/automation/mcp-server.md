@@ -62,18 +62,18 @@ included.
 | Tool | What it does | Who may call |
 | --- | --- | --- |
 | `sessions.list` | Sessions, newest first, with whether each is live and its state | Everyone, phone and browser too |
-| `session.tail` | The last events of a conversation, tool output capped | Everyone, phone and browser too |
-| `session.history` | A conversation a page at a time, by whole turns | Everyone, phone too |
+| `session.tail` | The last events of a conversation, tool output capped. A chat may only read a [related](/docs/agents/related-chats/#who-an-agent-can-reach) chat or one you referenced | Everyone, phone and browser too |
+| `session.history` | A conversation a page at a time, by whole turns, with the same rule as `session.tail` for chats | Everyone, phone too |
 | `session.wait` | Wait for a session to stop working; its state, why it came back (`ended`, `idle`, `asking`, `needs_you`, `limited` with when the limit resets, or `timeout`), its pending question, its last message, and `handed_to` once it was handed over | Shell, chat |
 | `session.check` | What a session's work came to: the verification verdict and checks of its latest turn that changed code, and a diff stat over all its turns in files it wrote | Everyone |
 | `session.handoff` | Hand a live chat over to another agent: a new session in the same folder with a brief of the old one's work, and the old one closed once it is idle. Refused for a session the autopilot drives | Shell, chat |
 | `session.pending` | What a session is waiting on, each with its id | Shell, chat, phone, browser |
 | `session.answer` | Answer a question or permission prompt of a session you spawned | Chat, phone |
 | `session.spawn` | Start a session, optionally in a new worktree, with a first message and files | Shell, chat, phone (a plain chat only) |
-| `session.steer` | Send a message to a live chat, as a steer or as its next turn, with files. The browser's files must be ones `attachment.write` stored, and it may not wake a chat that is not live | Shell, chat, phone, browser |
+| `session.steer` | Send a message to a live chat, as a steer or as its next turn, with files. From a chat, a message to a chat it is not [allowed to reach](/docs/agents/related-chats/#who-an-agent-can-reach) answers `queued` and waits for you. The browser's files must be ones `attachment.write` stored, and it may not wake a chat that is not live | Shell, chat, phone, browser |
 | `session.interrupt` | Stop a live chat's current turn | Shell, chat, phone |
 | `session.info`, `session.model`, `session.mode` | Read or switch a live chat's model and permission mode | Outside shell, phone |
-| `caller` | Who is calling: the session or tab, its agent, account and folder | Everyone, phone and browser too |
+| `caller` | Who is calling: the session or tab, its agent, account and folder, and `made_by`, the chat that made its worktree | Everyone, phone and browser too |
 | `projects.list` | The tree the sidebar draws, then Topics with their members | Everyone, phone and browser too |
 | `project.icon` | The image a project's row shows | Everyone, phone too |
 | `ports.list` | Each worktree's [dev servers](/docs/git/ports/#from-a-shell-or-an-agent): branch, folder, port block and listening ports | Everyone, browser too |
