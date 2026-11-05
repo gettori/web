@@ -64,14 +64,14 @@ included.
 | `sessions.list` | Sessions, newest first, with whether each is live and its state | Everyone, phone and browser too |
 | `session.tail` | The last events of a conversation, tool output capped. A chat may only read a [related](/docs/agents/related-chats/#who-an-agent-can-reach) chat or one you referenced | Everyone, phone and browser too |
 | `session.history` | A conversation a page at a time, by whole turns, with the same rule as `session.tail` for chats | Everyone, phone too |
-| `session.wait` | Wait for a session to stop working; its state, why it came back (`ended`, `idle`, `asking`, `needs_you`, `limited` with when the limit resets, or `timeout`), its pending question, its last message, and `handed_to` once it was handed over | Shell, chat |
+| `session.wait` | Wait for a session to stop working; its state, why it came back (`ended`, `idle`, `asking`, `needs_you`, `limited` with when the limit resets, or `timeout`), its pending question, its last message, and `handed_to` once it was handed over. A chat waits only on a session it [owns](/docs/agents/related-chats/#who-an-agent-can-reach) | Shell, chat |
 | `session.check` | What a session's work came to: the verification verdict and checks of its latest turn that changed code, and a diff stat over all its turns in files it wrote | Everyone |
 | `session.handoff` | Hand a live chat over to another agent: a new session in the same folder with a brief of the old one's work, and the old one closed once it is idle. Refused for a session the autopilot drives | Shell, chat |
-| `session.pending` | What a session is waiting on, each with its id | Shell, chat, phone, browser |
+| `session.pending` | What a session is waiting on, each with its id. A chat reads only a session it owns | Shell, chat, phone, browser |
 | `session.answer` | Answer a question or permission prompt of a session you spawned | Chat, phone |
 | `session.spawn` | Start a session, optionally in a new worktree, with a first message and files | Shell, chat, phone (a plain chat only) |
 | `session.steer` | Send a message to a live chat, as a steer or as its next turn, with files. From a chat, a message to a chat it is not [allowed to reach](/docs/agents/related-chats/#who-an-agent-can-reach) answers `queued` and waits for you. The browser's files must be ones `attachment.write` stored, and it may not wake a chat that is not live | Shell, chat, phone, browser |
-| `session.interrupt` | Stop a live chat's current turn | Shell, chat, phone |
+| `session.interrupt` | Stop a live chat's current turn. A chat stops only a session it owns | Shell, chat, phone |
 | `session.info`, `session.model`, `session.mode` | Read or switch a live chat's model and permission mode | Outside shell, phone |
 | `caller` | Who is calling: the session or tab, its agent, account and folder, and `made_by`, the chat that made its worktree | Everyone, phone and browser too |
 | `projects.list` | The tree the sidebar draws, then Topics with their members | Everyone, phone and browser too |
@@ -90,7 +90,7 @@ included.
 | `ask.create` | Ask you a question in the calling chat and wait | Chat, worker |
 | `plan.set` | Show the calling chat's plan in its [plan card](/docs/agents/permissions-and-questions/#the-plan-above-the-composer): every step each call, pending, in progress or completed, replacing the last list. An empty list hides it. Refused outside a turn | Chat |
 | `ask.wait` | Wait for the answer to a question asked earlier | Everyone |
-| `ask.answer` | Answer another session's question on your behalf | Shell, chat, phone, browser |
+| `ask.answer` | Answer another session's question on your behalf. A chat answers only for a session it owns, and a terminal tab answers none; a chat or terminal that may not answer sees the question without its id | Shell, chat, phone, browser |
 | `issues.assigned` | Open issues from the project's [issue sources](/docs/automation/autopilot/#issue-sources), or with none those assigned to you, then pull requests waiting on your review | Everyone |
 | `issues.get` | One issue: title, body, url and a suggested branch name. Given a URL, it finds the project by the repo's origin, or the one project whose issue sources read that repo | Everyone |
 | `issues.link_branch` | Make a branch on the host under an issue and fetch it | Shell, chat |
