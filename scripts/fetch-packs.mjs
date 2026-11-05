@@ -5,7 +5,6 @@
 //
 //   node scripts/fetch-packs.mjs
 //   PACKS_DIR=<dir>          a gettori/packs checkout after `tori packs-index`
-//   TORI_PACKS_LOCK=<file>   tori's src-tauri/packs.lock, instead of main's
 
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -18,8 +17,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(root, ".packs");
 const PUBLISHED = "https://raw.githubusercontent.com/gettori/packs/published";
 const TARBALL = "https://codeload.github.com/gettori/packs/tar.gz";
-// main rather than the latest tag, like the CHANGELOG: the next release's set.
-const LOCK = "https://raw.githubusercontent.com/gettori/tori/main/src-tauri/packs.lock";
+// The release's own lock, not main's: a pack page must not say "not bundled"
+// while the build people download still ships it.
+const LOCK = (tag) => `https://raw.githubusercontent.com/gettori/tori/${tag}/src-tauri/packs.lock`;
 // Its tags over git, not the API, which rate limits, nor the releases feed,
 // which lists only the newest ten and loses a platform that has not shipped
 // in that long.
@@ -69,8 +69,8 @@ function file(repo, url, kind, id, sha256) {
   return { path, bytes };
 }
 
-async function bundled() {
-  const lock = process.env.TORI_PACKS_LOCK ? readFileSync(process.env.TORI_PACKS_LOCK) : await get(LOCK);
+async function bundled(tag) {
+  const lock = process.env.TORI_PACKS_LOCK ? readFileSync(process.env.TORI_PACKS_LOCK) : await get(LOCK(tag));
   return lock
     .toString("utf8")
     .split("\n")
@@ -120,8 +120,8 @@ async function releases() {
 }
 
 const { index, sig, repo } = await source();
-const ids = await bundled();
 const { macos, android } = await releases();
+const ids = await bundled(macos.tag);
 if (ids.length === 0) fail("packs.lock lists no packs");
 const rows = JSON.parse(index.toString("utf8")).rows;
 if (!Array.isArray(rows) || rows.length === 0) fail("index.json has no rows");
@@ -144,4 +144,4 @@ writeFileSync(join(next, "bundled.json"), JSON.stringify(ids));
 writeFileSync(join(next, "release.json"), JSON.stringify({ ...macos, android }));
 rmSync(OUT, { recursive: true, force: true });
 renameSync(next, OUT);
-console.log(`fetch-packs: ${rows.length} rows, ${files.length} files, ${ids.length} bundled, Tori ${macos.version}, Android ${android.version}, ${sig ? "signed" : "unsigned"}`);
+console.log(`fetch-packs: ${rows.length} rows, ${files.length} files, ${ids.length} bundled at ${macos.tag}, Tori ${macos.version}, Android ${android.version}, ${sig ? "signed" : "unsigned"}`);

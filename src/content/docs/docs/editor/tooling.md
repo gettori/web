@@ -86,9 +86,10 @@ never switch back on something you turned off.
 ## Adding your own
 
 Every server, linter, formatter and debugger is a [pack](/packs/): a TOML
-file, not code. Add one from the catalog with **Add a language**, **Add a
-linter**, **Add a formatter** or **Add a debugger** in its Settings pane, or
-drop one into `~/.config/tori/packs/lsp/`, `~/.config/tori/packs/formatters/`
+file, not code. Install one from its page in the catalog, which **Browse
+packs** in each Settings pane opens, or let Tori
+[offer it](/docs/packs/installing/#packs-tori-offers-on-its-own) when a file,
+F5 or Format needs it. Or drop one into `~/.config/tori/packs/lsp/`, `~/.config/tori/packs/formatters/`
 or `~/.config/tori/packs/dap/` and restart Tori. A file may not reuse a built
 in `id`: to change a built in, copy it under a new id and switch the built in
 off. A broken file is listed under **Needs fixing** in its pane, and whatever

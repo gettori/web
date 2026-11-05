@@ -432,6 +432,15 @@ catalog: an exact npm version, or a GitHub release checked against its
 sha256 before anything is written. They are kept under `~/.config/tori/`,
 and a copy of your own on the PATH always wins.
 
+A pack comes from the catalog's index, which is signed with a key built into
+Tori, and each file is checked against the index's hash. A `tori://install`
+link from a web page names only a pack's kind and id, so the page cannot
+choose what gets installed. The link opens a dialog where **Cancel** has the
+focus and Enter does nothing, one at a time, and installing writes the file
+and runs nothing. A toolchain command a pack names is never run from a link:
+it runs from the server's card in Settings, in a terminal you can see, when
+you press Install. See [Installing a pack](/docs/packs/installing/).
+
 ## Network
 
 Tori sends no telemetry. See

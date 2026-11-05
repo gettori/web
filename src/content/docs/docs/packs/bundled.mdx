@@ -20,13 +20,14 @@ contributor, license and the version it was verified against.
 
 ## How it updates
 
-Bundled packs update through the catalog, not only through Tori releases.
-When a bundled pack changes in gettori/packs, its row in the kind's
-**Add a ...** list in Settings says **Update available** and offers
-**Update**. Nothing changes until you press it. The update writes the
-catalog's file into `~/.config/tori/packs/<kind>/`, and from then on that
-copy is the one Tori loads; **Remove** on the same row goes back to the one
-Tori shipped with.
+A pack is bundled when Tori needs it itself: the app ships the program it
+starts, a fresh install depends on it, or Tori's own repository is built with
+it. Everything else is in the catalog, and Tori
+[offers the one a file needs](/docs/packs/installing/#packs-tori-offers-on-its-own).
+
+Bundled packs update with Tori. A release carries the bundled set as
+gettori/packs had it when the release was cut, and a newer file in the
+catalog waits for the next release.
 
 ## Switching a bundled pack off
 
