@@ -181,8 +181,8 @@ $ tori steer 0f3b7d5e-8c2a-4b1e-9d6f-2a7c4e1b9f30 "also cover 429s"
 
 ## Waiting on a session
 
-`tori wait <id>` waits up to `--timeout` seconds (60 by default) and prints
-the reason on its first line:
+`tori wait <id>` waits up to `--timeout` seconds (60 by default, an hour at
+most) and prints the reason on its first line:
 
 - `idle`: the session finished its turn.
 - `asking`: it is waiting on a question, printed on the next line as
@@ -279,7 +279,8 @@ if [ "$(tori ask "Deploy to staging?" --option yes --option no)" = "yes" ]; then
 fi
 ```
 
-If the wait runs out it prints the question's id and exits `2`.
+If the wait runs out it prints the question's id and exits `2`. A wait lasts
+an hour at most, whatever `--timeout` says.
 `tori ask --wait <id>` collects the answer later, and
 `tori ask --answer <id> <text>` answers one on your behalf from another
 shell.
