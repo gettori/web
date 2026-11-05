@@ -20,8 +20,10 @@ const PUBLISHED = "https://raw.githubusercontent.com/gettori/packs/published";
 const TARBALL = "https://codeload.github.com/gettori/packs/tar.gz";
 // main rather than the latest tag, like the CHANGELOG: the next release's set.
 const LOCK = "https://raw.githubusercontent.com/gettori/tori/main/src-tauri/packs.lock";
-// The feed, not the API: no rate limit, and it lists pre-releases.
-const RELEASES = "https://github.com/gettori/tori/releases.atom";
+// Its tags over git, not the API, which rate limits, nor the releases feed,
+// which lists only the newest ten and loses a platform that has not shipped
+// in that long.
+const TORI = "https://github.com/gettori/tori";
 // A row url names the file it serves, so it is also the path in the repo.
 const FILE_URL = /^https:\/\/gettori\.app\/packs\/files\/(lsp|dap|formatters|themes|agents|icons)\/([a-z0-9][a-z0-9._-]*)\.(toml|json|svg)$/;
 
@@ -77,16 +79,44 @@ async function bundled() {
     .map((m) => `${m[1]}/${m[2]}`);
 }
 
+async function published(url) {
+  const res = await fetch(url, { method: "HEAD" }).catch((e) => fail(`${url}: ${e.cause?.message ?? e.message}`));
+  if (res.status === 404) return false;
+  if (!res.ok) fail(`${url}: ${res.status} ${res.statusText}`);
+  return true;
+}
+
+// A final release above its own prereleases, alpha below beta.
+function compare(a, b) {
+  const [[x, xs = "~"], [y, ys = "~"]] = [a.split("-"), b.split("-")];
+  const [xn, yn] = [x.split(".").map(Number), y.split(".").map(Number)];
+  for (let i = 0; i < 3; i++) if (xn[i] !== yn[i]) return xn[i] - yn[i];
+  return xs < ys ? -1 : xs > ys ? 1 : 0;
+}
+
 // Releases were tagged v<version>, with every platform's files, before each
-// platform got its own prefix.
+// platform got its own prefix; the v26.1104.0-beta bridge carries the Mac's
+// alone. A tag is pushed before its release is published, so the newest tag
+// whose files download is the one linked.
 async function releases() {
-  const feed = (await get(RELEASES)).toString("utf8");
-  const tags = [...feed.matchAll(/\/releases\/tag\/([^"<]+)"/g)].map((m) => m[1]);
-  const newest = (platform) => {
-    const tag = tags.find((t) => t.startsWith(`${platform}-v`) || t.startsWith("v")) ?? fail(`${RELEASES} names no ${platform} release`);
-    return { tag, version: tag.replace(/^([a-z]+-)?v/, "") };
+  const refs = execFileSync("git", ["ls-remote", "--tags", "--refs", `${TORI}.git`], { encoding: "utf8" });
+  const tags = refs.split("\n").map((line) => line.split("refs/tags/")[1]).filter(Boolean);
+  const newest = async (platform, files) => {
+    const pattern = new RegExp(`^(?:${platform}-)?v(\\d+\\.\\d+\\.\\d+(?:-[a-z]+)?)$`);
+    const found = tags
+      .map((tag) => ({ tag, version: tag.match(pattern)?.[1] }))
+      .filter((r) => r.version)
+      .sort((a, b) => compare(b.version, a.version));
+    for (const r of found) {
+      const urls = files(r.version).map((name) => `${TORI}/releases/download/${r.tag}/${name}`);
+      if ((await Promise.all(urls.map(published))).every(Boolean)) return r;
+    }
+    fail(`${TORI} has no published ${platform} release`);
   };
-  return { macos: newest("macos"), android: newest("android") };
+  return {
+    macos: await newest("macos", (v) => [`Tori_${v}_aarch64.dmg`, `Tori_${v}_x64.dmg`]),
+    android: await newest("android", (v) => [`Tori_${v}.apk`]),
+  };
 }
 
 const { index, sig, repo } = await source();
