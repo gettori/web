@@ -16,10 +16,16 @@ apply, and an on or off switch.
 
 ## Installing a server
 
-Open a file in a language whose server Tori can install, and a banner over
-the file offers it: **Install**, **Not now** (asked again next session), or
-**Never for this language**. The card in Settings > LSP has the same Install
-button.
+Tori ships the TypeScript, JSON, YAML, CSS and HTML servers. Every other
+server is a pack in the [catalog](/packs/lsp/). Open a file no loaded server
+handles, and a banner over the file offers its pack: **Get** opens the
+[install dialog](/docs/packs/installing/), **Not now** asks again next
+session, **Never for this language** stops asking.
+
+With the pack in place, the next file you open in that language gets a
+second banner when Tori can install the server itself: **Install**, **Not now**,
+or **Never for this language**. The card in Settings > LSP has the same
+Install button.
 
 Tori installs a pinned version, either from npm or from a GitHub release
 whose checksum it checks before writing anything, into
@@ -35,7 +41,7 @@ could install itself.
 
 ## Every server
 
-### Ready, no install
+### Bundled
 
 | Language | Server | Notes |
 |---|---|---|
@@ -44,12 +50,11 @@ could install itself.
 | YAML | `yaml-language-server` | Bundled. SchemaStore validation for GitHub workflows, compose files and the like. |
 | CSS, SCSS, Less | `vscode-css-language-server` | Bundled. |
 | HTML | `vscode-html-language-server` | Bundled. |
-| Rust | `rust-analyzer` | Not bundled, so it always matches your toolchain: `rustup component add rust-analyzer`. |
 
 ESLint, Biome, oxlint and Ruff also run as language servers; they are on
 the [linters](/docs/editor/linters) page.
 
-### Installable from Tori
+### Catalog packs Tori installs the server for
 
 | Language | Server | Source |
 |---|---|---|
@@ -73,10 +78,11 @@ the [linters](/docs/editor/linters) page.
 | TOML | tombi | GitHub release |
 | Clojure | `clojure-lsp` | GitHub release |
 
-### Install it yourself
+### Catalog packs you install the server for
 
 | Language | Server | Install |
 |---|---|---|
+| Rust | `rust-analyzer` | `rustup component add rust-analyzer`, so it always matches your toolchain |
 | Go | gopls | `go install golang.org/x/tools/gopls@latest` |
 | Ruby | ruby-lsp | `gem install ruby-lsp` |
 | Java | jdtls | `brew install jdtls` |
@@ -109,8 +115,8 @@ monorepo, each package gets its own server.
 
 ## Adding or replacing a server
 
-Each server is a TOML file. Add one from the [catalog](/packs/) with **Add a
-language** in Settings > LSP, or drop one into `~/.config/tori/packs/lsp/` and
+Each server is a TOML file. Install one from its page in the
+[catalog](/packs/lsp/), or drop one into `~/.config/tori/packs/lsp/` and
 restart Tori. A file may not reuse a built in `id`, so to replace a built in
 server, give your file its own id and switch the built in one off on its card.
 This one runs Python through a pyright you installed yourself, in place of the

@@ -16,9 +16,9 @@ switch.
 | Linter | Languages | Runs when the project has | Comes from |
 |---|---|---|---|
 | ESLint | TypeScript, JavaScript | `eslint.config.*` or `.eslintrc*` | Server bundled with Tori, rules from the project's `eslint` |
-| Biome | TypeScript, JavaScript, JSON, CSS, GraphQL | `biome.json` or `biome.jsonc` | The project's own `biome` |
+| Biome | TypeScript, JavaScript, JSON, CSS, GraphQL | `biome.json` or `biome.jsonc` | The project's own `biome`, once its pack is installed |
 | oxlint | TypeScript, JavaScript | `.oxlintrc.json`, `.oxlintrc.jsonc` or `oxlint.config.ts` | The project's own `oxlint` |
-| Ruff | Python | `ruff.toml`, `.ruff.toml`, or `[tool.ruff]` in `pyproject.toml` | The project's own `ruff`, else the one on your PATH |
+| Ruff | Python | `ruff.toml`, `.ruff.toml`, or `[tool.ruff]` in `pyproject.toml` | The project's own `ruff`, else the one on your PATH, once its pack is installed |
 
 A linter only starts where its config file sits between the file and the
 project root, so a repo without one never runs it. Creating or deleting the
@@ -77,7 +77,7 @@ linter off for everyone who opens it, in `.tori/settings.json`:
 
 A linter is a language server with `role = "secondary"`, so any linter that
 speaks LSP can be added as a TOML file in `~/.config/tori/packs/lsp/`, or
-from the [catalog](/packs/) with **Add a linter**. This one is the shape of
+from its page in the [catalog](/packs/lsp/?role=secondary). This one is the shape of
 the built in oxlint, under its own id, since a file may not reuse a built in
 one:
 

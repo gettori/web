@@ -1,0 +1,100 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../../components/home/Base.astro";
+import Nav from "../../../components/home/Nav.astro";
+import Footer from "../../../components/home/Footer.astro";
+import PackCard from "../../../components/packs/PackCard.astro";
+import { KINDS, type Pack } from "../../../packs/catalog";
+import { TABS, byTab, tabOf } from "../../../packs/view";
+
+export function getStaticPaths() {
+  return KINDS.map((kind) => ({ params: { kind } }));
+}
+
+const TITLE = { lsp: "Language servers", dap: "Debuggers", formatters: "Formatters", themes: "Themes", agents: "Agents" };
+
+const { kind } = Astro.params as { kind: (typeof KINDS)[number] };
+const packs: Pack[] = (await getCollection("packs"))
+  .map((e) => e.data)
+  .filter((p) => p.kind === kind)
+  .sort(byTab);
+const groups = TABS.map((t) => ({ ...t, packs: packs.filter((p) => tabOf(p) === t.tab) })).filter((g) => g.packs.length > 0);
+---
+
+<Base title={`${TITLE[kind]} | Tori packs`} description={`${TITLE[kind]} for Tori, one config file each.`}>
+  <Nav />
+  <main class="main">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/packs/">Packs</a>
+    </nav>
+    <h1>{TITLE[kind]}</h1>
+    <p class="lead">On a Mac, a pack's page installs it in Tori. Tori asks before it writes anything.</p>
+    {
+      groups.map((g) => (
+        <section data-tab={g.tab}>
+          {groups.length > 1 && <h2>{g.label}</h2>}
+          <div class="grid">
+            {g.packs.map((pack) => (
+              <PackCard pack={pack} />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  if (new URLSearchParams(location.search).get("role") === "secondary") {
+    for (const s of document.querySelectorAll<HTMLElement>("[data-tab]")) s.hidden = s.dataset.tab !== "linters";
+  }
+</script>
+
+<style>
+  :global(body) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
+  .main {
+    flex: 1;
+    width: 100%;
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: calc(clamp(40px, 7vw, 96px) + 64px) var(--pad-x) 64px;
+  }
+  .crumbs {
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  h1 {
+    margin: 12px 0 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(52px, 7vw, 92px);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    max-width: 620px;
+    margin: 18px 0 clamp(28px, 4vw, 40px);
+    font-size: clamp(16px, 1.5vw, 19px);
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  h2 {
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  section + section {
+    margin-top: clamp(40px, 5vw, 56px);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+    gap: 14px;
+  }
+</style>

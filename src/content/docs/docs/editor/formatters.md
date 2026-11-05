@@ -23,6 +23,11 @@ switch.
 | shfmt | Shell | Only when you name it | `brew install shfmt` |
 | Vite+ | JS, TS and more | Only when you name it | The project's own `vp` |
 
+Tori knows oxfmt, Prettier and Vite+ out of the box. The others are packs in
+the [catalog](/packs/formatters/): **Format Document** on a file nothing
+formats opens the [install dialog](/docs/packs/installing/) for the one that
+handles it, and Format on save stays quiet.
+
 Biome, oxfmt, Prettier, Black, Ruff and Vite+ run the project's own copy,
 from the nearest `node_modules/.bin`, `.venv/bin` or `venv/bin`, else your
 PATH. StyLua, gofmt and shfmt come from your PATH. A formatter installed
@@ -77,7 +82,7 @@ A disabled formatter is skipped and the file goes on to the next one.
 
 Any formatter that reads the file on stdin and writes the result to stdout
 can be added as a TOML file in `~/.config/tori/packs/formatters/`, or from the
-[catalog](/packs/) with **Add a formatter**. This one adds `clang-format`:
+[catalog](/packs/formatters/). This one adds `clang-format`:
 
 ```toml
 # ~/.config/tori/packs/formatters/clang-format.toml

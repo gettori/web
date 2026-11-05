@@ -8,6 +8,7 @@
     "build": "node scripts/fetch-packs.mjs && astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "node scripts/fetch-packs.mjs && astro check",
+    "test": "node --experimental-strip-types --no-warnings --test src/packs/*.test.ts",
     "astro": "astro"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "happy-dom": "^21.0.4",
     "pagefind": "^1.5.2",
     "typescript": "^6.0.3",
     "wrangler": "^4.142.0"

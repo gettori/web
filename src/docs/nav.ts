@@ -81,6 +81,7 @@ export const NAV: NavGroup[] = [
     label: "Packs",
     items: [
       { label: "Browse the catalog", href: "/packs/" },
+      page("Installing a pack", "packs/installing"),
       page("Contributing a pack", "packs/contributing"),
       page("The bundled set", "packs/bundled"),
       page("Custom packs on your machine", "packs/custom"),

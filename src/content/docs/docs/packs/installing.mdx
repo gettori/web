@@ -1,0 +1,104 @@
+---
+title: Installing a pack
+description: Install in Tori on a pack's page, the dialog Tori shows, the packs Tori offers on its own, and Update pack and Remove pack on a card.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+Tori ships with the [packs it needs itself](/docs/packs/bundled/). Every
+other language server, linter, debugger, formatter, theme and agent is a
+pack in the [catalog](/packs/), and Tori installs one at a time, always
+through the same dialog. Settings has no catalog list: **Browse packs** in
+the LSP, Linters, Debuggers, Formatters, Appearance and Agents panes opens
+the catalog's page for that kind.
+
+## From a pack's page
+
+On a Mac, each pack's page in the catalog has **Install in Tori**. It opens
+Tori, and Tori shows the install dialog for that pack. Tori has to be in your
+Applications folder for the link to reach it.
+
+The link names only the pack's kind and id. Tori reads everything else from
+the signed catalog, so a page cannot change what gets installed, and a link
+cannot install anything without the dialog.
+
+If Tori does not open within two seconds, the page offers to download Tori,
+or the file itself. On Windows and Linux the page has no button: download the
+file and drop it in the folder the page names, as on
+[Custom packs on your machine](/docs/packs/custom/). A pack that ships with
+Tori says so instead of offering a button.
+
+## The install dialog
+
+The dialog shows the pack's name, description, contributor, license and
+platforms, and why it opened:
+
+- **A link asked Tori to install this pack**, from a pack's page.
+- **Offered for the file you opened**, from the editor, F5 or Format.
+- **Your settings name this pack, and Tori no longer ships it**, for a theme
+  that left the bundled set.
+
+A language server that runs the project's own code says so, and still asks
+before starting in each project, as every such server does.
+
+**Cancel** has the focus and Enter does nothing, so a key meant for something
+else cannot install a pack. **Install** writes the pack's file into
+`~/.config/tori/packs/<kind>/`, checked against the catalog's hash, and the
+dialog says what comes next:
+
+- A theme: pick it under Settings > Appearance.
+- An agent: it is listed under Settings > Agents.
+- A formatter: Tori uses it when it formats a file it handles.
+- A language server Tori installs itself: Tori offers the server the next
+  time a file it handles is open.
+- A debugger Tori installs itself: Install on its card in Settings >
+  Debuggers.
+- A server or debugger that comes from its own toolchain: the dialog shows
+  the toolchain's command. Nothing runs from a link; the card's Install runs
+  it in a terminal inside Settings when you press it.
+
+Tori refuses a pack that needs a newer Tori, one written for a newer pack
+format, one with no macOS build, and one it already has: installed, bundled,
+or a file of your own with the same id.
+
+One install dialog is open at a time. A second request while one is open is
+dropped with a note, and so is a link that arrives while any other dialog is
+open: close it and use the link again.
+
+## Packs Tori offers on its own
+
+When Tori can name the one pack something needs, it opens the same dialog:
+
+- **Opening a file** that no loaded language server handles, when a catalog
+  server does: a banner over the file says **Tori has a language server pack
+  for this file**, with **Get**, **Not now** and **Never for this language**.
+  A server you switched off still counts as handling the file.
+- **F5** on a file no debugger handles, or on a saved run whose debugger is
+  gone.
+- **Format Document** on a file nothing formats. Format on save stays quiet.
+- **A theme** in your settings that Tori no longer ships, when Tori starts.
+
+Each pack is offered once a session.
+
+The first time Tori starts after the bundled set shrank, a note says so:
+language servers, debuggers, formatters and themes beyond the core come as
+packs, and Tori offers the one it needs.
+
+## Update pack and Remove pack
+
+A card whose pack came from the catalog has **Update pack** when the catalog
+has a newer file, and **Remove pack**, which deletes the file. For a theme,
+the two buttons sit under the theme picker in Settings > Appearance. An
+agent's pair is on its page in Settings > Agents, and both wait until no tab
+is using the agent.
+
+These are about the pack file. A language server or debugger card can also
+have Install, Update and Remove for the program Tori installed for it, which
+leave the pack in place. Bundled packs update with Tori.
+
+<Aside type="note" title="A dev build">
+
+A Tori Dev build answers `tori-dev://` links rather than `tori://`. Add
+`?dev` to a pack's page address and its button points there.
+
+</Aside>

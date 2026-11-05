@@ -4,6 +4,8 @@ import type { Pack } from "../../../packs/catalog";
 import Base from "../../../components/home/Base.astro";
 import Nav from "../../../components/home/Nav.astro";
 import Footer from "../../../components/home/Footer.astro";
+import { DOWNLOADS } from "../../../downloads";
+import { installLink } from "../../../packs/visitor";
 import AgentIcon from "../../../components/packs/AgentIcon.astro";
 import {
   PLATFORMS,
@@ -22,7 +24,8 @@ import {
   newerThanRelease,
   onMac,
   palette,
-  settings,
+  pane,
+  requires,
   shortVersion,
   sourceUrl,
   strong,
@@ -37,7 +40,8 @@ export async function getStaticPaths() {
 
 const { pack } = Astro.props as { pack: Pack };
 const how = install(pack);
-const where = settings(pack);
+const needs = requires(pack);
+const link = installLink(pack.kind, pack.id, "");
 const platforms = PLATFORMS.filter((p) => pack.platforms.includes(p.key)).map((p) => p.name);
 const missing = PLATFORMS.filter((p) => !pack.platforms.includes(p.key)).map((p) => p.name);
 const lines = highlight(pack.text.replace(/\n$/, ""), pack.kind === "themes");
@@ -115,6 +119,14 @@ const preview = () =>
             {how.detail && <span class="sub mono" set:html={inlineCode(how.detail)} />}
           </dd>
         </div>
+        {
+          needs && (
+            <div class="row">
+              <dt>Requires</dt>
+              <dd>{needs}</dd>
+            </div>
+          )
+        }
         <div class="row">
           <dt>Needs Tori</dt>
           <dd>
@@ -141,28 +153,35 @@ const preview = () =>
 
       <div class="content">
         <section>
-          <h2>Add it in Tori</h2>
-          <ol class="steps">
-            <li><span>Open <strong>Settings</strong> with the gear in the title bar.</span></li>
-            <li><span>Go to <strong>{where.pane}</strong>.</span></li>
-            {
-              pack.bundled ? (
-                <li>
-                  <span>
-                    <strong>{pack.label}</strong> is already there: it ships inside Tori. When the catalog has a newer version, <strong>{where.button}</strong>{" "}
-                    lists it with <strong>Update</strong>.
-                  </span>
-                </li>
-              ) : (
-                <li>
-                  <span>
-                    Click <strong>{where.button}</strong>, then <strong>Install</strong> next to <strong>{pack.label}</strong>.
-                  </span>
-                </li>
-              )
-            }
-          </ol>
-          <p class="note">Adding writes one file and runs nothing. <Fragment set:html={strong(how.sentence)} /></p>
+          <h2>Install in Tori</h2>
+          {
+            pack.bundled ? (
+              <p class="text">
+                Ships with Tori. <strong>{pack.label}</strong> is already in <strong>Settings</strong> &gt; <strong>{pane(pack)}</strong>, and it updates with
+                Tori.
+              </p>
+            ) : !onMac(pack) ? (
+              <p class="text">{pack.label} has no macOS build, so Tori cannot install it.</p>
+            ) : (
+              <>
+                <div class="install" data-on="mac" hidden>
+                  <a class="download" href={link} data-install data-kind={pack.kind} data-id={pack.id}>
+                    Install in Tori
+                  </a>
+                  <p class="note">
+                    Tori opens and asks before it writes anything. The pack is read from the signed catalog, not from this page.
+                  </p>
+                  <p class="note" data-fallback hidden>
+                    Nothing opened? <a href={DOWNLOADS.arm}>Download Tori</a>, or use the file below.
+                  </p>
+                </div>
+                <p class="text" data-on="other">
+                  Install in Tori works on a Mac with Tori installed. On this computer, use the file below.
+                </p>
+              </>
+            )
+          }
+          <p class="note">Installing writes one file and runs nothing. <Fragment set:html={strong(how.sentence)} /></p>
         </section>
 
         <section>
@@ -247,6 +266,10 @@ const preview = () =>
 </Base>
 
 <script>
+  import { showInstall } from "../../../packs/visitor";
+
+  showInstall(window, navigator as Parameters<typeof showInstall>[1]);
+
   for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
     button.addEventListener("click", async () => {
       await navigator.clipboard.writeText(button.dataset.copy!);
@@ -404,38 +427,6 @@ const preview = () =>
     font-weight: 600;
     letter-spacing: -0.015em;
   }
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: step;
-    font-size: 15.5px;
-    line-height: 1.55;
-  }
-  .steps li {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    counter-increment: step;
-  }
-  .steps li::before {
-    content: counter(step);
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 1px solid light-dark(rgba(20, 22, 30, 0.24), rgba(255, 255, 255, 0.2));
-    font-family: var(--mono);
-    font-size: 12px;
-    transform: translateY(-1px);
-  }
-  .steps strong,
   .note :global(strong),
   .text strong {
     font-weight: 600;
@@ -451,6 +442,14 @@ const preview = () =>
   .text {
     margin: 0 0 16px;
     font-size: 15.5px;
+  }
+  .install {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .install .note {
+    margin-top: 12px;
   }
   .use {
     display: flex;

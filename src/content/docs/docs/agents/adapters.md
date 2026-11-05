@@ -73,9 +73,10 @@ describe a chat transport.
 
 ## Adding an agent
 
-In Settings > Agents, **Add an agent** lists the agents in the
-[catalog](/packs/?kind=agents); **Install** next to one writes its file and
-it appears at once. For one the catalog does not have, drop a TOML file into
+Install an agent from its page in the [catalog](/packs/agents/):
+**Install in Tori** opens the [install dialog](/docs/packs/installing/), and
+the agent appears in Settings > Agents at once. **Browse packs** in that pane
+opens the same list. For one the catalog does not have, drop a TOML file into
 `~/.config/tori/packs/agents/`. Tori reads that folder once at startup, so a
 new or edited file needs a restart to take effect. For an
 agent that already speaks ACP, the file is about a dozen lines: how to

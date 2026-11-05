@@ -14,11 +14,17 @@ switch.
 | Debugger | Languages | Install | What F5 can run |
 |---|---|---|---|
 | js-debug | JavaScript, TypeScript | Bundled. Needs `node` on your PATH. | This file, a package script, or attach to a port |
-| debugpy | Python | Tori installs it, from the card or the first time you press F5 | This file, a module, or pytest on this file |
-| Delve | Go | `go install github.com/go-delve/delve/cmd/dlv@latest` | This file's package, or its tests |
-| lldb-dap | Rust, C, C++, Objective-C | `xcode-select --install` (Apple's Command Line Tools) or Xcode | A Cargo binary, or any binary you pick |
+| debugpy | Python | Its pack, then Tori installs it, from the card or the first time you press F5 | This file, a module, or pytest on this file |
+| Delve | Go | Its pack, then `go install github.com/go-delve/delve/cmd/dlv@latest` | This file's package, or its tests |
+| lldb-dap | Rust, C, C++, Objective-C | Its pack, then `xcode-select --install` (Apple's Command Line Tools) or Xcode | A Cargo binary, or any binary you pick |
 
-If the debugger for a file is missing, F5 says so with an Install button.
+js-debug ships with Tori. The other three are packs in the
+[catalog](/packs/dap/): F5 on a file no debugger handles opens the
+[install dialog](/docs/packs/installing/) for its pack, and so does a saved
+run whose debugger is gone.
+
+If the debugger for a file is missing once its pack is in, F5 says so with an
+Install button.
 For debugpy that is Tori's own install; for the others it runs the command
 above in a terminal. Press F5 again once it finishes.
 
