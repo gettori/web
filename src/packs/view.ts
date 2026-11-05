@@ -24,15 +24,30 @@ export function kindName(p: Pack) {
   return { lsp: "Language", dap: "Debugger", formatters: "Formatter", themes: "Theme", agents: "Agent" }[p.kind];
 }
 
-export function settings(p: Pack) {
-  if (linter(p)) return { pane: "Linters", button: "Add a linter" };
-  return {
-    lsp: { pane: "LSP", button: "Add a language" },
-    dap: { pane: "Debuggers", button: "Add a debugger" },
-    formatters: { pane: "Formatters", button: "Add a formatter" },
-    themes: { pane: "Appearance", button: "Add a theme" },
-    agents: { pane: "Agents", button: "Add an agent" },
-  }[p.kind];
+export function pane(p: Pack) {
+  if (linter(p)) return "Linters";
+  return { lsp: "LSP", dap: "Debuggers", formatters: "Formatters", themes: "Appearance", agents: "Agents" }[p.kind];
+}
+
+// The programs Tori's validator lets a hint's install command start
+// (HINT_PROGRAMS in tori's packs/validate.rs), named as a reader knows them.
+const TOOLCHAINS: Record<string, string> = {
+  brew: "Homebrew",
+  cs: "Coursier",
+  dotnet: ".NET SDK",
+  gem: "Ruby",
+  ghcup: "GHCup",
+  go: "Go",
+  opam: "opam",
+  rustup: "rustup",
+  "xcode-select": "Xcode Command Line Tools",
+};
+
+export function requires(p: Pack): string | null {
+  const inst = (p.file as Table).install as Table | undefined;
+  if (inst?.kind !== "hint") return null;
+  const program = String(inst.text ?? "").match(/`([^`]+)`/)?.[1].trim().split(/\s+/)[0];
+  return program ? (TOOLCHAINS[program] ?? null) : null;
 }
 
 export const fileName = (p: Pack) => `${p.id}.${p.kind === "themes" ? "json" : "toml"}`;
