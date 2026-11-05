@@ -89,6 +89,14 @@ Terminal tabs are not held to this. A tab's token cannot tell you at the shell
 from an agent running in it, so `tori steer` from a terminal tab works as
 before. A worker still cannot steer anyone.
 
+Answering, waiting on and stopping take more than being related: a chat
+answers another session's question, waits on it, lists what it is waiting on
+or stops its turn only when it owns that session. It owns a session it
+started, one running in a worktree it made, and, for the Autopilot, its items.
+A chat that took over by a handover owns the sessions its predecessor started.
+A terminal tab answers no session's question, since an agent in it would be
+answering for you; the question reaches it without the id an answer needs.
+
 ## Messages waiting for you
 
 A message that waits shows above the receiving chat's composer as
