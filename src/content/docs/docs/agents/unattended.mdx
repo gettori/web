@@ -61,6 +61,12 @@ Which tab is in front does not matter. Somebody reading quietly for more than
 - Writes only inside the project.
 - Network only to the [allowed domains](#allowed-domains), plus the project's
   own git host.
+- No reads of Tori's own files in `~/.config/tori`, the token the `tori`
+  command falls back on included, of Tori's git password bridge, or of
+  `~/.ssh`, `~/.aws` and `~/.gnupg`. Claude's own file reading tool is held
+  off the token files and those three folders too. Files you attach to a chat
+  stay readable. So `git push` over SSH and signing commits with GPG do not
+  work in the box.
 - A command that fails in the box cannot be retried outside it, and a repo's
   own `.claude/settings.json` cannot turn that off.
 - The `tori` command keeps working from inside the box.
