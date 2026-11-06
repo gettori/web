@@ -1,6 +1,6 @@
 ---
 title: Worktrees and branches
-description: Add a branch or worktree, start one from an issue, run a setup command in every new worktree, start and stop a run command in one, run a teardown command before one goes, fan out several attempts, and remove what you are done with.
+description: Add a branch or worktree, start one from an issue, run a setup command in every new worktree, start and stop a run command in one, run a teardown command before one goes, fan out several attempts, see a rebase in progress on its row, remove what you are done with, and restore a worktree you deleted.
 ---
 
 import Aside from "../../../../components/docs/Aside.astro";
@@ -327,13 +327,40 @@ Right-click the attempt you want and choose **Promote this attempt**.
 
 The attempt you promote is kept as it is, on its own branch and unmerged. Every
 other attempt in the group is deleted outright: its worktree, branch, sessions
-and checkpoints. Agents and terminals running in them are stopped. This cannot
-be undone.
+and checkpoints. Agents and terminals running in them are stopped. An attempt
+with uncommitted changes leaves a [copy](#what-tori-keeps-when-you-remove-one)
+of them you can restore, but its commits go with its branch and its sessions
+and checkpoints cannot be brought back.
 
 </Aside>
 
 Promoting never merges anything. Merge or open a pull request from the winner's
 branch as you would from any other.
+
+## A rebase or merge in progress
+
+While a rebase, merge, cherry-pick or revert is under way in a worktree, or in
+the checked-out branch of a Repo, its row says so:
+
+- The branch icon turns amber and stays still. It does not pulse, since a
+  pulse means an agent is in the middle of a turn.
+- During a rebase the row shows the branch being rebased, such as
+  `feat-login`, rather than **(detached)**, which is what git itself reports
+  until the rebase finishes. The breadcrumb in the toolbar shows the same
+  name.
+- A chip at the start of the line under the name says **Rebasing 3/7**, the
+  commit the rebase is on out of all it replays, or **Merging**,
+  **Cherry-picking** or **Reverting**.
+- When the operation stops on a conflict, the chip turns red and says
+  **Conflict 3/7**, followed by how many files are conflicted, such as
+  **2 files**. Hover the line for the whole sentence, for example **The rebase
+  of feat-login stopped on a conflict in 2 files, at commit 3 of 7. Resolve,
+  then continue it.**
+
+The row follows git as it works: the chip moves on with each commit, and the
+row goes back to normal once the operation finishes or is aborted, including
+when you run git yourself in a terminal. To resolve the conflict and finish,
+see [Merge conflicts](/docs/git/merge-conflicts/).
 
 ## Remove a worktree or branch
 
@@ -356,6 +383,88 @@ it has one, then removes the worktree and the branches you chose. The folder dis
 one step rather than file by file, so the Changes panel never fills with
 deleted files while it goes. If deleting the remote branch fails, the local
 removal still happens and the failure is reported.
+
+### What Tori keeps when you remove one
+
+Removing a worktree that holds work you have not saved anywhere else keeps a
+copy of that work first. A worktree gets a copy when it has any of:
+
+- uncommitted changes, new files included
+- a rebase, merge, cherry-pick or revert in progress
+- commits that no branch, remote branch or tag holds. With **Delete local
+  branch** ticked, the branch being deleted does not count, so its unpushed
+  commits are kept too.
+
+The copy holds the worktree's commits and every changed and new file as they
+were at that moment, including files you resolved halfway through a rebase.
+It does not hold:
+
+- files your `.gitignore` covers, such as `node_modules` or `.env.local`
+- files over 50 MB that are new or changed, so one stray recording or dump
+  does not make the removal slow
+- what was staged and what was not: everything comes back unstaged
+- the operation itself: a restored worktree has the commits and files, and you
+  redo the rest of the rebase from there
+
+The removal dialog tells you which case you are in. When there will be a
+copy, it says **Tori keeps a copy of its commits and changed files for 30
+days, so you can restore it.** When ignored or large files would go with the
+folder, it lists them under **Ignored** and **Too large** and warns, for
+example, **This deletes ignored files and files too large to keep, which no
+copy holds. It cannot be undone.** With an operation in progress, the status
+says, for example, **rebase in progress**, and a warning repeats the row's
+sentence and adds **Deleting the worktree loses its progress.** When files
+would be lost or an operation is in progress, the button reads **Remove
+anyway**.
+
+The copy is made after the tabs and the run command are stopped and before
+the teardown command runs. If Tori cannot write it, the worktree is not
+removed and the error says why. Copies are made whichever way the worktree goes:
+from the sidebar, from a Topic, or as a losing attempt of a fan out.
+
+A copy is a commit under `refs/tori/rescue/` in the repository's own git
+store, so it is not a branch and `git branch` does not list it. Tori deletes
+copies older than 30 days when it starts.
+
+### Restore a deleted worktree
+
+<Steps>
+
+1. Right-click the project and choose **Restore deleted worktree**. The entry
+   is only there when the project has a copy to restore, and it is offered on
+   Repo and Bare projects alike.
+2. In **Restore a deleted worktree in api**, pick the copy. Each row shows the
+   branch, the operation it was deleted in, such as **rebase 3/7**, and how
+   long ago it was deleted. The newest is picked to begin with, and the filter
+   narrows the list by branch.
+3. Below the list, check what comes back: the changed files, the commits no
+   branch holds, the files that were too large to keep, and a note when it
+   was deleted in the middle of an operation. The bottom of the dialog shows
+   where the worktree was.
+4. Click **Restore**.
+
+</Steps>
+
+Tori makes a new worktree, puts the kept files back in it, unstaged, and then
+runs the project's [setup command](#a-setup-command-for-new-worktrees), so the
+setup sees the restored files. Your repository's git hooks run as they do for
+any new worktree. With **Start the run command when a worktree is created**
+on, the run command starts once setup finishes. The restored worktree is
+selected, and the copy is deleted.
+
+The branch it lands on:
+
+| The original branch | The restored worktree is on |
+| --- | --- |
+| Still there, at the same commit, and not checked out anywhere | The original branch |
+| Deleted | The original branch, made again at the kept commit |
+| Moved on, or checked out in another worktree | A new branch, `name-restored`, at the kept commit |
+
+So a branch that has newer work, or a worktree you made again on the same
+branch, is never touched. A copy taken on a detached HEAD lands on a branch
+named `restored-` followed by the last part of the copy's id. In a Bare project the worktree
+folder is named after the branch, as for **Add worktree**; in a Repo it goes
+under `.tori/worktrees` in the repository.
 
 ### Clean up after deleting outside Tori
 
