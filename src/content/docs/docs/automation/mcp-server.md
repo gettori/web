@@ -91,7 +91,7 @@ included.
 | `plan.set` | Show the calling chat's plan in its [plan card](/docs/agents/permissions-and-questions/#the-plan-above-the-composer): every step each call, pending, in progress or completed, replacing the last list. An empty list hides it. Refused outside a turn | Chat |
 | `ask.wait` | Wait for the answer to a question asked earlier | Everyone |
 | `ask.answer` | Answer another session's question on your behalf. A chat answers only for a session it owns, and a terminal tab answers none; a chat or terminal that may not answer sees the question without its id | Shell, chat, phone, browser |
-| `issues.assigned` | Open issues from the project's [issue sources](/docs/automation/autopilot/#issue-sources), or with none those assigned to you, then pull requests waiting on your review | Everyone |
+| `issues.assigned` | Open issues assigned to you in the project's [issue repos](/docs/workspace/project-settings/#general), its own repo when none are listed, then pull requests waiting on your review | Everyone |
 | `issues.get` | One issue: title, body, url and a suggested branch name. Given a URL, it finds the project by the repo's origin, or the one project whose issue sources read that repo | Everyone |
 | `issues.link_branch` | Make a branch on the host under an issue and fetch it | Shell, chat |
 | `pr.get` | One pull request to review, with the lines a comment may anchor to | Shell, chat |

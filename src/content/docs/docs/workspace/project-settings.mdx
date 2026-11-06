@@ -38,10 +38,10 @@ press Escape, to clear the search. A second Escape closes the dialog.
 
 ## What saves when
 
-Changes save as you make them, except three lists that keep a draft until you
-click their **Save**: allowed agents, verification commands and issue sources.
-While a draft differs from what is saved, its section carries a gold dot in
-the rail, the line beside the buttons says **Unsaved changes**, and
+Changes save as you make them, except four lists that keep a draft until you
+click their **Save**: issue repos, allowed agents, verification commands and
+issue sources. While a draft differs from what is saved, its section carries a
+gold dot in the rail, the line beside the buttons says it is unsaved, and
 **Discard** puts the saved list back.
 
 ## Sections
@@ -94,6 +94,26 @@ Moving the strip alone changes nothing until you pick something.
   so every project that shares this origin shares it. With no account added
   for the host, **Add an account** opens Settings > Hosts. With more than one,
   pick the one this repo uses.
+
+**Issues**, for repos and bare projects: the repos this project's issues live
+in, one `owner/name` per line, such as `gettori/tori` and `gettori/tickets`.
+Empty, issues come from the project's origin, which the text above the box
+names. Once you list any repo, only the listed repos are searched, so list the
+origin too if its issues matter. A line that is not `owner/name` is refused on
+**Save**.
+
+When the section opens and after each save, every repo is checked with the
+project's account: **Readable**, **No access** (missing, private to someone
+else, or a token without issue access) or **Issues off**. A repo with no
+access stays on the list, since access can come later. Without an account for
+the host, the reason shows instead.
+
+The list is what [Start from an issue](/docs/git/worktrees-and-branches/#start-from-an-issue)
+searches, what the autopilot picks up from when the project has no
+[issue sources](/docs/automation/autopilot/#issue-sources), and what a
+source's repo is picked from. A repo a source still reads can't be removed:
+the save is refused and names it. If Tori can't check the sources at that
+moment, the save is refused too; try again.
 
 ### Worktrees
 
