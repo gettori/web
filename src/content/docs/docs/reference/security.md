@@ -371,6 +371,14 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
 - The window and `tori attach` prove they are Tori by the code signature
   macOS holds for them, not by the token in `rpc.json`. A program that only
   read that file cannot stand in for the window or type into a tab.
+- Anything holding the token in `rpc.json` is an outside shell, and it acts
+  through the same cards an agent does. Opening, reviewing, pushing or
+  merging a pull request, `tori attach`, and starting a session in a mode
+  that runs tools without asking each wait for your Approve, and the
+  approval is good only for the connection that asked. It cannot answer a
+  question for you, switch a session's permission mode, allow a permission
+  group, or add a device. A terminal tab pays with the same card, and what
+  either sends a chat arrives as a Tori note naming it.
 - The [browser extension](/docs/browser/extension/) connects with a
   credential of its own and may only read sessions, projects and ports,
   steer a live chat, open a chat draft for you to send, bring the window
