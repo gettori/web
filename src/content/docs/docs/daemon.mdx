@@ -115,6 +115,9 @@ tori: attaching to 7c1e9a2f-4b0d-4e2a-9f61-3d8c2b7a5e14, Ctrl-\ detaches
 - Only Tori's own `tori` can attach: the daemon checks the signature of the
   program on the other end, so another program using the token in
   `rpc.json` is refused with **only Tori may attach to a tab**.
+- Each attach waits for your **Approve** in Tori first: it prints
+  `tori: waiting for approval in Tori`, and a dialog asks whether to let it
+  type into that terminal.
 
 A chat tab is not a shell, so it cannot be attached; follow it with
 `tori session tail` instead.
