@@ -93,113 +93,110 @@ const preview = () =>
     }
 
     <div class="body">
-      <dl class="facts">
-        {
-          pack.verified_against && (
-            <div class="row">
-              <dt>Verified against</dt>
-              <dd>
-                <span class="mono">{pack.verified_against}</span>
-                {pack.verified_on && <span class="sub">Measured {longDay(pack.verified_on)}</span>}
-              </dd>
-            </div>
-          )
-        }
-        <div class="row">
-          <dt>Platforms</dt>
-          <dd>
-            {platforms.join(", ")}
-            {!onMac(pack) ? <span class="sub">Not available on macOS</span> : missing.length > 0 && <span class="sub">No {missing.join(" or ")} support</span>}
-          </dd>
-        </div>
-        <div class="row">
-          <dt>Install</dt>
-          <dd>
-            {how.what}
-            {how.detail && <span class="sub mono" set:html={inlineCode(how.detail)} />}
-          </dd>
-        </div>
-        {
-          needs && (
-            <div class="row">
-              <dt>Requires</dt>
-              <dd>{needs}</dd>
-            </div>
-          )
-        }
-        <div class="row">
-          <dt>Needs Tori</dt>
-          <dd>
-            <span class="mono">{shortVersion(pack.min_tori)} or newer</span>
-            {newerThanRelease(pack.min_tori) && <span class="sub newer">Newer than the current release, {shortVersion(RELEASE)}</span>}
-          </dd>
-        </div>
-        <div class="row">
-          <dt>Schema</dt>
-          <dd>Version {pack.schema_version}</dd>
-        </div>
-        <div class="row">
-          <dt>Id</dt>
-          <dd class="mono">{pack.id}</dd>
-        </div>
-        <div class="row">
-          <dt>Source file</dt>
-          <dd>
-            <a class="mono" href={sourceUrl(pack)}>{pack.kind}/{fileName(pack)} ↗</a>
-            <span class="sub">gettori/packs on GitHub</span>
-          </dd>
-        </div>
-      </dl>
-
-      <div class="content">
-        <section>
-          <h2>Install in Tori</h2>
+      <aside class="side">
+        <div class="get">
           {
             pack.bundled ? (
-              <p class="text">
+              <p class="note">
                 Ships with Tori. <strong>{pack.label}</strong> is already in <strong>Settings</strong> &gt; <strong>{pane(pack)}</strong>, and it updates with
                 Tori.
               </p>
             ) : !onMac(pack) ? (
-              <p class="text">{pack.label} has no macOS build, so Tori cannot install it.</p>
+              <p class="note">{pack.label} has no macOS build, so Tori cannot install it.</p>
             ) : (
               <>
                 <div class="install" data-on="mac" hidden>
                   <a class="download" href={link} data-install data-kind={pack.kind} data-id={pack.id}>
                     Install in Tori
                   </a>
-                  <p class="note">
-                    Tori opens and asks before it writes anything. The pack is read from the signed catalog, not from this page.
-                  </p>
+                  <p class="note">Tori asks before it writes anything, and reads the pack from the signed catalog, not this page.</p>
                   <p class="note" data-fallback hidden>
                     Nothing opened? <a href={DOWNLOADS.arm}>Download Tori</a>, or use the file below.
                   </p>
                 </div>
-                <p class="text" data-on="other">
+                <p class="note" data-on="other">
                   Install in Tori works on a Mac with Tori installed. On this computer, use the file below.
                 </p>
               </>
             )
           }
-          <p class="note">Installing writes one file and runs nothing. <Fragment set:html={strong(how.sentence)} /></p>
-        </section>
+          <p class="note">Writes one file and runs nothing. <Fragment set:html={strong(how.sentence)} /></p>
 
-        <section>
-          <h2>Use it without the catalog</h2>
-          <p class="text">
-            Download the file and drop it in the folder below. {pack.kind === "themes" ? "Tori picks up a theme at once." : "Tori loads it the next time it starts."}
-          </p>
-          <div class="use">
-            <a class="download" href={filePath(pack)} download={fileName(pack)}>
+          <div class="manual">
+            <p class="label">Without the catalog</p>
+            <a class="download secondary" href={filePath(pack)} download={fileName(pack)}>
               Download file <span class="mono">{fileName(pack)}</span>
             </a>
             <div class="path">
               <span class="mono">{folder(pack)}</span>
               <button type="button" class="copy" data-copy={folder(pack)}>Copy</button>
             </div>
+            <p class="note">
+              Drop it in this folder. {pack.kind === "themes" ? "Tori picks up a theme at once." : "Tori loads it the next time it starts."}
+            </p>
           </div>
-        </section>
+        </div>
 
+        <dl class="facts">
+          {
+            pack.verified_against && (
+              <div class="row">
+                <dt>Verified against</dt>
+                <dd>
+                  <span class="mono">{pack.verified_against}</span>
+                  {pack.verified_on && <span class="sub">Measured {longDay(pack.verified_on)}</span>}
+                </dd>
+              </div>
+            )
+          }
+          <div class="row">
+            <dt>Platforms</dt>
+            <dd>
+              {platforms.join(", ")}
+              {!onMac(pack) ? <span class="sub">Not available on macOS</span> : missing.length > 0 && <span class="sub">No {missing.join(" or ")} support</span>}
+            </dd>
+          </div>
+          <div class="row">
+            <dt>Install</dt>
+            <dd>
+              {how.what}
+              {how.detail && <span class="sub mono" set:html={inlineCode(how.detail)} />}
+            </dd>
+          </div>
+          {
+            needs && (
+              <div class="row">
+                <dt>Requires</dt>
+                <dd>{needs}</dd>
+              </div>
+            )
+          }
+          <div class="row">
+            <dt>Needs Tori</dt>
+            <dd>
+              <span class="mono">{shortVersion(pack.min_tori)} or newer</span>
+              {newerThanRelease(pack.min_tori) && <span class="sub newer">Newer than the current release, {shortVersion(RELEASE)}</span>}
+            </dd>
+          </div>
+          <div class="row">
+            <dt>Schema</dt>
+            <dd>Version {pack.schema_version}</dd>
+          </div>
+          <div class="row">
+            <dt>Id</dt>
+            <dd class="mono">{pack.id}</dd>
+          </div>
+          <div class="row">
+            <dt>Source file</dt>
+            <dd>
+              <a class="mono" href={sourceUrl(pack)}>{pack.kind}/{fileName(pack)} ↗</a>
+              <span class="sub">gettori/packs on GitHub</span>
+            </dd>
+          </div>
+        </dl>
+      </aside>
+
+      <div class="content">
         {
           pack.kind === "themes" && (
             <section>
@@ -370,10 +367,71 @@ const preview = () =>
     gap: 48px clamp(32px, 5vw, 72px);
     margin-top: clamp(32px, 5vw, 56px);
   }
-  .facts {
+  .side {
+    display: flex;
     flex: 1 1 340px;
-    position: sticky;
-    top: 88px;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+  .get {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--hair);
+    background: var(--card);
+  }
+  .get .note {
+    margin: 10px 0 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .get .install {
+    align-items: stretch;
+  }
+  .get .install .note {
+    margin-top: 10px;
+  }
+  .get .download {
+    justify-content: center;
+  }
+  .download.secondary {
+    background: none;
+    border: 1px solid var(--hair);
+    color: var(--text);
+  }
+  .download.secondary:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .manual {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hair);
+  }
+  .manual .note {
+    margin: 2px 0 0;
+  }
+  .label {
+    margin: 0 0 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .manual .path {
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .manual .path .mono {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .facts {
     margin: 0;
     border-radius: 12px;
     border: 1px solid var(--hair);
@@ -450,11 +508,6 @@ const preview = () =>
   }
   .install .note {
     margin-top: 12px;
-  }
-  .use {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
   }
   .download {
     display: inline-flex;
@@ -610,10 +663,5 @@ const preview = () =>
   }
   .code :global(.q) {
     color: var(--link);
-  }
-  @media (max-width: 640px) {
-    .facts {
-      position: static;
-    }
   }
 </style>
