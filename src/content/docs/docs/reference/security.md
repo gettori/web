@@ -368,6 +368,9 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
 - A phone connects with its own device credential, which is not accepted
   on the local socket, and the local token is not accepted from the
   network.
+- The window and `tori attach` prove they are Tori by the code signature
+  macOS holds for them, not by the token in `rpc.json`. A program that only
+  read that file cannot stand in for the window or type into a tab.
 - The [browser extension](/docs/browser/extension/) connects with a
   credential of its own and may only read sessions, projects and ports,
   steer a live chat, open a chat draft for you to send, bring the window
