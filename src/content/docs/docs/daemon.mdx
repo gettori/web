@@ -112,6 +112,9 @@ tori: attaching to 7c1e9a2f-4b0d-4e2a-9f61-3d8c2b7a5e14, Ctrl-\ detaches
   prints `tori: <id> exited with <code>`.
 - It refuses to run inside a Tori terminal tab, and it needs a real terminal,
   not a pipe.
+- Only Tori's own `tori` can attach: the daemon checks the signature of the
+  program on the other end, so another program using the token in
+  `rpc.json` is refused with **only Tori may attach to a tab**.
 
 A chat tab is not a shell, so it cannot be attached; follow it with
 `tori session tail` instead.
