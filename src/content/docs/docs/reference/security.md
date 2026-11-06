@@ -385,7 +385,8 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
 Off by default. When on, Tori listens on your Tailscale address or on this
 Mac only, never on the local network, and a local network address saved by
 an older build is refused. Pairing uses a code that lives five minutes,
-works once, and burns after five wrong tries. **Revoke** closes a device's
+works once, and burns after five wrong tries, and the device gets in only
+once you tap Pair on the phone and Allow on the Mac. **Revoke** closes a device's
 connection immediately. See [Pairing](/docs/phone/pairing/).
 
 ## Destructive actions

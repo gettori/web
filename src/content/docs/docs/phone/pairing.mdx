@@ -48,6 +48,23 @@ for five minutes and the code works once. Scan it, or open the phone app and
 type the address and code by hand, along with a name for the phone. Five
 wrong tries burns the code early.
 
+Pairing takes a confirm on both ends:
+
+1. **On the phone, tap Pair with the Mac's address.** Scanning the code fills
+   in the address and code but pairs nothing until you tap, so a code you
+   scanned by mistake goes nowhere.
+2. **On the Mac, click Allow.** Settings > Remote asks **Allow Pixel 8 from
+   100.64.0.2?** with the phone's name and Tailscale address. **Deny** is the
+   one already selected, so pressing `Enter` on a request you did not expect
+   turns it away. The phone waits up to a minute for the answer; Deny, no
+   answer in time, or no Tori window open on the Mac refuses it, and the code
+   stays live for another try. While one phone waits, another with the same
+   code is told a pairing is already waiting.
+
+If Tori on the Mac cannot read its list of paired devices, a phone that tries
+to connect is told the device store is unreadable and keeps its credential,
+so it connects again once the file is fixed.
+
 Paired devices are listed in Settings > Remote, each with a **Revoke**
 button; revoking closes its connection immediately and it has to pair again
 to reconnect. Re-pairing the same phone replaces its old entry rather than
