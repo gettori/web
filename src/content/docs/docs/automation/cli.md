@@ -285,6 +285,10 @@ an hour at most, whatever `--timeout` says.
 `tori ask --answer <id> <text>` answers one on your behalf from another
 shell.
 
+From a terminal tab or a shell outside Tori, `tori ask` takes `--approval`
+only, and the card draws in the tab or in a dialog. See
+[Approvals asked outside a chat](/docs/agents/permissions-and-questions/#approvals-asked-outside-a-chat).
+
 ## Pull requests
 
 `tori pr create`, `tori pr review` and `tori pr merge` each take the exact
