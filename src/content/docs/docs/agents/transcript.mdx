@@ -36,11 +36,16 @@ Replies render as Markdown: headings, lists, tables, quotes and code.
 - **Code blocks** are highlighted in their language, and have a **Copy code**
   button.
 - **Mermaid** blocks are drawn as diagrams.
-- **Links** to a web page open in your browser. A link to a file in the
-  project, like `src/sign.ts` or `src/sign.ts:42`, opens the file in the editor,
-  at that line when there is one. A link to a file outside the project only
-  says where it is, rather than opening something unexpected. A `tori://` link,
-  which the Autopilot writes, opens that folder or session in Tori.
+- **Links** to a web page open in your browser. A `tori://` link, which the
+  Autopilot writes, opens that folder or session in Tori.
+- **File names** open with a click, whether the reply links them, puts them in
+  inline code like `src/sign.ts:42`, or writes a path in the text. A name
+  becomes clickable only once Tori finds the file on disk, and a path in the
+  text needs a slash in it. The file opens in the editor, at the line when
+  there is one, and in the worktree it lives in when that is another one. A
+  file outside every worktree opens in Tori when it is text, an image or a
+  PDF, and in its own app when it is a document or media file Tori has no
+  view for.
 - Raw HTML in a reply is shown as text, and a remote image is turned into a
   link, so nothing in a reply can load or run anything.
 

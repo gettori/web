@@ -91,6 +91,10 @@ in, one at a time, chosen from the icon strip at its top:
 | **Debug** | The debugger. See [Debuggers](/docs/editor/debuggers/) |
 | **Session** | Every file the selected session touched: created (C), edited (E) or deleted (D), and with **Show reads** the files it only read (R). Click one for its diff. A badge marks a file another running session also touched. Its hunks take [comments](/docs/git/diffs/#comment-on-a-hunk), counted next to **Show reads** |
 
+Every panel's icon is on the strip, even when it has nothing to show yet.
+Right-click the strip for the list of panels, each with a tick, and untick
+the ones you never use to hide their icons. Tori remembers the choice.
+
 Each panel is also a **Show ...** command in the palette, such as **Show
 Changes**. Drag the divider to resize the panel, and `Cmd+Opt+B` hides the file
 tree side altogether. A count on an icon, such as the number of changed files,
