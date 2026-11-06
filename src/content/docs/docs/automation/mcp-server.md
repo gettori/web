@@ -87,7 +87,7 @@ included.
 | `budget` | Spend against your ceilings, the agent's quota windows, and with `item` or `pr` what an autopilot item or a pull request cost | Everyone |
 | `checkpoints.list`, `checkpoint.diff`, `checkpoint.revert` | A session's per-turn checkpoints: list, diff, revert. `checkpoint.diff` with `why` also says who wrote each hunk | Everyone |
 | `provenance.hunks` | Who wrote each hunk of a file in a worktree: the turn, the tool call and the agent's words before it, or why nothing recorded can say | Everyone |
-| `ask.create` | Ask you a question in the calling chat and wait | Chat, worker |
+| `ask.create` | Ask you a question in the calling chat and wait. A terminal tab or a shell outside Tori may only ask for an approval, which shows in the tab or in a dialog | Chat, worker; terminal and outside shell for an approval only |
 | `plan.set` | Show the calling chat's plan in its [plan card](/docs/agents/permissions-and-questions/#the-plan-above-the-composer): every step each call, pending, in progress or completed, replacing the last list. An empty list hides it. Refused outside a turn | Chat |
 | `ask.wait` | Wait for the answer to a question asked earlier | Everyone |
 | `ask.answer` | Answer another session's question on your behalf. A chat answers only for a session it owns, and a terminal tab answers none; a chat or terminal that may not answer sees the question without its id | Shell, chat, phone, browser |

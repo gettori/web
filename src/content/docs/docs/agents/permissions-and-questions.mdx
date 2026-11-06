@@ -169,6 +169,19 @@ the full draft on the card: the pull request's title, branches and body, the
 review's verdict and line comments, or the merge's method and commit. See
 [Approvals](/docs/automation/autopilot/#approvals).
 
+### Approvals asked outside a chat
+
+A terminal tab or a shell outside Tori can ask too, with
+`tori ask --approval`, but only for an approval: a plain question from either
+is refused, since there is no chat for its card.
+
+- From a terminal tab, the card draws over that tab's shell, headed
+  **This tab asks:**, with the full draft. **Reject** has the focus, so a stray
+  `Enter` turns it down.
+- From a shell outside Tori, a dialog opens, **A shell outside Tori asks**,
+  with **Reject** focused. A second one waits until you answer the first, and
+  `Escape` counts as Reject.
+
 ## The plan above the composer
 
 When an agent publishes a todo list for its work, it is pinned above the
