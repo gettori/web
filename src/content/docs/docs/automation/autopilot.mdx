@@ -252,7 +252,8 @@ A rule hands the autopilot a pull request that needs work after the chat
 that opened it is gone: "when a review requests changes on my PR, start a
 worker to address it". Set it per project in
 [Project settings > Automations](/docs/workspace/project-settings/#automations),
-under **When a watched pull request needs work**, by ticking what it acts on:
+under **When a watched pull request needs work**, by turning on the switches
+under **Hand it to the autopilot when**:
 
 - **A review requests changes**
 - **A check fails**
@@ -260,7 +261,9 @@ under **When a watched pull request needs work**, by ticking what it acts on:
 
 A rule only hears pull requests a chat
 [watches](/docs/git/pull-requests-and-issues/#let-a-chat-watch-a-pull-request),
-so it needs **Let a chat watch a pull request** on as well as Autopilot. It
+so it needs **Let a chat watch a pull request** on as well as Autopilot. The
+**Needs** line under the switches names both, **Pull request watches** and
+**Autopilot**, each with a dot that lights when it is on. It
 acts only once the watching chat is closed. A chat that is open, idle,
 working or stopped at a spend limit gets its usual wake instead, so a worker
 and a chat never edit one branch at once.

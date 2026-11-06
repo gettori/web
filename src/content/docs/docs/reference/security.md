@@ -379,6 +379,11 @@ protocol. On the Mac it is a local socket; the phone reaches it only through
   question for you, switch a session's permission mode, allow a permission
   group, or add a device. A terminal tab pays with the same card, and what
   either sends a chat arrives as a Tori note naming it.
+- A chat cannot start a session in a mode freer than its own, so a chat that
+  asks before running tools cannot get past its own prompts through a worker
+  in `bypassPermissions` or Claude's `auto`, which a classifier answers
+  rather than you. A chat can always pass its own mode on to a worker of its
+  own agent.
 - The [browser extension](/docs/browser/extension/) connects with a
   credential of its own and may only read sessions, projects and ports,
   steer a live chat, open a chat draft for you to send, bring the window

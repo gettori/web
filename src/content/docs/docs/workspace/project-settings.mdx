@@ -209,12 +209,13 @@ built-in prompt shown in the field runs.
 
 **When a watched pull request needs work** hands a pull request a chat
 watches to the [autopilot](/docs/automation/autopilot/#pull-request-rules)
-once that chat is closed. Tick what it acts on: **A review requests
-changes**, **A check fails**, **It conflicts with its base**. With any
-ticked, **At most per hour** (3 by default) caps how many it hands over;
-past that the rule pauses until you resume it in the Cockpit. It needs
-**Let a chat watch a pull request** and Autopilot on, and nothing is pushed
-without you.
+once that chat is closed. Under **Hand it to the autopilot when**, turn on
+the switches for what it acts on: **A review requests changes**, **A check
+fails**, **It conflicts with its base**. With any on, **At most per hour** (3
+by default) caps how many it hands over; past that the rule pauses until you
+resume it in the Cockpit. The **Needs** line shows whether the two settings
+it depends on are on, **Pull request watches** (**Let a chat watch a pull
+request**) and **Autopilot**, and nothing is pushed without you.
 
 **Keep fixing until checks pass** lets the
 [autopilot](/docs/automation/autopilot/#keep-fixing-until-checks-pass) push
