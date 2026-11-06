@@ -89,12 +89,23 @@ a **Branch** and **Issue** switch.
 
 <Steps>
 
-1. Switch to **Issue**. The list shows the issues assigned to you, or the
-   project's [issue sources](/docs/automation/autopilot/#issue-sources) when it
-   has some. An issue from another repo is shown with its repo, such as
-   `gettori/tickets#31`.
-2. Pick one, or type an issue number that is not in the list and choose
-   **Open issue #214**.
+1. Switch to **Issue**. The list shows the issues assigned to you in the
+   project's [issue repos](/docs/workspace/project-settings/#general), which
+   is its own repo until you list others. An issue from another repo is shown
+   with its repo, such as `gettori/tickets#31`. A repo your account can't read
+   is named under the list as **Not searched, no access**.
+2. Pick one, or type an issue that is not in the list and choose
+   **Open issue**. You can type:
+   - a number, `214` or `#214`, looked up in every issue repo
+   - `tickets#31`: the listed repo named `tickets`, or with none listed, the
+     `tickets` repo under the project's owner
+   - `gettori/tickets#31`: that repo, listed or not
+   - the issue's URL
+
+   A number found in one repo opens straight away. One found in several, such
+   as `#31` in the project's repo and `gettori/tickets#31`, lists a row for
+   each; pick the one you meant. A pull request with that number is not
+   offered, and with no issue at all the dialog says **No issue found**.
 3. The branch name fills in from the issue. Change it if you like, and pick a
    base for a new branch.
 4. Leave **Link the branch to the issue on GitHub** ticked to have GitHub

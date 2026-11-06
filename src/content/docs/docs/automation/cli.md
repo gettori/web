@@ -336,8 +336,10 @@ limit. With the autopilot off they wait, and `tori loop` says so. See
 `project --issues` takes a JSON list of
 [issue sources](/docs/automation/autopilot/#issue-sources) and replaces the
 project's list. Each source has a `repo` and optional `labels`,
-`exclude_labels`, `milestone`, `assignee` and `extra`. Pass `[]` to go back
-to the issues assigned to you in the project's repo. A contract printed by
+`exclude_labels`, `milestone`, `assignee` and `extra`, and its `repo` has to
+be one of the project's
+[issue repos](/docs/workspace/project-settings/#general). Pass `[]` to go back
+to the issues assigned to you in those repos. A contract printed by
 `project` shows each source as the search it runs.
 
 ## What a caller may do
