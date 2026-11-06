@@ -301,6 +301,13 @@ From a background session these three need `--approval <id>`: the id of an
 approval you gave for exactly this draft. See
 [Autopilot](/docs/automation/autopilot/).
 
+From a terminal tab or a shell outside Tori they need your Approve too, but
+`tori` asks for it itself: it prints `tori: waiting for approval in Tori` with
+what it would do, the card shows in the tab or in a dialog, and the command
+goes on once you click **Approve** or exits with `rejected in Tori`. `tori
+attach`, and `tori spawn --mode` with a mode that runs tools without asking,
+wait the same way.
+
 ## Autopilot
 
 `tori autopilot state` prints the queue. `start` and `stop` turn the

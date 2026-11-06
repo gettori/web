@@ -69,10 +69,11 @@ included.
 | `session.handoff` | Hand a live chat over to another agent: a new session in the same folder with a brief of the old one's work, and the old one closed once it is idle. Refused for a session the autopilot drives | Shell, chat |
 | `session.pending` | What a session is waiting on, each with its id. A chat reads only a session it owns | Shell, chat, phone, browser |
 | `session.answer` | Answer a question or permission prompt of a session you spawned | Chat, phone |
-| `session.spawn` | Start a session, optionally in a new worktree, with a first message and files | Shell, chat, phone (a plain chat only) |
-| `session.steer` | Send a message to a live chat, as a steer or as its next turn, with files. From a chat, a message to a chat it is not [allowed to reach](/docs/agents/related-chats/#who-an-agent-can-reach) answers `queued` and waits for you. The browser's files must be ones `attachment.write` stored, and it may not wake a chat that is not live | Shell, chat, phone, browser |
+| `session.spawn` | Start a session, optionally in a new worktree, with a first message and files. From a terminal tab or a shell outside Tori, a mode that runs tools without asking needs an approval | Shell, chat, phone (a plain chat only) |
+| `session.steer` | Send a message to a live chat, as a steer or as its next turn, with files. From a chat, a message to a chat it is not [allowed to reach](/docs/agents/related-chats/#who-an-agent-can-reach) answers `queued` and waits for you. From a terminal tab or a shell outside Tori it arrives as a Tori note naming the tab or "a shell outside Tori". The browser's files must be ones `attachment.write` stored, and it may not wake a chat that is not live | Shell, chat, phone, browser |
 | `session.interrupt` | Stop a live chat's current turn. A chat stops only a session it owns | Shell, chat, phone |
-| `session.info`, `session.model`, `session.mode` | Read or switch a live chat's model and permission mode | Outside shell, phone |
+| `session.info`, `session.model` | Read or switch a live chat's model | Outside shell, phone |
+| `session.mode` | Switch a live chat's permission mode | Phone |
 | `caller` | Who is calling: the session or tab, its agent, account and folder, and `made_by`, the chat that made its worktree | Everyone, phone and browser too |
 | `projects.list` | The tree the sidebar draws, then Topics with their members | Everyone, phone and browser too |
 | `project.icon` | The image a project's row shows | Everyone, phone too |
@@ -90,22 +91,22 @@ included.
 | `ask.create` | Ask you a question in the calling chat and wait. A terminal tab or a shell outside Tori may only ask for an approval, which shows in the tab or in a dialog | Chat, worker; terminal and outside shell for an approval only |
 | `plan.set` | Show the calling chat's plan in its [plan card](/docs/agents/permissions-and-questions/#the-plan-above-the-composer): every step each call, pending, in progress or completed, replacing the last list. An empty list hides it. Refused outside a turn | Chat |
 | `ask.wait` | Wait for the answer to a question asked earlier | Everyone |
-| `ask.answer` | Answer another session's question on your behalf. A chat answers only for a session it owns, and a terminal tab answers none; a chat or terminal that may not answer sees the question without its id | Shell, chat, phone, browser |
+| `ask.answer` | Answer another session's question on your behalf. A chat answers only for a session it owns, and a terminal tab answers none; a chat or terminal that may not answer sees the question without its id | Terminal tab, chat, phone, browser. Never an outside shell |
 | `issues.assigned` | Open issues assigned to you in the project's [issue repos](/docs/workspace/project-settings/#general), its own repo when none are listed, then pull requests waiting on your review | Everyone |
 | `issues.get` | One issue: title, body, url and a suggested branch name. Given a URL, it finds the project by the repo's origin, or the one project whose issue sources read that repo | Everyone |
 | `issues.link_branch` | Make a branch on the host under an issue and fetch it | Shell, chat |
 | `pr.get` | One pull request to review, with the lines a comment may anchor to | Shell, chat |
-| `pr.create` | Push an exact commit, never forced, and open a pull request | Everyone; a background session needs an approval |
-| `review.submit` | Submit a review: a verdict, a body and line comments | Everyone; a background session needs an approval |
-| `pr.push` | Push an exact commit, never forced, onto an open pull request's branch on origin | Everyone; a background session needs an approval, except the autopilot fixing its own pull request under a project's fix loop |
-| `pr.merge` | Merge a pull request at the head commit given | Everyone; a background session needs an approval |
+| `pr.create` | Push an exact commit, never forced, and open a pull request | Everyone; a background session, a terminal tab or a shell outside Tori needs an approval |
+| `review.submit` | Submit a review: a verdict, a body and line comments | Everyone; a background session, a terminal tab or a shell outside Tori needs an approval |
+| `pr.push` | Push an exact commit, never forced, onto an open pull request's branch on origin | Everyone; a background session, a terminal tab or a shell outside Tori needs an approval, except the autopilot fixing its own pull request under a project's fix loop |
+| `pr.merge` | Merge a pull request at the head commit given | Everyone; a background session, a terminal tab or a shell outside Tori needs an approval |
 | `pr.check_log` | What a failed check left to read: the last 300 lines of a GitHub Actions job's log, or another check's summary and link | Everyone |
 | `pr.watch`, `pr.unwatch` | [Watch a pull request](/docs/git/pull-requests-and-issues/#let-a-chat-watch-a-pull-request) and be woken with its news | Chat, and only with the setting on |
 | `topic.member.promote` | Give a [Topic](/docs/workspace/topics/#chats-in-a-topic) member a worktree so the chat can change it | Chat, worker |
 | `autopilot.state` | The autopilot's queue | Everyone, phone too |
 | `autopilot.item.update`, `autopilot.project.set`, `autopilot.hold.resolve` | Update a queue item, set a project's contract, withdraw a hold | Shell, chat |
 | `autopilot.loop` | Queue one ship item per entry of a list, the prompt as each one's task; an entry already open is skipped. See [Loops](/docs/automation/autopilot/#loops) | Shell, chat |
-| `autopilot.start`, `autopilot.stop` | Turn the autopilot on or off | Shell, phone. Never an agent session |
+| `autopilot.start`, `autopilot.stop` | Turn the autopilot on or off | Outside shell, phone. Never an agent session or a terminal tab |
 | `autopilot.schedule.list` | The [schedules](/docs/automation/autopilot/#schedules), each with when it fires next | Everyone |
 | `autopilot.schedule.add`, `autopilot.schedule.remove` | Add or remove a schedule | Shell, chat |
 | `autopilot.schedule.resume` | Resume a schedule three failed runs paused | Shell only. Never an agent session |
