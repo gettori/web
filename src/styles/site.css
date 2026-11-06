@@ -59,6 +59,17 @@ body {
   overflow-x: clip;
 }
 
+/* A page shorter than the window still puts the footer at the bottom. */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+.page > main {
+  flex-grow: 1;
+  width: 100%;
+}
+
 a {
   color: var(--link);
   text-decoration: none;
