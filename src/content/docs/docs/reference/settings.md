@@ -226,8 +226,10 @@ See [The browser extension](/docs/browser/extension/).
 
 **Base folder**: shown, and changeable, from here. Changing it does not move
 anything on disk, Tori just starts listing whatever is under the new
-folder. **Forget base folder** returns you to first run setup without
-deleting anything.
+folder. **Sort projects...** scans the base folder and opens **Sort projects
+into spaces**, for projects that are not in a space yet; see
+[The grouping view](/docs/first-run/#the-grouping-view). **Forget base
+folder** returns you to first run setup without deleting anything.
 
 **Crash logs**: if Tori ever closes on its own, it writes a file under
 `~/.config/tori/crashes/` and says so on the next launch. This section lists
