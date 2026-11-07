@@ -35,8 +35,38 @@ Nothing is registered anywhere else. Create a folder inside a space from
 Finder and it appears as a project; create a folder in the base folder and it
 appears as a space. Folders whose names start with a dot are ignored.
 
+A git repository sitting at the top of the base folder is not read as a
+space. It shows in the banner below until you sort it into a space or attach
+it to Home. A top-level folder under git that holds repositories of its own is
+still a space, and so is one that only has a manifest such as `package.json`.
+
 The base folder can be changed or forgotten in Settings > Advanced; nothing on
 disk moves when you do.
+
+### Projects outside a space
+
+When the base folder holds projects Tori can't place, a banner above the space
+strip reads **2 projects aren't in a space**. Click it to open it: **Sort them
+into spaces, or attach one to Home to use it where it is.**, a **Sort into
+spaces** button, and each project with **Attach to Home**, which opens the
+[Attach folder](/docs/workspace/home/#attach-a-folder) dialog on it.
+
+It counts projects at the top of the base folder, and git repositories one
+level inside a space's folder that is not a project itself, such as
+`work/clients/api`.
+
+**Sort into spaces** opens **Sort projects into spaces**, the same grouping
+view as first run, over your current base folder. See
+[The grouping view](/docs/first-run/#the-grouping-view). Click **Apply** to
+run it. With nothing to sort it says **Every project here is already in a
+space.** **Sort projects...** in Settings > Advanced opens the same dialog.
+
+A top-level folder you hide there stops showing as a space and stays on disk.
+Moving a project into a hidden folder from the grouping view shows it again.
+
+If Tori stops partway through a move, the sidebar says **A move didn't finish:
+1 of 3 folders left** with **Resume**, which finishes the moves still left.
+Nothing else can move until it has.
 
 ## The parts of the sidebar
 
@@ -200,6 +230,8 @@ open, so clicking it selects it.
      `.bare` repository with its default branch checked out as its own folder,
      and you add more branches later as their own folders. Clear the box for
      a plain clone.
+   - **Move here**: moves a folder you already have into the space. See
+     [Move a project into a space](#move-a-project-into-a-space).
 3. Press `Enter` or confirm.
 
 </Steps>
@@ -209,9 +241,10 @@ and answer a password or passphrase prompt. The dock closes itself when the
 clone finishes, or stays open with the exit code when it fails. A URL starting
 with `-` is refused, so it can never be read as a git option.
 
-To add a project that already exists on disk, move or create its folder
-inside the space's folder, or leave it where it is and
-[attach it to Home](/docs/workspace/home/#attach-a-folder).
+To add a project that already exists on disk, use **Move here**, or
+**Move folder here...** in the space menu (**Moves a folder from anywhere on
+this disk into work.**), which opens the same dialog on that mode. Or leave it
+where it is and [attach it to Home](/docs/workspace/home/#attach-a-folder).
 
 ### The project menu
 
@@ -227,6 +260,7 @@ Right-click a project row, or hover it and click its actions button:
 | **Convert to worktree layout** | Repo | Turns the clone into a **Bare** project in place, see below |
 | **Prune worktrees** | Bare | Clears git's records of worktree folders deleted outside Tori, and says how many it pruned |
 | **Set origin**, **Change origin** | Repo, Bare | Points `origin` at a remote. Accepts `https://`, `git@` and `ssh://` URLs. Existing branches keep their names |
+| **Move to space...** | Any | Moves the project's folder into another space, see [Move a project into a space](#move-a-project-into-a-space). Shown once there is another space to move to |
 | **Project settings** | Any | Opens the project's [settings dialog](/docs/workspace/project-settings/): icon, setup, run and teardown commands and shared files, allowed agents, verification commands, trust, origin and account, the repo's workspace settings and the autopilot contract |
 | **Remove project**, **Remove folder** | Any | Deletes it, see below. The row's second line says so: **Deletes the folder from disk** |
 
@@ -280,6 +314,73 @@ puts the ordinary clone back exactly as it was. **Remove empty container**
 never appears on it.
 
 </Aside>
+
+### Move a project into a space
+
+Two ways in, one dialog:
+
+- **Move here** in a space's **New in** dialog, for a folder anywhere on the
+  same disk. **Choose...** opens the folder picker; **Change...** picks
+  another.
+- **Move to space...** in a project's menu, in Home or in a space. The dialog,
+  **Move "api" to a space**, has a **Space** list of the other spaces.
+
+The dialog shows the same card as
+[Attach folder](/docs/workspace/home/#attach-a-folder): a plain folder, a git
+clone with its branch, remote and worktrees, or a bare repository with its
+worktrees. **Name in the space** is filled in from the folder's name. Under it,
+always: **Anything outside Tori that points at the old path stops working, and
+agent history stays under the old path.** Click **Move**.
+
+For an ordinary clone, **Convert to worktree layout** is ticked by default. It
+turns the clone into a **Bare** project once it has moved, with two worktrees:
+the branch you had checked out, and the repository's default branch when that
+is a different one. The default branch is the one `origin` points `HEAD` at,
+else `main` or `master` if `origin` has it. Ticked, the dialog says **Tori
+trusts the folder, then makes it a .bare repo with the default branch and the
+checked-out branch as worktrees.** Clear the box to move the clone as it is. A
+bare repository and a plain folder just move.
+
+Ticking **Convert to worktree layout** is what lets Tori trust the folder,
+since converting runs git in it. Tori checks the clone against the same rules
+as [Convert to worktree layout](#convert-a-clone-to-the-worktree-layout) before
+anything moves. If one stops it, the box clears and greys out, the dialog says
+**It can't be converted, so it moves as it is.** with the reason, and the trust
+is taken back. Click **Move** again to move it unconverted. Without the box,
+moving never trusts a folder that was not trusted already.
+
+After the move, Tori may say:
+
+- **No default branch found, so only the current branch has a worktree.**
+- **A folder named main is in the way, so main has no worktree yet.**
+- **Moved, but the conversion didn't run:**, with the reason. The folder is in
+  the space as an ordinary clone; convert it from its menu.
+
+What moves with the folder: its worktrees, inside and outside it, which Tori
+relinks without running git; your open tabs and editor state; and Tori's own
+records of it, such as its settings, trust, issues, origin and Topic
+membership. A project moved out of Home is no longer attached. What does not:
+earlier agent sessions stay recorded under the old path, and nothing is left
+at the old path to point at the new one.
+
+**Move** stays disabled, with the reason shown, when:
+
+- a terminal or agent tab is running in the folder: **1 terminal or agent tab
+  is running in this folder. Close it first.**
+- a file in it has unsaved changes,
+- the space already has a folder with that name, in any letter case: **work
+  already has a folder named api.**
+- the name is empty, holds a `/` or starts with a dot,
+- the folder is on another disk: **This folder is on a different disk. Attach
+  it to Home instead.**
+- it holds the space, the base folder or your home folder: **A folder can't
+  move into itself.**
+- it holds Tori's own files: **This folder holds Tori's own files.**
+- it is a space: **This is a space folder. Move its projects instead.**
+- it is a worktree of another repository: **This is a worktree of another
+  repository. Move that repository instead.**
+- it is halfway through a conversion: **This project is halfway through a
+  layout conversion. Finish or undo it first.**
 
 ### Change a project's icon
 
