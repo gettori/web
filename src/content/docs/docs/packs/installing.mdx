@@ -8,9 +8,9 @@ import Aside from "../../../../components/docs/Aside.astro";
 Tori ships with the [packs it needs itself](/docs/packs/bundled/). Every
 other language server, linter, debugger, formatter, theme and agent is a
 pack in the [catalog](/packs/), and Tori installs one at a time, always
-through the same dialog. Settings has no catalog list: **Browse packs** in
-the LSP, Linters, Debuggers, Formatters, Appearance and Agents panes opens
-the catalog's page for that kind.
+through the same dialog. Settings has no catalog list: **More**, in the
+title row of the LSP, Linters, Debuggers, Formatters, Appearance and Agents
+sections, opens the catalog's page for that kind.
 
 ## From a pack's page
 
@@ -88,13 +88,14 @@ packs, and Tori offers the one it needs.
 
 A card whose pack came from the catalog has **Update pack** when the catalog
 has a newer file, and **Remove pack**, which deletes the file. For a theme,
-the two buttons sit under the theme picker in Settings > Appearance. An
-agent's pair is on its page in Settings > Agents, and both wait until no tab
-is using the agent.
+the two buttons sit next to the theme picker in Settings > Appearance, for
+the selected theme only. An agent's pair is on its page in Settings >
+Agents, and both wait until no tab is using the agent.
 
-These are about the pack file. A language server or debugger card can also
-have Install, Update and Remove for the program Tori installed for it, which
-leave the pack in place. Bundled packs update with Tori.
+A language server or debugger card has one trash button. It removes the pack
+together with the program Tori downloaded for it, and for a program your own
+toolchain installs, it runs the uninstall command in a terminal first.
+Bundled packs update with Tori.
 
 <Aside type="note" title="A dev build">
 
