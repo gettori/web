@@ -149,6 +149,21 @@ On an Intel Mac the row says **Needs an Apple Silicon Mac**.
 | Chats open in | Leftmost | Same, for chat tabs |
 | Files open in | Rightmost | Same, for opened files |
 
+## Sidebar
+
+See [Arranging the sidebar](/docs/workspace/sidebar/).
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| Space tiles | Bottom | Where the space strip sits: the bottom of the sidebar, or its left edge |
+| Card colours | Subtle | **Subtle** draws every lane and group card neutral; **Colourful** tints lanes by state and groups by their own colour |
+| Lanes for | Default | Which lane setup the rows below edit: **Default**, **Home** or a space. A space follows Default until changed; **Reset to default** gives it back |
+| PR lanes | Off | Sorts each project's branches into Working, In review, Reviewing and Done by pull request state |
+| Own lanes | Changes requested, Approved, Review requested | The states that get a lane of their own, above the lane they come from |
+| Fold into In review | Off | Shows Reviewing inside In review |
+| Branch line | Full | The second line under a branch: **Off**, **PR only** or **Full** |
+| Branch line items | All but Skipped checks | What Full shows: PR, Stack, Watched, Checks, Skipped checks, Diff size, Files, Spend, Age, Comments |
+
 ## LSP, Debuggers, Linters, Formatters, Projects
 
 Card grids, not fixed fields, one card per server, debugger, linter or
@@ -169,7 +184,6 @@ line, each with **Reset to defaults**. See
 | --- | --- | --- |
 | Theme | Tori Dark | 22 bundled, in Dark and Light tabs. See [Themes and fonts](/docs/editor/themes-and-fonts) |
 | Zoom | 1x | Scales chrome, editor and terminal together |
-| Space tiles | Bottom | Where the space strip sits: the bottom of the sidebar, or its left edge |
 | UI font family / size | Inter, 15px | |
 | Editor font family / size | SF Mono, 15px | |
 | Terminal font family / size | JetBrains Mono Nerd Font, 15px | |

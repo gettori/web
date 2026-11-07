@@ -133,7 +133,7 @@ Drag a tile left or right to reorder the spaces. The
 [Home](/docs/workspace/home/) tile comes first, set apart by a thin line,
 and does not move.
 
-**Space tiles**, in Settings > Appearance, puts the tiles in a strip along the
+**Space tiles**, in Settings > Sidebar, puts the tiles in a strip along the
 **Bottom** of the sidebar (the default) or in a rail down its **Left** edge.
 The rail fits any number of spaces, has its own **New space** button, and stays
 visible when you hide the sidebar with `Cmd+B`; then the selected space's tile
@@ -436,8 +436,12 @@ for those three.
 
 Each row under a project is one branch of a **Repo** or one worktree of a
 **Bare** project. Up to six show; the rest fold into a **N more** row that
-opens them. A [stack](#stacked-pull-requests) counts as one of the six. The
-branch you have selected always stays visible.
+opens them. A [stack](#stacked-pull-requests) or a group counts as one of the
+six. The branch you have selected always stays visible.
+
+The rows are in your own order: drag one to move it. You can also gather
+branches into named groups and sort them into lanes by pull request state, see
+[Arranging the sidebar](/docs/workspace/sidebar/).
 
 ### What a row shows
 
@@ -473,8 +477,8 @@ From left to right:
   The tooltip also says when the last commit was made, and lists conflicting
   files. While a session in the branch is working or waiting on you, the marks
   step aside for its status, except the amber files mark, which stays. A
-  branch with an open pull request has no red conflict mark: its pull request
-  number turns red instead (see [the second line](#the-second-line)).
+  branch with an open pull request has no red conflict mark: its second line
+  shows the conflict instead (see [the second line](#the-second-line)).
 - **A Topic tag** when the worktree belongs to a [Topic](/docs/workspace/topics/)
   and **Show Topic worktrees in Spaces** is on. Click it to open the Topic.
 - **A status bubble** for the sessions in it.
@@ -482,7 +486,10 @@ From left to right:
 ### The second line
 
 A branch with a pull request, or with changes against its base, grows a second
-line:
+line. **Branch line**, in Settings > Sidebar or the sidebar's **View options**
+menu, sets how much it shows: **Off**, **PR only** or **Full** (the default),
+and in Full which facts, see
+[The branch line](/docs/workspace/sidebar/#the-branch-line). In Full:
 
 - The pull request's number and state (draft, open, merged or closed), its
   place in a [stack](#stacked-pull-requests) as a stack glyph and `2/3`
@@ -494,25 +501,27 @@ line:
 - The size of the change against the base: `+120/-14` and the number of files.
 - When it was opened (or merged or closed), and how many comments it has.
 
-An open pull request's number is coloured for what it needs, the first that
-applies:
+The pull request's number is coloured for where its review stands. The colour
+names are Tori Dark's:
 
 | Number | Means |
 | --- | --- |
-| Rose | Your review is requested, including when the author asks you again after you requested changes |
-| Orange | Changes requested |
-| Red | The base has moved on and some files would conflict when the branch catches up |
+| Blue | Your pull request is open, with no review yet |
+| White | Reviewed with comments, nothing blocking |
+| Red | Changes requested |
+| Orange | You asked a reviewer who requested changes to look again, or someone else's pull request asks for your review |
 | Green | Approved |
-| Grey | Nothing pending |
+| Purple | Merged |
+| Grey | A draft, closed, someone else's pull request you have reviewed, or one that never asked you |
 
-A draft or a closed pull request stays grey under its own glyph, and a merged
-one is purple.
+These are the states [PR lanes](/docs/workspace/sidebar/#what-goes-in-which-lane)
+sort by. When the base has moved on and some files would conflict, a red
+conflict glyph with the number of files follows the number.
 
 On the repository's default branch, such as `main` or `master`, a pull request
 is a release to another long-lived branch, so the line reads `-> stage #8020`
-under an arrowed pull request glyph. It stays grey even when approved, and
-turns rose, orange or red only when your review is requested, changes are
-requested or it would conflict. Once merged or closed it shows, grey, for a
+under an arrowed pull request glyph. It stays grey once approved, and is
+coloured like any other number until then. Once merged or closed it shows, grey, for a
 day, then the line goes away, and the row never takes the teal wash a finished
 branch gets.
 

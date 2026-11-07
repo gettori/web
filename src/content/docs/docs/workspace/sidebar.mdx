@@ -1,0 +1,214 @@
+---
+title: Arranging the sidebar
+description: "Put a project's branches in your own order, gather them into named groups, sort them into PR lanes by pull request state, and pick how cards and the branch line look."
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+
+A project's branches list in the order you give them. On top of that you can
+gather branches into **groups**, and turn on **PR lanes** to sort the rest by
+where their pull request stands. Everything here is set per project, and the
+look of it lives in Settings > Sidebar.
+
+## Your own order
+
+Drag a branch row up or down to move it. While you drag, the row under the
+pointer shows where it will land: a line above or below it.
+
+- The default branch, such as `main`, comes first, unless you put it in a
+  [group](#groups).
+- A new branch lands at the top, under the default branch.
+- A [stack](/docs/workspace/spaces/#stacked-pull-requests) and a fan out group
+  move as one.
+
+Nothing a poll brings in moves a row while the pointer is over the sidebar or a
+row is being dragged, so the row you are about to click stays put. Your own
+drop lands at once.
+
+The order is kept in `~/.config/tori/sidebar-order.json`, out of `tori.toml`, so
+reordering never shows up as a change to a file you may keep in a dotfiles
+repo.
+
+## Groups
+
+A group is a named card that holds branches together, in the order you put
+them, whatever their pull request is doing. Groups belong to one project.
+
+### Make a group
+
+- **Drag a row onto the middle of another row.** A ring around the target means
+  the drop will group them; the top or bottom edge of a row reorders instead.
+- **Pick rows, then press `Cmd+G`.** `Cmd`-click a row to add it to the pick or
+  take it out, and `Shift`-click to pick every row between it and the last one
+  you clicked. Right-clicking a picked row offers **Group N branches** too.
+  `Escape` or a plain click clears the pick.
+
+The new card takes the place of the topmost of its rows, and its name opens for
+editing with **New group** selected. Type a name and press `Return`. `Escape`,
+or clicking away with the field empty, keeps the name it had.
+
+### Use a group
+
+- **Add a branch**: drag it onto the group's header, or drop it between two
+  rows inside the card.
+- **Take a branch out**: drag it out of the card and drop it between rows.
+- **Reorder groups**: drag a group by its header.
+- **Collapse it**: click the header. A collapsed group stays in place as its
+  header with a count. If the branch you have selected is inside, the header
+  shows the selection's bar. Tori remembers which groups are collapsed.
+
+Right-click a group's header:
+
+| Item | What it does |
+| --- | --- |
+| **Rename** | Opens the name for editing. A name another group has, or an empty one, keeps the old name |
+| **Colour** | Blue, Green, Amber, Pink or None. Only shown with [Card colours](#card-colours) set to **Colourful** |
+| **Ungroup** | Removes the card. Its branches stay where they were |
+
+A group lasts until its last branch is gone. Removing a worktree or deleting a
+branch, by hand or by the cleanup that removes merged worktrees, takes it out of
+its group, and the group goes with its last branch. A project whose folder
+cannot be found keeps its groups for when it comes back.
+
+Groups are written to `tori.toml`, under the project's `[[project_meta]]`
+entry:
+
+```toml
+[[project_meta.group]]
+name = "Drag and drop"
+colour = "blue"
+branches = ["dnd-core", "dnd-ghost"]
+```
+
+## PR lanes
+
+With lanes on, the branches that are not in a group are sorted into cards by
+where their pull request stands. Lanes are off until you turn them on: in
+Settings > Sidebar, from the sidebar's **View options** menu, or on the
+[first run](/docs/first-run/) Space step.
+
+From the top, a project then shows:
+
+1. The default branch, and the branches no lane is about (below).
+2. Your groups, in your order.
+3. The lanes, in a fixed order: **Working**, **In review**, **Reviewing**,
+   **Done**.
+
+A lane with nothing in it is not drawn. Inside a lane the branches keep your
+order, and dragging one up or down works as usual. A stack or fan out group
+sits in the lane of its first branch.
+
+### What goes in which lane
+
+Each lane is made of states:
+
+| Lane | State | Means |
+| --- | --- | --- |
+| Working | No PR | No pull request yet |
+| | Draft | A draft pull request |
+| In review | Ready | Your open pull request, with no review yet |
+| | Commented | Reviewed with comments, nothing blocking |
+| | Changes requested | A reviewer asked for changes |
+| | Re-review | You asked a reviewer who requested changes to look again |
+| | Approved | Approved and ready to merge |
+| Reviewing | Review requested | Someone else's pull request that asks for your review |
+| | Reviewed | Someone else's pull request you have reviewed |
+| Done | Merged | Merged |
+| | Closed | Closed without merging |
+
+Whose pull request it is decides **In review** against **Reviewing**. Someone
+else's pull request that never asked for your review, and that you never
+reviewed, is in no lane: it lists with the default branch at the top.
+
+GitLab has no "changes requested", so a merge request there is never in that
+state. A review worktree on a `pr-<n>` branch, which Tori makes for a fork's
+pull request, is matched to pull request `n`.
+
+### Give a state its own lane
+
+In Settings > Sidebar, under **Own lanes**, each lane lists its states as chips.
+A lit chip gets a lane of its own, drawn directly above the lane it comes from.
+Out of the box **Changes requested**, **Approved** and **Review requested** are
+lit, so those three stand out from their lanes.
+
+**Fold into In review** puts **Reviewing** inside **In review**, so the pull
+requests you review sit with your own. A lit state from Reviewing still gets
+its own lane, above In review.
+
+### When a branch changes lane
+
+A branch whose pull request moves it to another lane lands at the top of its
+new lane, and so do a group's branches when you ungroup it or drag one out of
+it. Tori remembers the lane each branch was last in, so this still happens if
+the change came in while Tori was closed. While a branch's pull request has not
+been read yet, such as just after launch, it waits in the lane it was last in.
+
+You cannot drag a branch into another lane: lanes follow the pull request. The
+pointer shows a ban sign and **Lanes follow PR state. Reorder inside Working,
+or drop into a group.**, and the row goes back. Dropping it into a group always
+works.
+
+### Parked lanes
+
+Click a lane's header to park it. Parked lanes sit side by side in one row
+under the open ones, each with its count; click one to open it again. **In
+review**, **Reviewing** and **Done** start parked, and **Working** and any lane
+of its own start open. Tori remembers what you park, per project. A parked lane
+holding the selected branch shows the selection's bar.
+
+### Lanes for each space
+
+Every space has its own lanes. In Settings > Sidebar, **Lanes for** picks
+**Default**, **Home** or a space. A space follows **Default** until you change
+something for it; from then on it keeps its own copy. **Reset to default** gives
+a space back to Default, and on Default itself it restores the out of the box
+setup, lanes off.
+
+The **PR lanes** item in the **View options** menu turns lanes on or off for the
+space you are looking at.
+
+<Aside>
+Lanes need the forge's pull request data, so they fill once a GitHub or GitLab
+account is signed in. Until then every branch is in **Working**.
+</Aside>
+
+## Card colours
+
+Groups and lanes are drawn as cards. **Card colours**, in Settings > Sidebar:
+
+- **Subtle**, the default: every card has the same neutral background.
+- **Colourful**: each lane is tinted by its state, and each group by its own
+  colour. Working is purple, In review blue, Reviewing amber and Done teal; a
+  lane of its own takes the colour its pull request number has (see below). A
+  group set to **None** stays neutral, and a new group picks a colour no other
+  group in the project uses.
+
+A group keeps its colour in Subtle, it just does not show.
+
+## The branch line
+
+The second line under a branch name, described in
+[Spaces, projects and branches](/docs/workspace/spaces/#the-second-line), has
+three modes:
+
+- **Off**: names only.
+- **PR only**: the pull request number and its stack position.
+- **Full**, the default: every fact whose chip is lit under **Branch line
+  items**: PR, Stack, Watched, Checks, Skipped checks, Diff size, Files, Spend,
+  Age and Comments. All are lit except Skipped checks.
+
+A running rebase or merge always shows, in every mode, and the line's tooltip
+lists every fact whatever is hidden. Switch modes from the **View options**
+menu, or in Settings > Sidebar.
+
+## The View options menu
+
+The sliders button at the right of the sidebar's heading:
+
+| Item | What it does |
+| --- | --- |
+| **PR lanes** | Lanes on or off for the space on screen |
+| **Off**, **PR only**, **Full** | The branch line mode |
+| **Collapse all** (`Cmd+Opt+Left`) | Closes every project |
+| **Expand all** (`Cmd+Opt+Right`) | Opens every project |
+| **Sidebar settings...** | Opens Settings > Sidebar |
