@@ -5,14 +5,14 @@ description: Every language server Tori knows, how to install each one, and how 
 
 A language server gives the editor completion, hover, go to definition,
 rename, code actions and the compiler's own diagnostics. Settings > LSP has
-a card for every one Tori knows, split into three tabs:
+a card for every one Tori has, in one list that **Search** filters. **More**,
+in the section's title row, opens the [catalog](/packs/lsp/) for the rest.
 
-- **Ready**: bundled with Tori, or found on your machine.
-- **Installable**: Tori can fetch it for you.
-- **Manual**: your own toolchain installs it; the card shows the command.
-
-Each card has a status dot, a version, Install, Update or Remove where they
-apply, and an on or off switch.
+Each card has a status dot, a version, Install or Update where they apply,
+one trash button, and an on or off switch. For a pack from the catalog, the
+trash button removes the pack and the copy of the server Tori downloaded for
+it. For a server your own toolchain installs, it runs the uninstall command
+in a terminal first, then removes the pack.
 
 ## Installing a server
 
@@ -32,7 +32,8 @@ whose checksum it checks before writing anything, into
 `~/.config/tori/servers/<id>/`. A failed download leaves the previous install
 in place. When a Tori release pins a newer version, the card offers Update.
 
-For a **Manual** server, Install runs the command shown on the card in a
+For a server your own toolchain installs, Install runs the command shown on
+the card in a
 terminal inside Settings, using your login shell's PATH. Reopen Tori after
 installing one by hand outside of Settings so it is picked up.
 
