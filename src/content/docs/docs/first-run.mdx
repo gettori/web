@@ -39,10 +39,13 @@ skip ahead past where you have reached.
 
 1. ### Base folder
 
-   Pick the folder that holds your projects, with the macOS folder picker.
-   Required; you can change it later in Settings. If git is not installed,
-   this step offers to install it (Command Line Tools or Homebrew, depending on
-   what is already on your machine).
+   Pick the folder that holds your projects with **Choose folder**, which
+   opens the macOS folder picker. Required; you can change it later in
+   Settings. If git is not installed, this step offers to install it (Command
+   Line Tools or Homebrew, depending on what is already on your machine).
+
+   Tori scans the folder before using it, and the step shows one of three
+   things. See [Fitting a base folder](#fitting-a-base-folder) below.
 
 1. ### Space
 
@@ -78,3 +81,98 @@ skip ahead past where you have reached.
    Tori** to finish.
 
 </Steps>
+
+## Fitting a base folder
+
+Tori reads the base folder as `<base>/<space>/<project>`. Plenty of people
+keep every repo directly in one folder instead, so the Base folder step scans
+what you picked and says which of three cases it is.
+
+### It fits
+
+Every project is already inside a space folder. The step says how many spaces
+and projects it found, and the Space step is already answered. An empty folder
+fits too: **Empty folder. Nothing to scan yet.** The Space step makes the first
+space inside it.
+
+### Some projects aren't in a space
+
+The step says **3 projects aren't in a space yet. Pick a space for each, or
+leave it where it is.** and shows the grouping view (below). Two kinds of
+project get a row:
+
+- one at the top of the base folder: a git repository of any layout, or a
+  folder with a manifest such as `package.json`, `Cargo.toml`, `go.mod` or
+  `pyproject.toml` and no repository inside it.
+- a git repository deeper inside a space, such as `work/clients/api`, where
+  Tori would read `clients` as the project.
+
+Click **Apply** to make the spaces and move the projects. When Apply leaves at
+least one space, setup goes straight on to Git hosts and skips the Space step.
+
+### Tori can't use it
+
+The reason shows in red:
+
+- your home folder or the whole disk: **Pick a folder of projects, not your
+  home folder or the whole disk.**
+- Tori's own folder: **This folder holds Tori's own files.**
+- a single project: **This is a project. Pick the folder that holds your
+  projects.**
+- a folder Tori can't open: **Tori can't read this folder**, with the error.
+- a folder too big to read in one go: **This folder is too big to scan. Pick a
+  narrower folder.**
+
+Under it, three ways on: **Choose another folder**, **Create a new folder**
+(the folder picker, whose **New Folder** button makes one), and **Use
+~/tori_projects**, which makes that folder if it is missing and uses it. **You
+can attach folders and move them into a space later.**
+
+## The grouping view
+
+The same view shows in setup and in **Sort projects into spaces** from the
+sidebar or Settings, see
+[Projects outside a space](/docs/workspace/spaces/#projects-outside-a-space).
+It opens with **Projects you don't group are attached to Home, where you can
+move them into a space later.**
+
+- **One row per project**: its folder name, its path in the base folder and
+  its kind (**folder**, **git clone** or **bare repo**), then **Name in the
+  space** and **Space**. **Space** starts on the owner in the project's
+  `origin` URL for a project at the top, so `github.com/acme/api` suggests
+  `acme`, and on the space it sits in for one deeper down.
+  Pick **Home (stays where it is)** to leave a project in place; it is
+  attached to [Home](/docs/workspace/home/) instead of moved.
+- **New space**: type a name and click **Add space**, or press `Enter`, to
+  offer it in every row's **Space** list. Nothing is made until Apply.
+- **Folders with no projects**: top-level folders that would end up holding no
+  project in a space, each with **Hide name: it isn't a space**, ticked by
+  default. A hidden folder stays on disk and stops showing as a space. Clear
+  the box to keep it as an empty space.
+- **Skipped**: what the scan did not read, marked **(too big to scan)**,
+  **(too deep)** or **(can't be read)**. A skipped folder is never hidden.
+- **What moves**: every move as `old path -> space/name`, or **Nothing moves.
+  Every project stays where it is.**
+
+**Apply** stays disabled while a row has a problem, shown under it:
+
+- two projects would land on the same name in one space: **Two projects would
+  get the same name here**
+- the space already holds a folder with that name, in any letter case: **work
+  already has a folder named api**
+- a new space would take the name of a project still at the top of the base
+  folder: **A project already has that name here**
+- a name that can't be a folder name
+
+The scan skips `node_modules`, `target`, `vendor`, `.venv`, `dist`, `build`
+and folders whose names start with a dot, never enters a project, never
+follows a symbolic link, and stops four levels down. It reads at most 2,000
+folders under each top-level folder; past that the folder is listed under
+**Skipped** as too big. It never runs git.
+
+Apply makes the spaces, moves the projects, attaches the rest to Home and
+hides the empty folders, in that order. Moving never runs git and never
+trusts a folder. See
+[Move a project into a space](/docs/workspace/spaces/#move-a-project-into-a-space)
+for what a move keeps and what it leaves behind.
+
