@@ -94,8 +94,8 @@ Before discarding anything, Tori saves a snapshot of the whole folder, so a
 discard can be undone. Find it under **Backstops** in the
 [Checkpoints](/docs/git/checkpoints/#backstops) tab and restore it.
 
-Discarding, stashing and rebasing rewrite files across the worktree, so they
-check for agents first. If a session is in the middle of a turn in this
+Discarding, stashing, rebasing, pulling and resetting to the upstream rewrite
+files across the worktree, so they check for agents first. If a session is in the middle of a turn in this
 worktree, the action is refused. If Tori cannot tell for sure, it asks
 **Another session may be running here** and lets you go ahead.
 
@@ -248,6 +248,49 @@ header: **Rebase in progress (2 conflicts)**, with:
 - **Abort**: goes back to before the operation.
 
 See [Merge conflicts](/docs/git/merge-conflicts/).
+
+## From the title bar
+
+The title bar ends with the selected branch's sync chip: the same
+[sync marks](/docs/workspace/spaces/#what-a-row-shows) as its sidebar row, with
+words for the states that need a decision, such as **diverged** or
+**main +4**. A branch with nothing to report shows no chip. Hover it for the
+full story and when the remote was last fetched.
+
+Click the chip for a menu of what you can do from here. Opening it also checks
+the remote, unless it was fetched in the last minute and a half. Each row has a
+line saying what it will do right now, with the counts:
+
+| State | The menu offers |
+| --- | --- |
+| Commits to push | **Push** |
+| Never pushed | **Publish**, which creates the remote branch |
+| Commits to pull | **Pull** |
+| Diverged | **Pull (Rebase) and Push**, **Pull (Rebase)** and **Pull** |
+| The upstream was force-pushed over your commits | **Reset to Upstream** |
+| The base branch has moved on | **Merge main** (your base branch), when no files would conflict |
+| A merge, rebase, cherry-pick or revert stopped | **Continue**, **Skip** (rebase and cherry-pick) and **Abort**, and nothing else |
+
+Every menu but the last ends with **Fetch**, and every menu ends with **Open
+Changes**, which opens this panel. A row runs the same command as the palette,
+with the same checks and confirms: **Push** still asks about
+[copies of base commits](#before-a-push).
+
+Some things are left to this panel on purpose:
+
+- **Force Push**, and every **Rebase** item, including onto your base branch.
+  When your history was rewritten (diverged after a rebase or an amend), the
+  menu offers no pull at all, since a pull would replay the old commits back
+  on top.
+- **Merge main** when files would conflict. The chip already shows the
+  conflict in red.
+- **Continue** while files are still conflicted. It is in the menu, but says
+  how many files to resolve first and does nothing.
+
+While a push, pull, fetch, reset or merge runs, the chip says so, such as
+**pulling**, and that row is greyed until it finishes. A stopped operation
+shows as **rebase in progress** in amber, even on a branch with nothing else
+to report.
 
 ## Graph, Stashes and Checkpoints
 
