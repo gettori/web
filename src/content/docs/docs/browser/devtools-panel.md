@@ -1,6 +1,6 @@
 ---
 title: The DevTools panel
-description: A Tori tab in the browser's DevTools that lists the page's errors and failed requests, with their bodies, sends the ones you pick to a chat, and comments on the element selected in Elements.
+description: A Tori tab in the browser's DevTools that lists the page's errors and failed requests, with their bodies, sends the ones you pick to a chat, and comments on the element selected in Elements, plus a Tori pane in Elements that shows a selected element's component, file and line.
 ---
 
 The extension adds a **Tori** tab to the browser's DevTools. It lists the
@@ -47,6 +47,32 @@ panel can say:
 | That element has no size on the page, so there is nothing to point at. | The element is hidden or has no width or height |
 | That is Tori's own overlay. | The selection is part of Tori's tray or comment box |
 | Tori could not reach the page. Reload it and try again. | The picker did not answer on the page |
+
+## The Tori pane in Elements
+
+The **Elements** tab gets a **Tori** pane in its sidebar, next to
+**Styles** and **Computed**. For the element selected in Elements, it
+shows what a comment on that element would carry and where it would go:
+
+| Row | What it shows |
+| --- | --- |
+| Element | The tag, with its id or first class, as in the comment box |
+| Components | The [component chain](/docs/browser/pick-and-comment/#components-and-props), innermost first, or **No components found** |
+| Source | The [file and line](/docs/browser/pick-and-comment/#file-and-line), or **No source line** |
+| Worktree | The branch serving the tab |
+| Sends to | The chat chosen in the tray. If the tray has not chosen one, the first live chat in the worktree, or **New chat in Tori** when there is none |
+
+The pane follows the selection, and reads again when you come back to the
+pane or the page reloads. Opening it on a worktree tab loads Tori's picker
+into the page, the same as the toolbar icon does.
+
+**Comment** opens the page's comment box on the element, the same as
+**Comment on selected element** in the panel. On `html`, `head`, `body`
+or an element with no size, the pane still shows the element, but
+**Comment** is off and the reason shows beside it. In place of the rows,
+the pane can say the sentences from the panel's tables above: that the tab
+is not a Tori worktree, that the element is in a frame or in Tori's
+overlay, or that Tori could not reach the page.
 
 ## The list
 
