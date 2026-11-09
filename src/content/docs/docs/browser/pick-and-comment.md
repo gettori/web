@@ -29,6 +29,27 @@ Clicking the icon again closes the tray when you have not started, stops
 picking while you pick, and picks again once stopped. Esc closes the tray
 too.
 
+## The worktree's chats
+
+On a worktree tab the tray lists the worktree's live chats under
+**Chats**, each with its title, its agent, a dot for what it is doing and
+the last line of its reply:
+
+| Dot | Means |
+| --- | --- |
+| Pulsing | Working |
+| Amber | Needs you: a permission, a question, or a stopped budget |
+| Grey | Done, waiting for the next message |
+
+The line is the last line of prose the chat wrote, cut at 160 characters.
+Code, tables and tool output are left out, and a chat that has only been
+running tools shows no line. **Show in Tori** beside a chat brings the
+window forward on it. Answering a question or a permission happens there:
+the tray never does it.
+
+The tray reads the chats when it opens and once more after a send, and
+does not update while open. Close and open it again to see a change.
+
 ## Picking
 
 While picking, the page under the pointer gets an outline, with a label
@@ -72,11 +93,11 @@ off localhost.
 
 ## Sending
 
-What the tray offers depends on the live chats in this worktree:
+Once there is something to send, the list of chats becomes **Send to**.
+What it offers depends on the live chats in this worktree:
 
 - **One**: **Send to** and its title.
-- **Several**: pick one under **Send to**, with the arrow keys or a click,
-  then **Send**.
+- **Several**: pick one with the arrow keys or a click, then **Send**.
 - **None**: the tray says so.
 
 **New chat in Tori** sits beside those in every case. It brings Tori's
@@ -88,8 +109,9 @@ A chat that is waiting on you, for a question or a permission, is not sent
 to until you answer it in Tori. Only live chats are offered; the extension
 never starts or resumes an agent.
 
-After a send the tray says where it went, with **Show in Tori**, which
-brings the window forward on that chat.
+After a send the tray says where it went, with the chat's dot and last
+line read again, and **Show in Tori**, which brings the window forward on
+that chat.
 
 **Copy as Markdown** copies the comments in the same layout the agent gets,
 and keeps them. **Cancel** throws them away.
