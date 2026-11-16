@@ -62,6 +62,7 @@ export const NAV: NavGroup[] = [
       page("Conflict radar", "git/conflict-radar"),
       page("Merge conflicts", "git/merge-conflicts"),
       page("Pull requests and issues", "git/pull-requests-and-issues"),
+      page("Git accounts", "git/git-accounts"),
     ],
   },
   {

@@ -1,0 +1,209 @@
+---
+title: Git accounts
+description: Use several GitHub or GitLab accounts side by side. Each account brings its own commit author, SSH key and signing key, you pick the account when you clone, and every git client in the repo acts as it.
+---
+
+import Aside from "../../../../components/docs/Aside.astro";
+import Steps from "../../../../components/docs/Steps.astro";
+
+When you have more than one account on a host, for example a work and a
+personal GitHub account, each repository acts as one of them. That account
+decides four things for the repo:
+
+- who git signs in as over HTTPS (when [git uses the
+  account](/docs/git/pull-requests-and-issues/#use-the-account-for-git-itself)),
+- who commits are authored as,
+- which SSH key git uses for the host,
+- which SSH key signs commits.
+
+It applies to every git client in the repo, not only Tori: your own terminal,
+your editor, agents, and linked worktrees all commit and push as the same
+account. Accounts are added in Settings > **Integrations** > **Hosts**; see
+[Sign in to GitHub or GitLab](/docs/git/pull-requests-and-issues/#sign-in-to-github-or-gitlab).
+
+## Which account a repo uses
+
+Tori settles it in this order:
+
+1. The account picked for the repo's remote. A pick belongs to the remote, so
+   every project cloned from the same origin shares it.
+2. The host's default: the account chosen beside **Use for git push and
+   fetch** on the host's card.
+3. The only account, when the host has one.
+4. Otherwise nothing, until you pick. The repo's row shows a person icon,
+   **Pick which account this repo uses**.
+
+You can change the pick at any time in [Project
+settings](/docs/workspace/project-settings/) > **Remote** > **Account**.
+Changing a pick or the host's default moves every repo that follows it at once.
+
+## Commit author
+
+Each account card has a line for its commit author. Until you set one it reads
+**No commit author. Its repos commit as your global git identity.**
+
+<Steps>
+
+1. Click **Set author**. The **Name** and **Email** fill in from the host. On
+   github.com and gitlab.com the email is the account's private noreply
+   address; on GitHub Enterprise and self-managed GitLab it is whatever public
+   email the host shows, or empty.
+2. Change either if you like, then click **Save**.
+
+</Steps>
+
+The card then reads **Commits as** with the name and email. **Edit** changes
+them, and **Clear** removes the author so the account's repos go back to your
+global git identity. Nothing is applied until you save.
+
+How it reaches git: Tori keeps one small git config file per account in its own
+config folder and adds a single include line at the end of each repo's
+`.git/config`. Editing the account's author rewrites only that file, so every
+repo on the account picks up the change without being touched.
+
+<Aside type="note" title="Repos that already set their own author">
+
+A repo whose config already names its own author (set with `git config
+user.email`, or through a conditional include in your global config) is left
+alone. Its Project settings say so, and nothing changes until you choose.
+
+</Aside>
+
+### Commits as, in Project settings
+
+Project settings > **Remote** shows **Commits as** under **Account**, with the
+author git will actually use and where it comes from: the account, the repo's
+own config, your global git author, or another file. With no author anywhere it
+says **No author is set, so git will refuse to commit.**
+
+- When the repo sets its own author, the line says the account's author is not
+  applied here, names the repo's own email, and offers **Use** with the
+  account's name. Using the account ignores the repo's own author until you
+  switch back.
+- Once the account is in use, any value of the repo's own that it overrides is
+  listed as ignored: the author, an SSH command, or signing settings. **Remove
+  it** deletes that value from the repo's config. **Use the repo's own** takes
+  the account back out of this repo.
+
+## SSH key
+
+Under the author, each account card has an **SSH key** select. It lists the
+public keys in `~/.ssh` and the keys your ssh agent holds, plus **None**. Tori
+only ever reads public keys; a private key is named by its path for ssh to
+open.
+
+The key is used for the account's host only. A submodule or a second remote on
+another host keeps authenticating the way it did. An SSH alias from your
+`~/.ssh/config`, such as `git@github-work:acme/api.git`, counts as the host it
+points at.
+
+**Test** signs in to the host with the chosen key and reports who it reached:
+
+- **Signed in as** the login, when the key belongs to this account.
+- **This key signs in as** another login, **not** this account, when the key
+  is registered to a different account on the host.
+- Otherwise ssh's own last line, for example a refused key or a timeout.
+
+A note under the select warns about a key the account cannot use smoothly:
+
+- **Your ssh agent no longer holds this key.**, for a key that came from the
+  agent.
+- **This key has a passphrase and is not in your ssh agent.** Tori asks for the
+  passphrase each time, and agents cannot use the key until you add it with
+  `ssh-add`.
+
+## Signing key
+
+**Signing key** picks the key that signs the account's commits, from the same
+list. With one set, every commit in the account's repos is signed with SSH
+signing. Choose **None** to stop signing.
+
+A commit from Tori's own commit button, merge, rebase or continue asks for the
+key's passphrase in Tori's dialog when the agent does not hold it. An agent or
+your own terminal needs the key in your ssh agent.
+
+## Pick the account when you clone
+
+In **New in** a space, on **Clone**, an **Account** select appears under the
+URL once the URL's host has two or more accounts. With one account there is no
+select and the clone uses it.
+
+- Each account is marked **(can read it)** or **(no access)**, from asking the
+  host once per account. While that is running the select says **Checking
+  which accounts can read it.** An account Tori could not check shows its name
+  alone. When none can read the repo it says **None of these accounts can read
+  it.**
+- It starts on the remote's existing pick, then the [space's
+  default](#a-default-account-per-space), then the host's default. With none of
+  those and exactly one account that can read the repo, it starts on that one.
+- **Create** waits a moment after you type the URL, while Tori looks up the
+  accounts.
+- Over HTTPS, the select says **Cloning over HTTPS turns on Tori sign-in for**
+  the host, **so its other repos sign in through Tori too.** when the host's
+  **Use for git push and fetch** switch is off. Cloning turns it on, so the
+  clone itself signs in as the account you picked.
+
+The pick is saved before the clone starts, and the clone runs with the
+account's settings from its very first fetch, so a private repo comes down
+over the account's SSH key and its first commit is authored as the account. It
+works the same for a plain clone and the worktree layout, and the same in [first
+run](/docs/first-run/)'s project step.
+
+## A default account per space
+
+**Space settings...** in a space's menu > **General** has a **Git accounts**
+section with one select for each host that has two or more accounts. Pick the
+account clones into this space should start on, or **No default**.
+
+It only chooses where the clone select starts. It never changes a repo that
+already has an account, and a remote that was picked before keeps its pick. The
+section is not shown for Home, which has no clones.
+
+## Repos you add yourself
+
+A repo you move into a space, attach to Home, or that appears in a space
+folder resolves like any other. When it still needs a pick, the person icon on
+its row and the **Account** select in Project settings mark each account
+**(can read it)** or **(no access)**. Nothing in the repo changes until you
+pick.
+
+## Remove an account
+
+**Remove** on an account card asks first. When no project uses the account it
+is a plain confirm. When some do, the dialog lists them, grouped by remote,
+each with a select:
+
+- another account on the host, to move the remote to it, or
+- **No account**, offered only where nothing else would take the repo over.
+
+Under each select it says who the projects will commit as afterwards, or that
+the repo's own author could not be read. Your moves are saved before the
+account goes, and every listed project's config stops including the removed
+account.
+
+## The account on the sidebar
+
+Once you have two or more accounts, each project row shows the avatar of the
+account it acts as, with the account's name on hover. Until the host's avatar
+is known it shows the account's first letter.
+
+## Your own SSH setup still works
+
+- A `core.sshCommand` in a repo, or `GIT_SSH_COMMAND` in your environment, is
+  kept for Tori's own git as well. Tori only adds its own options when the
+  command is plain OpenSSH.
+- An SSH alias resolves to its real host, so an account on `github.com` covers
+  `git@github-work:...` remotes too. Edits to `~/.ssh/config` are picked up
+  without a restart.
+
+## What it does not do
+
+- Only GitHub and GitLab hosts have accounts, GitHub Enterprise and
+  self-managed GitLab included. Repos on any other host keep your own setup.
+- Tori does not generate SSH keys or upload them to the host. Add the key on
+  the host's own settings page first.
+- Signing is SSH signing only, not GPG.
+- A commit made inside a submodule uses your global identity.
+- A repo you have not trusted is never touched; see trust in
+  [Project settings](/docs/workspace/project-settings/).
+- Existing commits keep their author. Only new commits use the account.
