@@ -11,27 +11,30 @@ import OmniboxDemo from "../../../../islands/docs/OmniboxDemo";
 ## The omnibox
 
 One box finds everything. Press `Cmd+P` to open it on files, or `Cmd+K` to open
-it on commands. What it searches depends on the first character you type:
+it on everything: places, commands, settings and more, see
+[Go to anything](/docs/workspace/go-to-anything/). A prefix, the first
+character you type, narrows what it searches:
 
 <div class="key-grid">
 
-| Prefix | Searches |
-| --- | --- |
-| *(none)* | Files in the project |
-| `>` | Commands |
-| `@` | Symbols in the open file |
-| `#` | Symbols across the project |
-| `:` | A line number to jump to |
-| `?` | What the prefixes do |
+| Prefix | From `Cmd+P` | From `Cmd+K` |
+| --- | --- | --- |
+| *(none)* | Files in the project | Everything |
+| `/` | Files in the project | Files in the project |
+| `>` | Commands | Commands |
+| `@` | Symbols in the open file | Symbols in the open file |
+| `#` | Symbols across the project | Symbols across the project, or an issue or pull request number such as `#92` |
+| `:` | A line number to jump to | A line number to jump to |
+| `?` | What the prefixes do | What the prefixes do |
 
 </div>
 
-<Demo caption="The omnibox over hooli-search's fix/search-ranking. Type a prefix to switch what it searches, use the arrow keys and Enter to pick, and press Escape to close it. Cmd+P or Cmd+K brings it back. Commit and push stay disabled, with the reason, until you stage a file.">
+<Demo caption="The omnibox over hooli-search's fix/search-ranking, opened with Cmd+P. Type a prefix to switch what it searches, use the arrow keys and Enter to pick, and press Escape to close it. Cmd+P brings it back. Commit and push stay disabled, with the reason, until you stage a file.">
   <OmniboxDemo client:visible />
 </Demo>
 
 Move with `ArrowUp` and `ArrowDown`, press `Enter` to go, `Escape` to close.
-Delete the prefix to switch back to files.
+Delete the prefix to go back to what the key opened it on.
 
 ### Files
 
@@ -41,15 +44,20 @@ loosely, so `sgnts` finds `src/sign.ts`. Inside a
 [Topic](/docs/workspace/topics/), every member is searched at once and each
 result names its repository.
 
+Paste a file's absolute path and the box goes to the branch or worktree that
+holds it and opens the file, from either key. See
+[Paste a path or an address](/docs/workspace/go-to-anything/#paste-a-path-or-an-address).
+
 ### Commands
 
 `>` lists every command in Tori: the git commands, layout, editor actions,
 the language server, the debugger, and a **Preferences:** entry for every
-setting, which opens Settings on that row. Each shows its shortcut when it has
-one. A command that cannot run right now, such as **Push to origin** with
-nothing to push, is shown greyed out with the reason under it rather than
-hidden. **Read Selection Aloud** is the exception: it is listed only when text
-was selected as you opened the palette. See
+setting, which flips an on and off setting and otherwise opens Settings on
+that row. Each shows its shortcut when it has one. A command that cannot run
+right now, such as **Push to origin** with nothing to push, is shown greyed
+out with the reason under it rather than hidden. **Read Selection Aloud** is
+the exception: it is listed only when text was selected as you opened the
+palette. See
 [Read a reply aloud](/docs/agents/transcript/#read-a-reply-aloud).
 
 ### Symbols and lines

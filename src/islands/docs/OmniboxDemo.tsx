@@ -489,10 +489,9 @@ export default function OmniboxDemo() {
   }
   function onShortcut(e: KeyboardEvent) {
     if (!(e.metaKey || e.ctrlKey)) return;
-    const k = e.key.toLowerCase();
-    if (k !== "p" && k !== "k") return;
+    if (e.key.toLowerCase() !== "p") return;
     e.preventDefault();
-    show(k === "k" ? ">" : "");
+    show("");
   }
 
   return (
