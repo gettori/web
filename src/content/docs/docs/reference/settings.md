@@ -9,8 +9,11 @@ rail on the left lists the panes; the search box at the top finds a setting by
 name and badges each pane with how many rows match. The keyboard button in the
 header opens the [shortcut sheet](/docs/workspace/keyboard-shortcuts/).
 
-Every row is also a **Preferences:** command in the palette (`Cmd+K`), which
-opens Settings on that row, or flips it for an on and off setting.
+Every row is also a **Preferences:** command in `Cmd+K`, which opens Settings
+on that row, or flips it for an on and off setting and shows **On** or **Off**.
+A setting with a few fixed values, such as **Timestamps**, also has a row per
+value that sets it, and every tab has a **Settings:** row. See
+[Themes, settings and usage](/docs/workspace/go-to-anything/#themes-settings-and-usage).
 
 Settings are saved in `~/.config/tori/settings.json`. You can edit the file by
 hand; Tori applies a change from either side the moment the file changes.
