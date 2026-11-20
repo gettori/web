@@ -85,6 +85,12 @@ the accent, status colours, diff and diagnostic colours, and the syntax
 colours. Everything else, washes, shadows and the names the interface uses, is
 worked out from those, so a theme file can never contain anything but colours.
 
+Borders are one of those washes: Tori draws `borderTint` faintly in a dark
+theme and solid in a light one, and `lineTint`, for the stronger borders,
+faintly in both. To set a border's strength yourself, write the colour with an
+alpha, such as `"borderTint": "#e6edf33c"`, and Tori draws it at that alpha
+instead.
+
 Before a theme is used, Tori checks it is legible: text has to contrast with
 the surfaces behind it. A theme that fails is not offered, and if it is already
 selected the window keeps the theme it had and toasts say what failed, naming
