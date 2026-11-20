@@ -8,32 +8,43 @@ import Steps from "../../../components/docs/Steps.astro";
 
 ## When a new version is out
 
-Tori checks for a new release when it opens and every six hours after, and when
-there is one shows **Update available** in the title bar.
+Tori checks for a new release when it opens and every six hours after. When
+there is one, the title bar shows **Update available** with the new version,
+for example **Update available 26.1120.0**. When you are several releases
+behind, it offers the newest one, not the next.
+
+Click the notice to open the update panel under it. The panel holds the
+buttons, and the title bar only shows where the update is.
 
 <Steps>
 
-1. Click **Install**. Tori downloads the build for your Mac and the pill counts
-   up, **Updating 40%**.
+1. Click **Install**. Tori downloads the build for your Mac, and the panel
+   shows a progress bar while the title bar counts up, **Updating 40%**.
+   **Cancel** stops the download and throws away what came in.
 2. Before it replaces anything, Tori checks the download is signed by Tori's
    team, passes Gatekeeper and is the version the release names. A download
    that fails any of these is thrown away and the running Tori is left alone.
-3. Click **Restart to update**. Tori reopens on the new version.
+   This step cannot be cancelled.
+3. The title bar says **Restart to update**. Click it, then **Restart** in the
+   panel. Tori reopens on the new version.
 
 </Steps>
 
-- Click **Update available** to open that release's page on GitHub, with its
-  notes and downloads.
-- Click the **x** to dismiss the notice.
+- You can close the panel at any step. The download carries on, and clicking
+  the title bar notice opens the panel again on the step it is at.
+- **What's new** opens the
+  [releases page](https://github.com/gettori/tori/releases) on GitHub. An
+  update can skip several releases, so read the notes back to your version.
+- **Later** hides the notice until Tori opens again.
 
 To check right away, choose **Tori > Check for Updates...** in the menu bar. It
-says so when you are up to date or when GitHub cannot be reached, and brings
-the notice back if you dismissed it. **Help > Release Notes** opens the
-[changelog](/changelog/).
+opens the panel when there is a new version, says so when you are up to date
+or when GitHub cannot be reached, and brings the notice back if you chose
+**Later**. **Help > Release Notes** opens the [changelog](/changelog/).
 
-Nothing installs without your click. Where Tori cannot replace itself the pill
-says **Can't install here** instead, and its tooltip says why: Tori is running
-from the DMG, or from a folder it cannot write to. Drag Tori into Applications
+Nothing installs without your click. Where Tori cannot replace itself, the
+panel has no **Install** and says why instead: Tori is running from the DMG,
+or from a folder it cannot write to. Drag Tori into Applications
 and open it from there.
 
 Your sessions keep running through an update: the old
@@ -45,8 +56,8 @@ waits.
 
 Those builds cannot update themselves. Install the next release once by any
 route on [Install](/docs/install/): the one-line installer, Homebrew
-(`brew upgrade --cask tori`) or the DMG. From then on, **Install** in the title
-bar does it.
+(`brew upgrade --cask tori`) or the DMG. From then on, **Install** in the update
+panel does it.
 
 Your settings, sessions, spaces and everything under `~/.config/tori/` are kept
 across updates.
