@@ -23,6 +23,7 @@ import {
   Ellipsis,
   Eye,
   Files,
+  Footprints,
   GitBranch,
   GitCompare,
   GitMerge,
@@ -30,6 +31,7 @@ import {
   Globe,
   History,
   House,
+  Layers,
   LoaderCircle,
   MessageSquare,
   PanelLeft,
@@ -50,6 +52,7 @@ import {
   UserCheck,
   Workflow,
   ZapOff,
+  type IconNode,
 } from "lucide";
 import "../app/css/tokens.css";
 import {
@@ -58,6 +61,7 @@ import {
   Button,
   ChatRow,
   GroupHead,
+  GroupRow,
   Icon,
   PrLine,
   ProjectRow,
@@ -66,6 +70,7 @@ import {
   SyncPush,
   Tab,
   TabMark,
+  TabMemberChip,
   TopicRow,
   type Agent,
   type Rollup,
@@ -86,13 +91,14 @@ import sp from "../app/css/ShellParts.module.css";
 import dc from "../app/css/DecisionCard.module.css";
 import hz from "../app/css/Horizon.module.css";
 import btn from "../app/css/Button.module.css";
+import hp from "../app/css/HunkProvenance.module.css";
 import pr from "./docs/PullRequestDemo.module.css";
 
-export type Mode = "loop" | "undo" | "pr" | "review" | "debug" | "cockpit";
+export type Mode = "loop" | "undo" | "pr" | "review" | "debug" | "cockpit" | "tree" | "topics" | "fanout" | "who";
 type Session = "work" | "need" | "done";
 
-const LOOP: Record<Mode, number> = { loop: 24, undo: 14, pr: 13, review: 14, debug: 15, cockpit: 16 };
-const STILL: Record<Mode, number> = { loop: 16.4, undo: 9, pr: 7, review: 10.4, debug: 4, cockpit: 8 };
+export const LOOP: Record<Mode, number> = { loop: 24, undo: 14, pr: 13, review: 14, debug: 15, cockpit: 16, tree: 12, topics: 9, fanout: 10, who: 11 };
+const STILL: Record<Mode, number> = { loop: 16.4, undo: 9, pr: 7, review: 10.4, debug: 4, cockpit: 8, tree: 5.6, topics: 5, fanout: 5, who: 8 };
 const AMBER = "217 164 104";
 const EASE = "cubic-bezier(.2,.8,.2,1)";
 
@@ -248,10 +254,16 @@ export default function ToriWindow(props: {
   const isDebug = () => mode() === "debug";
   const dbgOnChat = () => isDebug() && at(5.1, 9.8);
   const isCockpit = () => mode() === "cockpit";
+  const isTree = () => mode() === "tree";
+  const isTopics = () => mode() === "topics";
+  const isFan = () => mode() === "fanout";
+  const isWho = () => mode() === "who";
+  const sidebarOnly = () => isTree() || isTopics() || isFan();
   const at = (a: number, b = Infinity) => t() >= a && t() < b;
 
   /* ---- loop state ---- */
   const web = (dt = 0): Session => {
+    if (isTree()) return t() < 2.2 ? "work" : t() < 7.6 ? "need" : t() < 9.6 ? "work" : "done";
     if (!isLoop()) return "done";
     const x = t() - dt;
     if (x < 6.5) return "work";
@@ -259,12 +271,18 @@ export default function ToriWindow(props: {
     if (x < 19.8) return "work";
     return "done";
   };
-  const onWebhooks = () => !isLoop() || t() >= 11.3;
+  const onWebhooks = () => (isTree() ? t() >= 4.8 : !isLoop() || t() >= 11.3);
   const chaos = () => isLoop() && !props.skipChaos && t() < 5.2;
   const fold = () => t() >= 4;
 
   const webRollup = (): Rollup =>
     web() === "need" ? { waiting: 1 } : web() === "work" ? { executing: 1 } : { idle: 1 };
+
+  /* ---- topics and fan out: what their sidebar rows read ---- */
+  const topicOpen = () => isTopics() && t() >= 1.6;
+  const onTopicWeb = () => isTopics() && t() >= 3.9;
+  const ATTEMPTS = [3.2, 4.2, 3.7];
+  const promoted = () => isFan() && t() >= 7.2;
 
   /* ---- sidebar ---- */
   const Sidebar = () => (
@@ -283,14 +301,40 @@ export default function ToriWindow(props: {
           <ChatRow label="Draft the launch notes" agent="codex" time="Yesterday" />
         </div>
         <GroupHead label="Topics" />
-        <TopicRow name="Webhook signing" hue="rgb(217 164 104)" members={[Globe, Workflow]} />
+        <TopicRow name="Webhook signing" hue="rgb(217 164 104)" members={[Globe, Workflow]} open={topicOpen()} aim="topic">
+          <BranchRow label="api" icon={<Icon icon={Globe} />} selected={topicOpen() && !onTopicWeb()} end={<StatusBubble rollup={{ idle: 1 }} />} />
+          <BranchRow label="web" aim="m-web" icon={<Icon icon={Workflow} />} selected={topicOpen() && onTopicWeb()} end={<StatusBubble rollup={{ executing: 1 }} />} />
+        </TopicRow>
         <GroupHead label="Projects" />
         <ProjectRow name="api" icon={Globe} open>
           <BranchRow label="main" icon={<BranchMark active={false} current={false} />} />
+          <Show when={isFan()}>
+            <Show
+              when={!promoted()}
+              fallback={<BranchRow label="retry-webhooks-with-back-2" icon={<WorktreeMark active={false} />} selected end={<StatusBubble rollup={{ idle: 1 }} />} />}
+            >
+              <GroupRow label="retry webhooks with backoff" icon={Layers} badge="3 attempts">
+                <For each={ATTEMPTS}>
+                  {(a, i) => (
+                    <BranchRow
+                      nested
+                      aim={`a${i() + 1}`}
+                      label={`retry-webhooks-with-back-${i() + 1}`}
+                      icon={<WorktreeMark active={t() < a} />}
+                      selected={i() === 1}
+                      end={<StatusBubble rollup={t() < a ? { executing: 1 } : { idle: 1 }} />}
+                    />
+                  )}
+                </For>
+              </GroupRow>
+            </Show>
+          </Show>
+          <Show when={!isFan()}>
           <BranchRow
             label="feat/webhooks"
+            aim="wh"
             icon={<WorktreeMark active={web() === "work"} />}
-            selected={onWebhooks()}
+            selected={onWebhooks() && !isTopics()}
             meta={<PrLine number={482} age="2h" checks="4/4" comments={3} />}
             end={<StatusBubble rollup={webRollup()} />}
           />
@@ -305,6 +349,7 @@ export default function ToriWindow(props: {
               </>
             }
           />
+          </Show>
         </ProjectRow>
         <ProjectRow name="web" icon={Workflow} end={<StatusBubble rollup={{ executing: 2, idle: 1 }} />} />
         <ProjectRow name="infra" icon={Anchor} end={<StatusBubble rollup={{ idle: 1 }} />} />
@@ -327,7 +372,23 @@ export default function ToriWindow(props: {
 
   /* ---- tab strip ---- */
   const tabs = createMemo(() => {
-    type T = { key: string; label: string; agent?: Agent; status?: TabStatus; file?: string; diff?: boolean; selected: boolean };
+    type T = { key: string; label: string; agent?: Agent; status?: TabStatus; file?: string; diff?: boolean; member?: IconNode; selected: boolean };
+    if (isTopics()) {
+      return [
+        { key: "c", label: "Sign webhooks end to end", agent: "claude", status: "working", selected: true },
+        { key: "a", label: "sign.ts", file: "ts", member: Globe, selected: false },
+        { key: "w", label: "useWebhook.ts", file: "ts", member: Workflow, selected: false },
+      ] as T[];
+    }
+    if (isFan()) {
+      return [{ key: "c", label: "Retry webhooks with backoff", agent: "claude", status: t() < 4.2 ? "working" : "idle", selected: true }] as T[];
+    }
+    if (isWho()) {
+      return [
+        { key: "d", label: "deliver.ts (Working tree)", diff: true, selected: true },
+        { key: "c", label: "Sign webhook payloads", agent: "claude", status: "idle", selected: false },
+      ] as T[];
+    }
     if (isPr()) {
       return [
         { key: "d", label: "sign.ts (PR #482)", diff: true, selected: true },
@@ -384,7 +445,10 @@ export default function ToriWindow(props: {
               ) : tb().file === "sh" ? (
                 <Icon icon={SquareTerminal} size={13} />
               ) : (
-                <span class={w.seti} aria-hidden="true">{"\ue099"}</span>
+                <>
+                  <Show when={tb().member}>{(m) => <TabMemberChip icon={m()} hue="rgb(217 164 104)" />}</Show>
+                  <span class={w.seti} aria-hidden="true">{"\ue099"}</span>
+                </>
               )
             }
           />
@@ -601,6 +665,187 @@ export default function ToriWindow(props: {
           </Show>
         }
       />
+    </div>
+  );
+
+  /* ---- one tree: a session asks, the tree says where ---- */
+  const treeAllow = () => at(7.3, 7.6);
+  const TreeChat = () => (
+    <div class={w.chat}>
+      <StatusLine state={web() === "need" ? "needs" : web() === "work" ? "working" : "idle"} secs={Math.max(1, Math.round((t() - 7.6) * 1.4))} files={2} ctx="312k/1.0M (31%)" pct={31} />
+      <div class={w.transcript}>
+        <div class={w.user}>Sign outgoing webhook payloads with HMAC-SHA256 and add a test for it.</div>
+        <div class={w.model}>Opus</div>
+        <ToolRow name="Edit" edit arg="src/webhooks/sign.ts" add={46} del={3} />
+        <ToolRow name="Bash" arg="pnpm test webhooks" blocked={web() === "need"} summary={web() === "need" ? "Waiting for approval" : t() < 9.6 ? "Running" : "38 lines  3.1s"}>
+          <Show when={web() === "need"}>
+            <div class={w.perm}>
+              <div class={w.permQ}>
+                Run <code>pnpm test webhooks</code> in this workspace?
+              </div>
+              <span class={w.permArgs}>Show the full arguments</span>
+              <div class={w.permBtns}>
+                <span data-aim="allow" style={{ display: "inline-flex" }}>
+                  <Button size="sm" variant="primary" pressed={treeAllow()}>
+                    Allow once
+                  </Button>
+                </span>
+                <Button size="sm">Allow for this session</Button>
+                <Button size="sm" variant="ghost">
+                  Deny
+                </Button>
+              </div>
+            </div>
+          </Show>
+        </ToolRow>
+        <Show when={t() >= 9.8}>
+          <div class={`${w.prose} ${w.in}`}>All 42 webhook tests pass.</div>
+        </Show>
+      </div>
+      <Composer placeholder={web() === "done" ? "Reply, or @ a file \u00b7 / for commands" : "Steer this turn, picked up in 1.5-5.4s"} running={web() !== "done"} agent="claude" />
+    </div>
+  );
+
+  /* ---- topics: one chat across two repos ---- */
+  const TopicChat = () => (
+    <div class={w.chat}>
+      <StatusLine state="working" secs={Math.round(20 + t())} files={3} ctx="204k/1.0M (20%)" pct={20} />
+      <div class={w.transcript}>
+        <div class={w.user}>Sign webhooks in the API and verify them in the app.</div>
+        <div class={w.model}>Opus</div>
+        <ToolRow name="Edit" edit arg="api/src/webhooks/sign.ts" add={46} del={3} />
+        <ToolRow name="Edit" edit arg="api/src/webhooks/deliver.ts" add={18} del={6} />
+        <div class={w.prose}>
+          The API now sends <span class={w.code}>X-Tori-Signature</span>. Moving to the app, which has to check it.
+        </div>
+        <Show when={t() >= 4.6}>
+          <ToolRow class={w.in} name="Edit" edit arg="web/src/hooks/useWebhook.ts" add={24} del={2} />
+        </Show>
+        <Show when={t() >= 6}>
+          <ToolRow class={w.in} name="Bash" arg="pnpm -r test webhooks" summary="Running" />
+        </Show>
+      </div>
+      <Composer placeholder="Steer this turn, picked up in 1.5-5.4s" running agent="claude" plan={{ done: t() >= 6 ? 3 : 2, total: 4, working: true }} />
+    </div>
+  );
+
+  /* ---- fan out: three attempts, one promoted ---- */
+  const FanChat = () => (
+    <div class={w.chat}>
+      <StatusLine state={t() < 4.2 ? "working" : "idle"} secs={Math.round(30 + t() * 2)} files={2} ctx="96k/1.0M (10%)" pct={10} />
+      <div class={w.transcript}>
+        <div class={w.user}>Retry failed webhook deliveries with exponential backoff.</div>
+        <div class={w.model}>Opus</div>
+        <ToolRow name="Edit" edit arg="src/webhooks/deliver.ts" add={31} del={4} />
+        <ToolRow name="Edit" edit arg="test/deliver.test.ts" add={44} del={0} />
+        <Show when={t() >= 4.2}>
+          <div class={`${w.prose} ${w.in}`}>
+            Retries back off from 200ms and stop after five attempts. A <span class={w.code}>429</span> waits for its{" "}
+            <span class={w.code}>Retry-After</span>. All 27 tests pass.
+          </div>
+        </Show>
+        <Show when={promoted()}>
+          <div class={`${w.thinking} ${w.in}`} style={{ animation: "none", background: "none", "-webkit-text-fill-color": "var(--status-idle)" }}>
+            <Icon icon={CircleCheck} size={14} />
+            Promoted. The other two attempts are gone.
+          </div>
+        </Show>
+      </div>
+      <Composer placeholder={"Reply, or @ a file \u00b7 / for commands"} running={t() < 4.2} agent="claude" />
+    </div>
+  );
+
+  /* ---- who wrote it: the hunk's turn, call and a side question ---- */
+  const WHY_Q = "Why sign just before send?";
+  const whyOpen = () => t() >= 1.5;
+  const whyTyped = () => WHY_Q.slice(0, Math.floor(Math.min(1, Math.max(0, (t() - 3) / 1.6)) * WHY_Q.length));
+  const whyAsked = () => t() >= 5.4;
+  const WHO_LINES: [string, string, string, JSX.Element][] = [
+    ["18", "18", " ", <>{"  "}<span class={w.kw}>const</span> <span class={w.var}>body</span> = JSON.<span class={w.fn}>stringify</span>(event)</>],
+    ["19", "", "-", <>{"  "}<span class={w.kw}>return</span> <span class={w.fn}>send</span>(hook, body)</>],
+    ["", "19", "+", <>{"  "}<span class={w.kw}>const</span> <span class={w.var}>sig</span> = <span class={w.fn}>sign</span>(body, hook.secret)</>],
+    ["", "20", "+", <>{"  "}<span class={w.kw}>const</span> <span class={w.var}>headers</span> = {"{ "}<span class={w.str}>"X-Tori-Signature"</span>: sig {"}"}</>],
+    ["", "21", "+", <>{"  "}<span class={w.kw}>return</span> <span class={w.fn}>send</span>(hook, body, headers)</>],
+    ["20", "22", " ", <>{"}"}</>],
+  ];
+  const WhoDiff = () => (
+    <div class={w.diff}>
+      <div class={w.fileBar}>
+        <span style={{ color: "var(--attention-fg)", "font-weight": 700 }}>M</span>
+        <span style={{ "font-weight": 600 }}>deliver.ts</span>
+        <span class="dim">src/webhooks</span>
+        <span class={w.tag}>WORKING TREE</span>
+      </div>
+      <div class={w.fold}>{"\u22ef"} 17 unchanged lines</div>
+      <div class={w.hunk}>
+        <span class={w.hunkHead}>@@ -18,3 +18,5 @@</span>
+        <span style={{ "margin-left": "auto" }} />
+        <span class={w.hunkBtn}>
+          <Icon icon={Plus} size={14} />
+        </span>
+        <span class={w.hunkBtn}>
+          <Icon icon={MessageSquare} size={14} />
+        </span>
+        <span class={w.hunkBtn} data-aim="foot" data-on={whyOpen() ? "true" : "false"}>
+          <Icon icon={Footprints} size={14} />
+        </span>
+      </div>
+      <Show when={whyOpen()}>
+        <div class={`${hp.panel} ${w.in}`} style={{ "font-family": "var(--tori-font-ui)" }}>
+          <div class={hp.range}>
+            <div class={hp.headline}>Written by Edit in turn 4 of Sign webhook payloads.</div>
+            <div class={hp.turn}>
+              <span>turn 4 of Sign webhook payloads, 10:40</span>
+              <Button size="xs" variant="ghost">
+                Show in chat
+              </Button>
+              <div class={hp.prompt}>send the signature in a header</div>
+            </div>
+            <div class={hp.call}>
+              <div class={hp.reply}>The signature goes on the outgoing request, so I will add it where the body is sent.</div>
+              <code class={hp.command}>Edit src/webhooks/deliver.ts</code>
+            </div>
+            <Show
+              when={whyAsked()}
+              fallback={
+                <div style={{ display: "flex", gap: "6px", "align-items": "center", "margin-top": "4px" }}>
+                  <span class={w.hunkInput}>
+                    <Show when={whyTyped()} fallback={<span class={w.placeholder}>Ask why, in a side conversation with this session</span>}>
+                      {whyTyped()}
+                      <span class={w.caretBlink} />
+                    </Show>
+                  </span>
+                  <span data-aim="ask" style={{ display: "inline-flex" }}>
+                    <Button size="xs" pressed={at(5.1, 5.4)}>
+                      Ask
+                    </Button>
+                  </span>
+                </div>
+              }
+            >
+              <div class={`${hp.answer} ${w.in}`}>
+                <Show when={t() >= 6.8} fallback={<div class={hp.quiet}>Asking a fork of this session...</div>}>
+                  <div class={`${hp.reply} ${w.in}`}>The signature has to cover the exact bytes that leave, so it is computed after the body is serialized.</div>
+                  <Button size="xs" variant="ghost">
+                    Continue in chat
+                  </Button>
+                </Show>
+              </div>
+            </Show>
+          </div>
+        </div>
+      </Show>
+      <For each={WHO_LINES}>
+        {(l) => (
+          <div class={w.diffLine} data-k={l[2]}>
+            <span class={w.ln}>{l[0]}</span>
+            <span class={w.ln}>{l[1]}</span>
+            <span class={w.sign}>{l[2] === " " ? "" : l[2]}</span>
+            <span>{l[3]}</span>
+          </div>
+        )}
+      </For>
+      <div class={w.fold}>{"\u22ef"} 24 unchanged lines</div>
     </div>
   );
 
@@ -1816,6 +2061,31 @@ export default function ToriWindow(props: {
     </div>
   );
 
+  /* ---- the feature demos' cursor, aimed at the element it is about to press ---- */
+  const aimAt = (key: string) => {
+    t();
+    const el = root?.querySelector(`[data-aim="${key}"]`);
+    const base = root?.querySelector(`.${w.win}`);
+    if (!el || !base) return null;
+    const r = el.getBoundingClientRect();
+    const b = base.getBoundingClientRect();
+    return { x: (r.left + r.width / 2 - b.left) / scale(), y: (r.top + r.height / 2 - b.top) / scale() };
+  };
+  const press = (key: string, from: number, down: number, until: number) => {
+    if (!at(from, until)) return null;
+    const p = aimAt(key);
+    if (!p) return null;
+    const early = t() < from + 0.15;
+    return { x: p.x + (early ? 90 : 0), y: p.y + (early ? 70 : 0), down: t() >= down };
+  };
+  const featCursor = () => {
+    if (isTree()) return press("wh", 3.5, 4.5, 4.8) ?? press("allow", 6.2, 7.3, 7.6);
+    if (isTopics()) return press("topic", 0.5, 1.3, 1.6) ?? press("m-web", 2.8, 3.6, 3.9);
+    if (isFan()) return press("a2", 4.5, 5.2, 5.5) ?? press("promote", 5.8, 6.9, 7.2);
+    if (isWho()) return press("foot", 0.4, 1.2, 1.5) ?? press("ask", 4.4, 5.1, 5.4);
+    return null;
+  };
+
   /* ---- assembly ---- */
   const workState = () => (isCockpit() ? (showCall() ? "needs" : "working") : "working");
   const notifIn = () => isLoop() && at(8, 11.3);
@@ -1849,9 +2119,9 @@ export default function ToriWindow(props: {
               <nav class={toolbar.tbCrumb}>
                 <span class={`${toolbar.crumb ?? ""} dim`}>work</span>
                 <Icon icon={ChevronRight} class={`${toolbar.crumbSep ?? ""} dim`} size={12} />
-                <span class={`${toolbar.crumb ?? ""} dim`}>api</span>
+                <span class={`${toolbar.crumb ?? ""} dim`}>{isTopics() ? "Webhook signing" : "api"}</span>
                 <Icon icon={ChevronRight} class={`${toolbar.crumbSep ?? ""} dim`} size={12} />
-                <span class={`${toolbar.crumb ?? ""} ${toolbar.leaf ?? ""}`}>{onWebhooks() ? "feat/webhooks" : "fix/rate-limit"}</span>
+                <span class={`${toolbar.crumb ?? ""} ${toolbar.leaf ?? ""}`}>{isTopics() ? (onTopicWeb() ? "web" : "api") : isFan() ? "retry-webhooks-with-back-2" : onWebhooks() ? "feat/webhooks" : "fix/rate-limit"}</span>
               </nav>
             </div>
             <div class={w.topRight}>
@@ -1886,11 +2156,23 @@ export default function ToriWindow(props: {
                   <Sidebar />
                 </aside>
                 <div class={w.workspace}>
-                  <div class={w.card}>
+                  <div class={w.card} style={sidebarOnly() ? { flex: "none", width: "630px", height: "100%" } : undefined}>
                     <div class={w.pane}>
                       <TabStrip />
                       <Switch>
-                        <Match when={isLoop() && !onWebhooks()}>
+                        <Match when={isTopics()}>
+                          <TopicChat />
+                        </Match>
+                        <Match when={isFan()}>
+                          <FanChat />
+                        </Match>
+                        <Match when={isWho()}>
+                          <WhoDiff />
+                        </Match>
+                        <Match when={isTree() && onWebhooks()}>
+                          <TreeChat />
+                        </Match>
+                        <Match when={(isLoop() || isTree()) && !onWebhooks()}>
                           <CodexChat />
                         </Match>
                         <Match when={isLoop()}>
@@ -1916,7 +2198,9 @@ export default function ToriWindow(props: {
                         </Match>
                       </Switch>
                     </div>
-                    <RightPanel />
+                    <Show when={!sidebarOnly()}>
+                      <RightPanel />
+                    </Show>
                   </div>
                 </div>
               </div>
@@ -1942,7 +2226,18 @@ export default function ToriWindow(props: {
             <Chaos />
           </Show>
 
-          <Show when={dbgCursor()}>{(c) => <Cursor x={c().x} y={c().y} down={c().down} />}</Show>
+          <Show when={dbgCursor() ?? featCursor()}>{(c) => <Cursor x={c().x} y={c().y} down={c().down} />}</Show>
+
+          <Show when={isFan() && at(5.4, 7.2) && aimAt("a2")}>
+            {(p) => (
+              <div class={`${w.ctxMenu} ${w.in}`} style={{ left: `${p().x + 20}px`, top: `${p().y + 12}px` }}>
+                <span>New session</span>
+                <span data-aim="promote" data-warn="true" data-hot={at(6.2, 7.2) ? "true" : "false"}>
+                  Promote this attempt
+                </span>
+              </div>
+            )}
+          </Show>
         </div>
       </div>
     </div>
