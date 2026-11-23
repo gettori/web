@@ -1258,6 +1258,30 @@
   color: var(--fg-default);
 }
 
+.ctxMenu {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 4px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--tori-radius-md);
+  background: var(--canvas-card);
+  box-shadow: var(--shadow-md);
+  font-size: var(--tori-text-md);
+}
+.ctxMenu > span {
+  padding: 6px 10px;
+  border-radius: var(--tori-radius-sm);
+  color: var(--fg-default);
+}
+.ctxMenu > span[data-warn="true"] {
+  color: var(--attention-fg);
+}
+.ctxMenu > span[data-hot="true"] {
+  background: var(--neutral-hover);
+}
 .cursor {
   position: absolute;
   z-index: 6;
