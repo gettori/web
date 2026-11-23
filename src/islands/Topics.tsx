@@ -56,6 +56,7 @@ const PULSES: [number, number][] = [
 export default function Topics() {
   let root!: HTMLDivElement;
   let fit!: HTMLDivElement;
+  let chatPanel!: HTMLDivElement;
   const [t, setT] = createSignal(0);
   const [cw, setCw] = createSignal(WIDE.w);
   const geo = () => (cw() < 520 ? TALL : WIDE);
@@ -99,6 +100,22 @@ export default function Topics() {
       [7.6, "+12 -3"],
     ];
     return t() >= edits[i][0] ? edits[i][1] : null;
+  };
+
+  let rest: { x: number; y: number } | null = null;
+  const pointer = () => {
+    const now = t();
+    if (held() || now < 5.2 || now >= 11.4) return null;
+    const key = now < 6.9 ? "create" : now >= 8.9 ? "commit" : null;
+    const el = key && chatPanel?.querySelector(`[data-aim="${key}"]`);
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const b = chatPanel.getBoundingClientRect();
+      rest = { x: r.left + r.width / 2 - b.left, y: r.top + r.height / 2 - b.top };
+    }
+    if (!rest) return null;
+    const early = now < 5.35;
+    return { x: rest.x + (early ? 80 : 0), y: rest.y + (early ? 60 : 0), down: at(6.4, 6.7) || at(10, 10.4) };
   };
 
   const Chip = (p: { i: number }) => (
@@ -267,7 +284,21 @@ export default function Topics() {
           </div>
         </div>
 
-        <div class={`${sp.panel} ${s.chatPanel}`}>
+        <div ref={chatPanel} class={`${sp.panel} ${s.chatPanel}`}>
+          <Show when={pointer()}>
+            {(c) => (
+              <svg
+                class={sp.cursor}
+                width="18"
+                height="22"
+                viewBox="0 0 18 22"
+                aria-hidden="true"
+                style={{ left: `${c().x}px`, top: `${c().y}px`, transform: c().down ? "scale(.82)" : "none" }}
+              >
+                <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
+              </svg>
+            )}
+          </Show>
           <div class={s.chat}>
             <div class={s.chatHead}>
               <AgentMark agent="claude" size={14} breathe={at(0.6, 9.4) && !at(5, 6.6)} class={s.claude} />
@@ -294,7 +325,7 @@ export default function Topics() {
                   </div>
                   <div class={s.btns}>
                     <span class={s.btn}>Not now</span>
-                    <span class={s.btnPrimary} data-down={at(6.4, 6.7) ? "true" : "false"}>
+                    <span data-aim="create" class={s.btnPrimary} data-down={at(6.4, 6.7) ? "true" : "false"}>
                       Create it
                     </span>
                   </div>
@@ -319,7 +350,7 @@ export default function Topics() {
                       )}
                     </For>
                     <span class={s.grow} />
-                    <span class={s.commitBtn} data-done={committed() ? "true" : "false"} data-down={at(10, 10.4) ? "true" : "false"}>
+                    <span data-aim="commit" class={s.commitBtn} data-done={committed() ? "true" : "false"} data-down={at(10, 10.4) ? "true" : "false"}>
                       {committed() ? "Committed to 3 repos" : "Commit"}
                     </span>
                   </div>
