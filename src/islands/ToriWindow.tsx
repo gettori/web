@@ -52,7 +52,6 @@ import {
   UserCheck,
   Workflow,
   ZapOff,
-  type IconNode,
 } from "lucide";
 import "../app/css/tokens.css";
 import {
@@ -70,7 +69,6 @@ import {
   SyncPush,
   Tab,
   TabMark,
-  TabMemberChip,
   TopicRow,
   type Agent,
   type Rollup,
@@ -94,11 +92,11 @@ import btn from "../app/css/Button.module.css";
 import hp from "../app/css/HunkProvenance.module.css";
 import pr from "./docs/PullRequestDemo.module.css";
 
-export type Mode = "loop" | "undo" | "pr" | "review" | "debug" | "cockpit" | "tree" | "topics" | "fanout" | "who";
+export type Mode = "loop" | "undo" | "pr" | "review" | "debug" | "cockpit" | "fanout" | "who";
 type Session = "work" | "need" | "done";
 
-export const LOOP: Record<Mode, number> = { loop: 24, undo: 14, pr: 13, review: 14, debug: 15, cockpit: 16, tree: 12, topics: 9, fanout: 10, who: 11 };
-const STILL: Record<Mode, number> = { loop: 16.4, undo: 9, pr: 7, review: 10.4, debug: 4, cockpit: 8, tree: 5.6, topics: 5, fanout: 5, who: 8 };
+export const LOOP: Record<Mode, number> = { loop: 24, undo: 14, pr: 13, review: 14, debug: 15, cockpit: 16, fanout: 10, who: 11 };
+const STILL: Record<Mode, number> = { loop: 16.4, undo: 9, pr: 7, review: 10.4, debug: 4, cockpit: 8, fanout: 5, who: 8 };
 const AMBER = "217 164 104";
 const EASE = "cubic-bezier(.2,.8,.2,1)";
 
@@ -254,16 +252,12 @@ export default function ToriWindow(props: {
   const isDebug = () => mode() === "debug";
   const dbgOnChat = () => isDebug() && at(5.1, 9.8);
   const isCockpit = () => mode() === "cockpit";
-  const isTree = () => mode() === "tree";
-  const isTopics = () => mode() === "topics";
   const isFan = () => mode() === "fanout";
   const isWho = () => mode() === "who";
-  const sidebarOnly = () => isTree() || isTopics() || isFan();
   const at = (a: number, b = Infinity) => t() >= a && t() < b;
 
   /* ---- loop state ---- */
   const web = (dt = 0): Session => {
-    if (isTree()) return t() < 2.2 ? "work" : t() < 7.6 ? "need" : t() < 9.6 ? "work" : "done";
     if (!isLoop()) return "done";
     const x = t() - dt;
     if (x < 6.5) return "work";
@@ -271,16 +265,14 @@ export default function ToriWindow(props: {
     if (x < 19.8) return "work";
     return "done";
   };
-  const onWebhooks = () => (isTree() ? t() >= 4.8 : !isLoop() || t() >= 11.3);
+  const onWebhooks = () => !isLoop() || t() >= 11.3;
   const chaos = () => isLoop() && !props.skipChaos && t() < 5.2;
   const fold = () => t() >= 4;
 
   const webRollup = (): Rollup =>
     web() === "need" ? { waiting: 1 } : web() === "work" ? { executing: 1 } : { idle: 1 };
 
-  /* ---- topics and fan out: what their sidebar rows read ---- */
-  const topicOpen = () => isTopics() && t() >= 1.6;
-  const onTopicWeb = () => isTopics() && t() >= 3.9;
+  /* ---- fan out: what its sidebar rows read ---- */
   const ATTEMPTS = [3.2, 4.2, 3.7];
   const promoted = () => isFan() && t() >= 7.2;
 
@@ -301,10 +293,7 @@ export default function ToriWindow(props: {
           <ChatRow label="Draft the launch notes" agent="codex" time="Yesterday" />
         </div>
         <GroupHead label="Topics" />
-        <TopicRow name="Webhook signing" hue="rgb(217 164 104)" members={[Globe, Workflow]} open={topicOpen()} aim="topic">
-          <BranchRow label="api" icon={<Icon icon={Globe} />} selected={topicOpen() && !onTopicWeb()} end={<StatusBubble rollup={{ idle: 1 }} />} />
-          <BranchRow label="web" aim="m-web" icon={<Icon icon={Workflow} />} selected={topicOpen() && onTopicWeb()} end={<StatusBubble rollup={{ executing: 1 }} />} />
-        </TopicRow>
+        <TopicRow name="Webhook signing" hue="rgb(217 164 104)" members={[Globe, Workflow]} />
         <GroupHead label="Projects" />
         <ProjectRow name="api" icon={Globe} open>
           <BranchRow label="main" icon={<BranchMark active={false} current={false} />} />
@@ -332,9 +321,8 @@ export default function ToriWindow(props: {
           <Show when={!isFan()}>
           <BranchRow
             label="feat/webhooks"
-            aim="wh"
             icon={<WorktreeMark active={web() === "work"} />}
-            selected={onWebhooks() && !isTopics()}
+            selected={onWebhooks()}
             meta={<PrLine number={482} age="2h" checks="4/4" comments={3} />}
             end={<StatusBubble rollup={webRollup()} />}
           />
@@ -372,14 +360,7 @@ export default function ToriWindow(props: {
 
   /* ---- tab strip ---- */
   const tabs = createMemo(() => {
-    type T = { key: string; label: string; agent?: Agent; status?: TabStatus; file?: string; diff?: boolean; member?: IconNode; selected: boolean };
-    if (isTopics()) {
-      return [
-        { key: "c", label: "Sign webhooks end to end", agent: "claude", status: "working", selected: true },
-        { key: "a", label: "sign.ts", file: "ts", member: Globe, selected: false },
-        { key: "w", label: "useWebhook.ts", file: "ts", member: Workflow, selected: false },
-      ] as T[];
-    }
+    type T = { key: string; label: string; agent?: Agent; status?: TabStatus; file?: string; diff?: boolean; selected: boolean };
     if (isFan()) {
       return [{ key: "c", label: "Retry webhooks with backoff", agent: "claude", status: t() < 4.2 ? "working" : "idle", selected: true }] as T[];
     }
@@ -445,10 +426,7 @@ export default function ToriWindow(props: {
               ) : tb().file === "sh" ? (
                 <Icon icon={SquareTerminal} size={13} />
               ) : (
-                <>
-                  <Show when={tb().member}>{(m) => <TabMemberChip icon={m()} hue="rgb(217 164 104)" />}</Show>
-                  <span class={w.seti} aria-hidden="true">{"\ue099"}</span>
-                </>
+                <span class={w.seti} aria-hidden="true">{"\ue099"}</span>
               )
             }
           />
@@ -548,7 +526,7 @@ export default function ToriWindow(props: {
           <span class={w.pillBtn} data-toggle="true">
             <Icon icon={BotOff} size={15} />
           </span>
-          <span class={w.send} data-idle={!p.running && !p.text ? "true" : undefined}>
+          <span class={w.send} data-aim="send" data-idle={!p.running && !p.text ? "true" : undefined}>
             <Show when={p.running} fallback={<Icon icon={ArrowUp} size={15} />}>
               <span class={w.stopSq} />
             </Show>
@@ -665,67 +643,6 @@ export default function ToriWindow(props: {
           </Show>
         }
       />
-    </div>
-  );
-
-  /* ---- one tree: a session asks, the tree says where ---- */
-  const treeAllow = () => at(7.3, 7.6);
-  const TreeChat = () => (
-    <div class={w.chat}>
-      <StatusLine state={web() === "need" ? "needs" : web() === "work" ? "working" : "idle"} secs={Math.max(1, Math.round((t() - 7.6) * 1.4))} files={2} ctx="312k/1.0M (31%)" pct={31} />
-      <div class={w.transcript}>
-        <div class={w.user}>Sign outgoing webhook payloads with HMAC-SHA256 and add a test for it.</div>
-        <div class={w.model}>Opus</div>
-        <ToolRow name="Edit" edit arg="src/webhooks/sign.ts" add={46} del={3} />
-        <ToolRow name="Bash" arg="pnpm test webhooks" blocked={web() === "need"} summary={web() === "need" ? "Waiting for approval" : t() < 9.6 ? "Running" : "38 lines  3.1s"}>
-          <Show when={web() === "need"}>
-            <div class={w.perm}>
-              <div class={w.permQ}>
-                Run <code>pnpm test webhooks</code> in this workspace?
-              </div>
-              <span class={w.permArgs}>Show the full arguments</span>
-              <div class={w.permBtns}>
-                <span data-aim="allow" style={{ display: "inline-flex" }}>
-                  <Button size="sm" variant="primary" pressed={treeAllow()}>
-                    Allow once
-                  </Button>
-                </span>
-                <Button size="sm">Allow for this session</Button>
-                <Button size="sm" variant="ghost">
-                  Deny
-                </Button>
-              </div>
-            </div>
-          </Show>
-        </ToolRow>
-        <Show when={t() >= 9.8}>
-          <div class={`${w.prose} ${w.in}`}>All 42 webhook tests pass.</div>
-        </Show>
-      </div>
-      <Composer placeholder={web() === "done" ? "Reply, or @ a file \u00b7 / for commands" : "Steer this turn, picked up in 1.5-5.4s"} running={web() !== "done"} agent="claude" />
-    </div>
-  );
-
-  /* ---- topics: one chat across two repos ---- */
-  const TopicChat = () => (
-    <div class={w.chat}>
-      <StatusLine state="working" secs={Math.round(20 + t())} files={3} ctx="204k/1.0M (20%)" pct={20} />
-      <div class={w.transcript}>
-        <div class={w.user}>Sign webhooks in the API and verify them in the app.</div>
-        <div class={w.model}>Opus</div>
-        <ToolRow name="Edit" edit arg="api/src/webhooks/sign.ts" add={46} del={3} />
-        <ToolRow name="Edit" edit arg="api/src/webhooks/deliver.ts" add={18} del={6} />
-        <div class={w.prose}>
-          The API now sends <span class={w.code}>X-Tori-Signature</span>. Moving to the app, which has to check it.
-        </div>
-        <Show when={t() >= 4.6}>
-          <ToolRow class={w.in} name="Edit" edit arg="web/src/hooks/useWebhook.ts" add={24} del={2} />
-        </Show>
-        <Show when={t() >= 6}>
-          <ToolRow class={w.in} name="Bash" arg="pnpm -r test webhooks" summary="Running" />
-        </Show>
-      </div>
-      <Composer placeholder="Steer this turn, picked up in 1.5-5.4s" running agent="claude" plan={{ done: t() >= 6 ? 3 : 2, total: 4, working: true }} />
     </div>
   );
 
@@ -918,7 +835,7 @@ export default function ToriWindow(props: {
                 <div class={review.commitFooter}>
                   <span class={review.commitStats}>5 files</span>
                   <div class={review.commitActions}>
-                    <Button size="sm" variant="ghost" pressed={at(9.6, 9.9)}>
+                    <Button aim="ai-draft" size="sm" variant="ghost" pressed={at(9.6, 9.9)}>
                       AI Draft
                     </Button>
                     <span class={review.splitButton}>
@@ -986,8 +903,9 @@ export default function ToriWindow(props: {
   const diffOpen = () => at(2.4, 4);
   const cpFiles = () => (sinceHere() ? SINCE_FILES : SINCE_FILES.slice(0, 1));
 
-  const TurnRow = (props: { turn: Turn; active?: boolean; hover?: boolean; dim?: boolean; class?: string }) => (
+  const TurnRow = (props: { turn: Turn; active?: boolean; hover?: boolean; dim?: boolean; class?: string; aim?: string }) => (
     <div
+      data-aim={props.aim}
       class={`${cp.row} ${props.active ? cp.active : ""} ${props.class ?? ""}`}
       style={{ opacity: props.dim ? 0.4 : 1, background: props.hover ? "var(--tree-row-hover)" : undefined, transition: "opacity .42s" }}
     >
@@ -1008,7 +926,7 @@ export default function ToriWindow(props: {
         <TurnRow class={w.in} turn={["10:34", "Sign outgoing webhook payloads with HMAC-SHA256 and add a test for it.", 4]} />
       </Show>
       <For each={isUndo() ? TURNS_UNDO : TURNS_LOOP}>
-        {(turn, i) => <TurnRow turn={turn} active={reverted() && i() === PICK} hover={isUndo() && at(0.8, 1.4) && i() === PICK} dim={reverted() && i() < PICK} />}
+        {(turn, i) => <TurnRow turn={turn} aim={isUndo() && i() === PICK ? "turn" : undefined} active={reverted() && i() === PICK} hover={isUndo() && at(0.8, 1.4) && i() === PICK} dim={reverted() && i() < PICK} />}
       </For>
       <Show when={reverted()}>
         <div class={`${cp.groupHeader} ${w.in}`}>
@@ -1038,13 +956,13 @@ export default function ToriWindow(props: {
           <span class={seg.segment} style={{ flex: "1" }} data-pressed={sinceHere() ? undefined : ""}>
             This turn {"·"} 1
           </span>
-          <span class={seg.segment} style={{ flex: "1" }} data-pressed={sinceHere() ? "" : undefined}>
+          <span data-aim="since" class={seg.segment} style={{ flex: "1" }} data-pressed={sinceHere() ? "" : undefined}>
             Since here {"·"} 4
           </span>
         </div>
         <For each={cpFiles()}>
-          {(f) => (
-            <div class={cp.fileRow}>
+          {(f, i) => (
+            <div class={cp.fileRow} data-aim={i() === 0 ? "cp-file" : undefined}>
               <span class={cp.fileStatus} style={{ color: f[0] === "A" ? "var(--diff-added)" : undefined }}>{f[0]}</span>
               <span class={cp.fileMain}>
                 <span class={cp.fileName}>{f[1]}</span>
@@ -1074,7 +992,7 @@ export default function ToriWindow(props: {
         </Show>
       </div>
       <div class={cp.footer}>
-        <Button variant="primary" pressed={at(7.2, 7.5)} class={`${cp.action} ${at(6.2, 7.6) ? "is-hover" : ""}`}>
+        <Button aim="revert" variant="primary" pressed={at(7.2, 7.5)} class={`${cp.action} ${at(6.2, 7.6) ? "is-hover" : ""}`}>
           {at(7.2, 7.5) ? "Reverting..." : "Revert tree to 10:34"}
         </Button>
         <Button class={cp.action}>Rewind chat to here</Button>
@@ -1689,7 +1607,7 @@ export default function ToriWindow(props: {
           <span class={w.hunkBtn}>
             <Icon icon={Undo2} size={14} />
           </span>
-          <span class={w.hunkBtn} data-on={at(0.6, 4.9) ? "true" : "false"}>
+          <span class={w.hunkBtn} data-aim="hunk-comment" data-on={at(0.6, 4.9) ? "true" : "false"}>
             <Icon icon={MessageSquare} size={14} />
           </span>
           <Show when={at(0.6, 4.9)}>
@@ -1699,7 +1617,7 @@ export default function ToriWindow(props: {
                 <span class={w.caretBlink} />
               </Show>
             </span>
-            <Button size="xs" variant={at(4.4, 4.9) ? "primary" : "default"}>
+            <Button aim="hunk-send" size="xs" variant={at(4.4, 4.9) ? "primary" : "default"}>
               Send
             </Button>
           </Show>
@@ -2078,9 +1996,33 @@ export default function ToriWindow(props: {
     const early = t() < from + 0.15;
     return { x: p.x + (early ? 90 : 0), y: p.y + (early ? 70 : 0), down: t() >= down };
   };
+  const undoCursor = () => {
+    if (!at(0.2, 7.5)) return null;
+    const [key, down] =
+      t() < 1.4 ? ["turn", t() >= 1.1] : t() < 2.4 ? ["cp-file", t() >= 2.1] : t() < 6.1 ? ["since", at(3.7, 4)] : ["revert", t() >= 7.2];
+    const p = aimAt(key as string);
+    if (!p) return null;
+    const early = t() < 0.35;
+    return { x: p.x + (early ? 90 : 0), y: p.y + (early ? 70 : 0), down: down as boolean };
+  };
+  const reviewCursor = () => {
+    const step: [string, boolean, boolean] | null = at(0.1, 3.9)
+      ? ["hunk-comment", at(0.4, 0.6), t() < 0.25]
+      : at(3.9, 5.2)
+        ? ["hunk-send", at(4.6, 4.9), false]
+        : at(5.2, 6.2)
+          ? ["send", t() >= 5.9, false]
+          : at(9.2, 10.2)
+            ? ["ai-draft", at(9.6, 9.9), t() < 9.35]
+            : null;
+    if (!step) return null;
+    const p = aimAt(step[0]);
+    if (!p) return null;
+    return { x: p.x + (step[2] ? 90 : 0), y: p.y + (step[2] ? 70 : 0), down: step[1] };
+  };
   const featCursor = () => {
-    if (isTree()) return press("wh", 3.5, 4.5, 4.8) ?? press("allow", 6.2, 7.3, 7.6);
-    if (isTopics()) return press("topic", 0.5, 1.3, 1.6) ?? press("m-web", 2.8, 3.6, 3.9);
+    if (isUndo()) return undoCursor();
+    if (isReview()) return reviewCursor();
     if (isFan()) return press("a2", 4.5, 5.2, 5.5) ?? press("promote", 5.8, 6.9, 7.2);
     if (isWho()) return press("foot", 0.4, 1.2, 1.5) ?? press("ask", 4.4, 5.1, 5.4);
     return null;
@@ -2119,9 +2061,9 @@ export default function ToriWindow(props: {
               <nav class={toolbar.tbCrumb}>
                 <span class={`${toolbar.crumb ?? ""} dim`}>work</span>
                 <Icon icon={ChevronRight} class={`${toolbar.crumbSep ?? ""} dim`} size={12} />
-                <span class={`${toolbar.crumb ?? ""} dim`}>{isTopics() ? "Webhook signing" : "api"}</span>
+                <span class={`${toolbar.crumb ?? ""} dim`}>api</span>
                 <Icon icon={ChevronRight} class={`${toolbar.crumbSep ?? ""} dim`} size={12} />
-                <span class={`${toolbar.crumb ?? ""} ${toolbar.leaf ?? ""}`}>{isTopics() ? (onTopicWeb() ? "web" : "api") : isFan() ? "retry-webhooks-with-back-2" : onWebhooks() ? "feat/webhooks" : "fix/rate-limit"}</span>
+                <span class={`${toolbar.crumb ?? ""} ${toolbar.leaf ?? ""}`}>{isFan() ? "retry-webhooks-with-back-2" : onWebhooks() ? "feat/webhooks" : "fix/rate-limit"}</span>
               </nav>
             </div>
             <div class={w.topRight}>
@@ -2156,23 +2098,17 @@ export default function ToriWindow(props: {
                   <Sidebar />
                 </aside>
                 <div class={w.workspace}>
-                  <div class={w.card} style={sidebarOnly() ? { flex: "none", width: "630px", height: "100%" } : undefined}>
+                  <div class={w.card} style={isFan() ? { flex: "none", width: "630px", height: "100%" } : undefined}>
                     <div class={w.pane}>
                       <TabStrip />
                       <Switch>
-                        <Match when={isTopics()}>
-                          <TopicChat />
-                        </Match>
                         <Match when={isFan()}>
                           <FanChat />
                         </Match>
                         <Match when={isWho()}>
                           <WhoDiff />
                         </Match>
-                        <Match when={isTree() && onWebhooks()}>
-                          <TreeChat />
-                        </Match>
-                        <Match when={(isLoop() || isTree()) && !onWebhooks()}>
+                        <Match when={isLoop() && !onWebhooks()}>
                           <CodexChat />
                         </Match>
                         <Match when={isLoop()}>
@@ -2198,7 +2134,7 @@ export default function ToriWindow(props: {
                         </Match>
                       </Switch>
                     </div>
-                    <Show when={!sidebarOnly()}>
+                    <Show when={!isFan()}>
                       <RightPanel />
                     </Show>
                   </div>
