@@ -94,6 +94,8 @@ export default function Features() {
   const [pinned, setPinned] = createSignal(false);
   const [reduced, setReduced] = createSignal(false);
   const [frameWidth, setFrameWidth] = createSignal(0);
+  const [running, setRunning] = createSignal(false);
+  const [cycle, setCycle] = createSignal(0);
   const cur = () => STEPS[step()];
   const length = () => LOOP[cur().mode];
   const capState = (i: number) => (i === step() ? "now" : i === leaving()?.i ? "left" : "wait");
@@ -109,6 +111,7 @@ export default function Features() {
       setMoved(true);
       setStep(next);
       setClock(0);
+      setCycle((n) => n + 1);
     });
     slide = setTimeout(() => setLeaving(null), SLIDE_MS);
   };
@@ -116,20 +119,36 @@ export default function Features() {
   onMount(() => {
     setReduced(matchMedia("(prefers-reduced-motion: reduce)").matches);
     let visible = false;
-    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting), { threshold: 0.25 });
+    const sync = () => setRunning(visible && !document.hidden);
+    const io = new IntersectionObserver(
+      (e) => {
+        visible = e[0].isIntersecting;
+        sync();
+      },
+      { threshold: 0.25 },
+    );
     io.observe(root);
+    document.addEventListener("visibilitychange", sync);
     setFrameWidth(frame.clientWidth);
     const ro = new ResizeObserver((e) => setFrameWidth(e[0].contentRect.width));
     ro.observe(frame);
+    // Wall-clock time, so the demo ends when the compositor-driven progress bar does.
+    let last = performance.now();
     const id = setInterval(() => {
-      if (!visible || document.hidden || reduced()) return;
-      const next = clock() + 0.1;
+      const now = performance.now();
+      const dt = (now - last) / 1000;
+      last = now;
+      if (!running() || reduced()) return;
+      const next = clock() + dt;
       if (next < length()) setClock(next);
-      else if (pinned()) setClock(0);
-      else go((step() + 1) % STEPS.length, 1);
+      else if (pinned()) {
+        setClock(0);
+        setCycle((n) => n + 1);
+      } else go((step() + 1) % STEPS.length, 1);
     }, 100);
     onCleanup(() => {
       clearInterval(id);
+      document.removeEventListener("visibilitychange", sync);
       io.disconnect();
       ro.disconnect();
     });
@@ -137,8 +156,10 @@ export default function Features() {
 
   const pick = (i: number) => {
     setPinned(true);
-    if (i === step()) setClock(0);
-    else go(i, i > step() ? 1 : -1);
+    if (i === step()) {
+      setClock(0);
+      setCycle((n) => n + 1);
+    } else go(i, i > step() ? 1 : -1);
   };
 
   const onKey = (e: KeyboardEvent, i: number) => {
@@ -149,11 +170,6 @@ export default function Features() {
     setPinned(true);
     go(next, by);
     tabs[next]?.focus();
-  };
-
-  const fill = (i: number) => {
-    if (i !== step()) return 0;
-    return reduced() ? 100 : Math.round((clock() / length()) * 100);
   };
 
   return (
@@ -175,7 +191,20 @@ export default function Features() {
                   onKeyDown={(e) => onKey(e, i())}
                 >
                   <span class={s.track}>
-                    <span style={{ width: `${fill(i())}%`, background: st.color }} />
+                    <Show when={i() === step()}>
+                      <For each={[cycle()]}>
+                        {() => (
+                          <span
+                            class={s.fill}
+                            style={{
+                              background: st.color,
+                              "animation-duration": `${length()}s`,
+                              "animation-play-state": running() ? "running" : "paused",
+                            }}
+                          />
+                        )}
+                      </For>
+                    </Show>
                   </span>
                   <span class={s.barLabel} style={{ color: i() === step() ? st.color : undefined }}>
                     {st.bar}
