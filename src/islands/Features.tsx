@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, on, onCleanup, onMount } from "solid-js";
+import { batch, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import ToriWindow, { LOOP, type Mode } from "./ToriWindow";
 import s from "./Features.module.css";
 
@@ -19,9 +19,9 @@ const VIOLET = { color: "var(--work-hi)", glow: "rgba(192,132,252,.55)", soft: "
 const TEAL = { color: "var(--done-hi)", glow: "rgba(45,212,191,.5)", soft: "rgba(45,212,191,.14)" };
 const ROSE = { color: "var(--need)", glow: "rgba(251,113,133,.55)", soft: "rgba(251,113,133,.16)" };
 
-// Every crop is 920 by 696, so the frame keeps its size from tab to tab.
-const WITH_SIDEBAR = "0,44,920,696";
-const WORK_CARD = "280,44,920,696";
+// One pixel inside the work card on its cut edges, so its own border never doubles the frame's.
+const WITH_SIDEBAR = "0,45,909,684";
+const WORK_CARD = "281,45,908,684";
 
 const STEPS: Step[] = [
   {
@@ -80,40 +80,65 @@ const STEPS: Step[] = [
   },
 ];
 
+const SLIDE_MS = 520;
+
 export default function Features() {
   let root!: HTMLDivElement;
+  let frame!: HTMLDivElement;
   const tabs: HTMLButtonElement[] = [];
   const [step, setStep] = createSignal(0);
+  const [leaving, setLeaving] = createSignal<{ i: number; time: number } | null>(null);
+  const [dir, setDir] = createSignal(1);
+  const [moved, setMoved] = createSignal(false);
   const [clock, setClock] = createSignal(0);
   const [pinned, setPinned] = createSignal(false);
   const [reduced, setReduced] = createSignal(false);
+  const [frameWidth, setFrameWidth] = createSignal(0);
   const cur = () => STEPS[step()];
   const length = () => LOOP[cur().mode];
+  const capState = (i: number) => (i === step() ? "now" : i === leaving()?.i ? "left" : "wait");
 
-  createEffect(on(step, () => setClock(0), { defer: true }));
+  let slide: ReturnType<typeof setTimeout> | undefined;
+  onCleanup(() => clearTimeout(slide));
+
+  const go = (next: number, direction: number) => {
+    clearTimeout(slide);
+    batch(() => {
+      if (!reduced()) setLeaving({ i: step(), time: clock() });
+      setDir(direction);
+      setMoved(true);
+      setStep(next);
+      setClock(0);
+    });
+    slide = setTimeout(() => setLeaving(null), SLIDE_MS);
+  };
 
   onMount(() => {
     setReduced(matchMedia("(prefers-reduced-motion: reduce)").matches);
     let visible = false;
     const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting), { threshold: 0.25 });
     io.observe(root);
+    setFrameWidth(frame.clientWidth);
+    const ro = new ResizeObserver((e) => setFrameWidth(e[0].contentRect.width));
+    ro.observe(frame);
     const id = setInterval(() => {
       if (!visible || document.hidden || reduced()) return;
       const next = clock() + 0.1;
       if (next < length()) setClock(next);
       else if (pinned()) setClock(0);
-      else setStep((n) => (n + 1) % STEPS.length);
+      else go((step() + 1) % STEPS.length, 1);
     }, 100);
     onCleanup(() => {
       clearInterval(id);
       io.disconnect();
+      ro.disconnect();
     });
   });
 
   const pick = (i: number) => {
     setPinned(true);
     if (i === step()) setClock(0);
-    else setStep(i);
+    else go(i, i > step() ? 1 : -1);
   };
 
   const onKey = (e: KeyboardEvent, i: number) => {
@@ -121,7 +146,8 @@ export default function Features() {
     if (!by) return;
     e.preventDefault();
     const next = (i + by + STEPS.length) % STEPS.length;
-    pick(next);
+    setPinned(true);
+    go(next, by);
     tabs[next]?.focus();
   };
 
@@ -131,7 +157,7 @@ export default function Features() {
   };
 
   return (
-    <div ref={root} class={s.wrap}>
+    <div ref={root} class={s.wrap} style={{ "--dir": dir() }}>
       <div class={s.glow} style={{ background: `radial-gradient(45% 45% at 62% 50%, ${cur().soft}, transparent 70%)` }} />
       <div class={s.row}>
         <div class={s.captions}>
@@ -158,10 +184,10 @@ export default function Features() {
               )}
             </For>
           </div>
-          <div class={s.caps}>
+          <div class={s.caps} data-moved={moved() ? "true" : undefined}>
             <For each={STEPS}>
               {(st, i) => (
-                <div class={s.cap} data-at={i() === step() ? "now" : i() < step() ? "past" : "next"} aria-hidden={i() !== step()}>
+                <div class={s.cap} data-at={capState(i())} aria-hidden={i() !== step()}>
                   <div class={s.num} style={{ "-webkit-text-stroke": `1px ${st.glow}` }}>
                     0{i() + 1}
                   </div>
@@ -175,16 +201,21 @@ export default function Features() {
             </For>
           </div>
         </div>
-        <div
-          class={s.frame}
-          style={{
-            background: `linear-gradient(140deg, ${cur().glow}, var(--glass-hi) 40%, var(--glass))`,
-            "box-shadow": `0 50px 140px light-dark(rgba(40,36,70,.22), rgba(0,0,0,.65)), 0 0 100px ${cur().soft}`,
-          }}
-        >
-          <div class={s.clip}>
-            <ToriWindow mode={cur().mode} region={cur().region} skipChaos maxScale={1.5} time={reduced() ? undefined : clock()} />
-          </div>
+        <div ref={frame} class={s.frame}>
+          <For each={[step()]}>
+            {(i) => (
+              <div class={s.slide} data-enter={moved() ? "true" : undefined}>
+                <ToriWindow mode={STEPS[i].mode} region={STEPS[i].region} skipChaos maxScale={1.5} initialWidth={frameWidth() || undefined} time={reduced() ? undefined : clock()} />
+              </div>
+            )}
+          </For>
+          <Show when={leaving()} keyed>
+            {(l) => (
+              <div class={`${s.slide} ${s.leaving}`} aria-hidden="true">
+                <ToriWindow mode={STEPS[l.i].mode} region={STEPS[l.i].region} skipChaos maxScale={1.5} initialWidth={frameWidth() || undefined} time={l.time} />
+              </div>
+            )}
+          </Show>
         </div>
       </div>
     </div>

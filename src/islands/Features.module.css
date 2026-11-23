@@ -76,19 +76,29 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  transition: all 0.7s var(--ease);
 }
-.cap[data-at="past"] {
-  opacity: 0;
-  filter: blur(10px);
-  transform: translateY(-28px);
+.cap[data-at="wait"] {
+  visibility: hidden;
   pointer-events: none;
 }
-.cap[data-at="next"] {
-  opacity: 0;
-  filter: blur(10px);
-  transform: translateY(28px);
+.cap[data-at="left"] {
   pointer-events: none;
+  animation: caption-out 0.2s ease-in both;
+}
+.caps[data-moved] .cap[data-at="now"] {
+  animation: caption-in 0.44s var(--ease) 0.14s both;
+}
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--dir) * 56px));
+  }
+}
+@keyframes caption-out {
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--dir) * -56px));
+  }
 }
 .num {
   display: none;
@@ -129,13 +139,34 @@
   flex: 1;
   min-width: 0;
   position: relative;
-  padding: 1px;
-  border-radius: 16px;
-  transition: background 0.8s var(--ease), box-shadow 0.8s var(--ease);
-}
-.clip {
-  border-radius: 15px;
+  aspect-ratio: 908 / 684;
+  border-radius: 14px;
   overflow: hidden;
+  box-shadow:
+    0 60px 160px light-dark(rgba(40, 36, 70, 0.26), rgba(0, 0, 0, 0.7)),
+    0 0 0 1px var(--hair);
+}
+.slide {
+  width: 100%;
+  height: 100%;
+}
+.slide[data-enter] {
+  animation: window-in 0.52s var(--ease) both;
+}
+.leaving {
+  position: absolute;
+  inset: 0;
+  animation: window-out 0.52s var(--ease) both;
+}
+@keyframes window-in {
+  from {
+    transform: translateX(calc(var(--dir) * 100%));
+  }
+}
+@keyframes window-out {
+  to {
+    transform: translateX(calc(var(--dir) * -100%));
+  }
 }
 
 @media (min-width: 1000px) {
@@ -163,9 +194,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cap,
-  .glow,
-  .frame {
+  .glow {
     transition: none;
+  }
+  .cap[data-at="left"] {
+    visibility: hidden;
+    animation: none;
+  }
+  .caps[data-moved] .cap[data-at="now"],
+  .slide[data-enter],
+  .leaving {
+    animation: none;
   }
 }
