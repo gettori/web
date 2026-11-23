@@ -208,14 +208,6 @@ export function GroupRow(props: { label: string; icon: IconNode; badge: string; 
   );
 }
 
-export function TabMemberChip(props: { icon: IconNode; hue: string }) {
-  return (
-    <span class={`${chipStyles.chip} ${chipStyles.bare}`} style={{ "--chip-hue": props.hue }} aria-hidden="true">
-      <Icon icon={props.icon} />
-    </span>
-  );
-}
-
 export function ChatRow(props: { label: string; agent: Agent; time: string; rollup?: Rollup; selected?: boolean }) {
   return (
     <BranchRow
@@ -231,12 +223,12 @@ export function ChatRow(props: { label: string; agent: Agent; time: string; roll
   );
 }
 
-export function TopicRow(props: { name: string; hue: string; members: IconNode[]; rollup?: Rollup; open?: boolean; aim?: string; children?: JSX.Element }) {
+export function TopicRow(props: { name: string; hue: string; members: IconNode[]; rollup?: Rollup }) {
   const cells = () => Array.from({ length: 4 }, (_, i) => props.members[i] ?? null);
   return (
     <ul class={topicListStyles.items}>
       <li class={`${rowStyles.projectCard} ${topicItemStyles.item}`}>
-        <div data-aim={props.aim} class={`${rowStyles.row} ${rowStyles.project}`}>
+        <div class={`${rowStyles.row} ${rowStyles.project}`}>
           <span class={`${rowStyles.rowIcon} ${rowStyles.projectIcon}`}>
             <span class={rowStyles.projectIconArt}>
               <span class={topicItemStyles.glyph} aria-hidden="true">
@@ -252,26 +244,23 @@ export function TopicRow(props: { name: string; hue: string; members: IconNode[]
               </span>
             </span>
             <span class={rowStyles.iconChevron} aria-hidden="true">
-              <Icon icon={props.open ? ChevronDown : ChevronRight} />
+              <Icon icon={ChevronRight} />
             </span>
           </span>
           <span class={rowStyles.label}>{props.name}</span>
           <span class={rowStyles.rowEnd}>
-            <Show when={!props.open}>
-              <span class={topicItemStyles.chips}>
-                <For each={props.members}>
-                  {(m) => (
-                    <span class={`${chipStyles.chip} ${chipStyles.md} ${chipStyles.outlined}`} style={{ "--chip-hue": props.hue }}>
-                      <Icon icon={m} />
-                    </span>
-                  )}
-                </For>
-              </span>
-            </Show>
+            <span class={topicItemStyles.chips}>
+              <For each={props.members}>
+                {(m) => (
+                  <span class={`${chipStyles.chip} ${chipStyles.md} ${chipStyles.outlined}`} style={{ "--chip-hue": props.hue }}>
+                    <Icon icon={m} />
+                  </span>
+                )}
+              </For>
+            </span>
             <Show when={props.rollup}>{(r) => <StatusBubble rollup={r()} />}</Show>
           </span>
         </div>
-        <Show when={props.open}>{props.children}</Show>
       </li>
     </ul>
   );
@@ -376,10 +365,12 @@ export function Button(props: {
   pressed?: boolean;
   icon?: JSX.Element;
   iconRight?: JSX.Element;
+  aim?: string;
   children?: JSX.Element;
 }) {
   return (
     <span
+      data-aim={props.aim}
       class={[
         buttonStyles.btn,
         buttonStyles[props.variant ?? "default"],

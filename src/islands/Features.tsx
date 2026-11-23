@@ -25,12 +25,12 @@ const WORK_CARD = "280,44,920,696";
 
 const STEPS: Step[] = [
   {
-    ...ROSE,
-    bar: "One tree",
-    title: "Eleven terminals. One tree.",
-    body: "Every session rolls up to its branch, project and space. Sidebar, tabs, menu bar, Dock, notifications and your phone all read the same status.",
-    facts: ["Rolls up to the space", "One status, six places", "Rose means it needs you"],
-    mode: "tree",
+    ...VIOLET,
+    bar: "Fan out",
+    title: "Try it three ways. Keep the best.",
+    body: "Start two, three or four attempts at one task, each in its own worktree on its own branch. Promote the one you want, and the other attempts are deleted.",
+    facts: ["2 to 4 attempts", "A worktree each", "Promote the winner"],
+    mode: "fanout",
     region: WITH_SIDEBAR,
   },
   {
@@ -44,24 +44,6 @@ const STEPS: Step[] = [
   },
   {
     ...TEAL,
-    bar: "Topics",
-    title: "One branch across repos.",
-    body: "A change that spans an API, its app and its SDK is one Topic: one branch name across the repos you pick, opened as one workspace with one chat that sees all of them.",
-    facts: ["One branch name", "One search, one chat", "Read-only references"],
-    mode: "topics",
-    region: WITH_SIDEBAR,
-  },
-  {
-    ...VIOLET,
-    bar: "Fan out",
-    title: "Try it three ways. Keep the best.",
-    body: "Start two, three or four attempts at one task, each in its own worktree on its own branch. Promote the one you want, and the other attempts are deleted.",
-    facts: ["2 to 4 attempts", "A worktree each", "Promote the winner"],
-    mode: "fanout",
-    region: WITH_SIDEBAR,
-  },
-  {
-    ...AMBER,
     bar: "Who wrote it",
     title: "Know who wrote every hunk.",
     body: "Open a hunk to see the turn and tool call behind it, and what the agent said first. When Tori cannot tell, it says so. Then ask that session why.",
