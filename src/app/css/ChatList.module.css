@@ -1,0 +1,4 @@
+.time {
+  font-size: var(--tori-text-xs);
+  color: var(--fg-subtle);
+}

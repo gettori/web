@@ -15,7 +15,6 @@ export default function SidebarTree() {
         <span class={sidebar.headStrut} />
         <div class={sidebar.spaceHeader}>
           <span class={sidebar.spaceHeaderName}>work</span>
-          <span class={sidebar.spaceHeaderKind}>{"\u00b7 Spaces"}</span>
         </div>
       </div>
       <div class={sidebar.treeScroll} style={{ overflow: "hidden" }}>

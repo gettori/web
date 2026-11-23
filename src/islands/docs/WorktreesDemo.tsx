@@ -459,7 +459,6 @@ export default function WorktreesDemo() {
             <span class={sidebar.headStrut} />
             <div class={sidebar.spaceHeader}>
               <span class={sidebar.spaceHeaderName}>hooli</span>
-              <span class={sidebar.spaceHeaderKind}>{"\u00b7 Spaces"}</span>
             </div>
           </div>
           <div class={`${sidebar.treeScroll} ${s.treeScroll}`}>

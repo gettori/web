@@ -205,9 +205,9 @@
   flex: none;
   display: flex;
   align-items: center;
-  gap: 4px;
   min-height: 40px;
-  padding: 0 6px;
+  padding: 0 6px 0 4px;
+  background: var(--canvas-card);
   border-bottom: 1px solid var(--border-default);
   overflow: clip;
 }
@@ -235,6 +235,22 @@
 .split > span + span {
   border-left: 1px solid var(--border-default);
   width: 18px;
+}
+@font-face {
+  font-family: "seti";
+  src: url("/seti.woff") format("woff");
+  font-display: block;
+}
+.seti {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(16px * var(--ui-scale));
+  color: var(--scale-blue);
+  font-family: "seti";
+  font-size: var(--tori-text-4xl);
+  line-height: 1;
 }
 .fileGlyph {
   font-family: var(--tori-font-ui);
@@ -344,9 +360,8 @@
   border-radius: var(--tori-radius-md);
   transition: border-color 0.3s;
 }
-.tool[data-blocked="true"] {
-  border-color: var(--blocking-border);
-  background: var(--blocking-surface);
+.tool[data-blocked="true"] .toolSummary {
+  color: var(--brand-default);
 }
 .toolRow {
   display: flex;
@@ -388,29 +403,41 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 4px 0 2px;
+  margin-top: 8px;
+  padding: 14px 16px 8px;
+  border: 1px solid var(--blocking-border);
+  border-radius: var(--tori-radius-lg);
+  background: var(--blocking-surface);
   font-family: var(--tori-font-ui);
+  white-space: normal;
 }
 .permQ {
-  font-size: var(--tori-text-lg);
   color: var(--blocking-fg);
+  font-size: var(--tori-text-lg);
+  line-height: 1.5;
 }
 .permQ code {
-  font-family: var(--tori-font-mono);
-  font-size: var(--tori-text-md);
+  padding: 0.1em 0.35em;
+  border-radius: var(--tori-radius-sm);
+  background: var(--neutral-subtle);
   color: var(--blocking-accent);
+  font-family: var(--tori-font-mono);
+  font-size: 0.9em;
 }
 .permArgs {
-  font-size: var(--tori-text-sm);
-  color: var(--fg-muted);
-  text-decoration: underline;
-  text-decoration-color: var(--border-strong);
-  text-underline-offset: 3px;
+  align-self: flex-start;
+  color: var(--fg-subtle);
+  font-size: var(--tori-text-md);
 }
 .permBtns {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin: 4px -16px 0;
+  padding: 8px 16px 0;
+  border-top: 1px solid var(--border-default);
 }
 .thinking {
   align-self: flex-start;
@@ -458,7 +485,7 @@
 /* Composer */
 .composer {
   flex: none;
-  padding: 0 16px 14px;
+  padding: 16px 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -504,6 +531,7 @@
   color: var(--fg-subtle);
 }
 .box {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -512,6 +540,40 @@
   border-radius: 12px;
   background: var(--canvas-card);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.planPill {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  z-index: 1;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--tori-radius-pill);
+  background: var(--canvas-card);
+  color: var(--fg-muted);
+  font-family: var(--tori-font-mono);
+  font-size: var(--tori-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+.planPillGlyph {
+  display: inline-flex;
+  color: var(--status-progress);
+  animation: planSpin 1.2s linear infinite;
+}
+@keyframes planSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .planPillGlyph {
+    animation: none;
+  }
 }
 .boxText {
   min-height: 20px;
@@ -538,40 +600,61 @@
 }
 .boxBar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 .pillBtn {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 5px;
-  height: 24px;
-  padding: 0 9px;
-  border: 1px solid var(--border-default);
-  border-radius: 999px;
-  font-size: var(--tori-text-sm);
-  color: var(--fg-muted);
+  height: var(--control-height);
+  padding: 0 9px 0 10px;
+  border: 1px solid var(--neutral-subtle);
+  border-radius: var(--tori-radius-pill);
+  color: var(--fg-default);
+  font-size: var(--tori-text-md);
+  white-space: nowrap;
+}
+.pillBtn > svg {
+  flex: none;
+  color: var(--fg-subtle);
+}
+.pillBtn[data-toggle="true"] {
+  padding: 0 8px;
+}
+.pillBtn[data-attention="true"],
+.pillBtn[data-attention="true"] > svg {
+  border-color: var(--attention-emphasis);
+  color: var(--attention-fg);
 }
 .sqBtn {
   display: inline-flex;
+  flex: none;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--control-height);
+  height: var(--control-height);
   border: 1px solid var(--border-default);
-  border-radius: 6px;
+  border-radius: var(--tori-radius-md);
   color: var(--fg-muted);
 }
 .send {
   margin-left: auto;
   display: inline-flex;
+  flex: none;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: var(--tori-radius-pill);
   background: var(--brand-default);
   color: var(--brand-on);
+}
+.send[data-idle="true"] {
+  background: var(--neutral-hover);
+    color: var(--fg-subtle);
 }
 .stopSq {
   width: 9px;

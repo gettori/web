@@ -1,0 +1,221 @@
+/* One Topic in the sidebar's Topics mode, drawn with the Spaces project
+   card's rows (SidebarRows.module.css); what stays here is what only a Topic
+   has. */
+.item {
+  list-style: none;
+}
+
+/* The open Topic's head, while no member row carries the selection: the brand
+   bar over a wash that fades out to the right, as a selected branch row. */
+.item > .headSel {
+  background:
+    linear-gradient(var(--brand-bar), var(--brand-bar)) left center / var(--tori-border-thick) 100% no-repeat,
+    linear-gradient(to right, var(--brand-subtle), transparent);
+}
+
+/* The disclosure is the icon slot itself, so the chevron that cross-fades in
+   under the pointer is also what a keyboard reaches. */
+.disclosure {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--tori-radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.disclosure:focus-visible {
+  outline: 1px solid var(--brand-default);
+}
+
+/* Up to four members, one cell each on its Space tint. */
+.glyph {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(2px * var(--ui-scale));
+  width: calc(16px * var(--ui-scale));
+  height: calc(16px * var(--ui-scale));
+}
+
+.cell {
+  --chip-hue: var(--fg-muted);
+  border-radius: calc(2px * var(--ui-scale));
+  background: color-mix(in srgb, var(--chip-hue) 70%, transparent);
+}
+
+.cellEmpty {
+  background: var(--neutral-subtle);
+}
+
+/* The roll-up's marks, bare in the end cluster as a project row's are. */
+.rollup {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: calc(5px * var(--ui-scale));
+  min-width: 0;
+  /* Added to the cluster's own gap, so the marks after the chips read as the
+     Topic's standing rather than as one more member. */
+  margin-right: var(--tori-space-4);
+}
+
+/* The chip box and its neutral fallback live in MemberChip now; what stays here
+   is the state badge it carries, which only this surface draws. */
+
+.badge {
+  position: absolute;
+  top: calc(-4px * var(--ui-scale));
+  right: calc(-4px * var(--ui-scale));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(12px * var(--ui-scale));
+  height: calc(12px * var(--ui-scale));
+  padding-inline: 2px;
+  border-radius: calc(6px * var(--ui-scale));
+  font-family: var(--tori-font-mono);
+  font-size: calc(9px * var(--ui-scale));
+  font-weight: 600;
+  line-height: 1;
+  color: var(--canvas-default);
+  background: var(--fg-muted);
+}
+
+/* Opposite bottom corners, clear of `.badge` at the top right. The level dot is
+   toned; the dirty one never is, because uncommitted work sits beside the
+   severity scale rather than on it. */
+.syncDot,
+.dirtyDot {
+  position: absolute;
+  bottom: calc(-2px * var(--ui-scale));
+  width: calc(6px * var(--ui-scale));
+  height: calc(6px * var(--ui-scale));
+  border-radius: 50%;
+  /* Against the chip behind it, so a dot on a same-hue tint still reads. */
+  box-shadow: 0 0 0 calc(1px * var(--ui-scale)) var(--canvas-default);
+}
+
+.syncDot {
+  right: calc(-1px * var(--ui-scale));
+}
+
+.dirtyDot {
+  left: calc(-1px * var(--ui-scale));
+  background: var(--fg-muted);
+}
+
+.syncDot.danger {
+  background: var(--danger-fg);
+}
+
+.syncDot.warn {
+  background: var(--attention-emphasis);
+}
+
+.syncDot.attention {
+  background: var(--attention-fg);
+}
+
+.syncDot.muted {
+  background: var(--fg-muted);
+}
+
+/* Keyed off the data attribute alone: the chip's own class is MemberChip's now,
+   so a `.chip` descendant selector here would no longer match. */
+[data-state="failed"] .badge {
+  background: var(--danger-fg);
+}
+
+.more {
+  flex: 0 0 auto;
+  font-size: var(--tori-text-xs);
+  color: var(--fg-subtle);
+  padding-inline: calc(3px * var(--ui-scale));
+}
+
+/* The member's project icon in the branch row's 16px slot, sized as a Spaces
+   project row sizes an image one. */
+.memberIcon {
+  position: relative;
+  display: inline-flex;
+}
+
+.memberIcon img {
+  width: calc(16px * var(--ui-scale));
+  height: calc(16px * var(--ui-scale));
+  object-fit: contain;
+  border-radius: calc(3px * var(--ui-scale));
+}
+
+/* A reference's lock, in the icon's corner. Out-specifies the slot's 16px glyph
+   rule, which would otherwise size the lock too. */
+.memberLock {
+  position: absolute;
+  right: calc(-4px * var(--ui-scale));
+  bottom: calc(-4px * var(--ui-scale));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(11px * var(--ui-scale));
+  height: calc(11px * var(--ui-scale));
+  border-radius: 50%;
+  color: var(--fg-muted);
+  background: var(--canvas-default);
+}
+
+span.memberLock > :global(svg) {
+  width: calc(8px * var(--ui-scale));
+  height: calc(8px * var(--ui-scale));
+}
+
+[data-member] {
+  cursor: grab;
+}
+
+[data-member][data-dragging] {
+  opacity: 0.5;
+}
+
+/* The whole row, not an edge line. A drop puts the carried member where this
+   one sits, which is above it going up and below it going down; an edge would
+   be right half the time. */
+[data-member][data-over] {
+  background: var(--brand-wash);
+  box-shadow: inset 0 0 0 1px var(--brand-default);
+}
+
+.memberState {
+  flex: 0 0 auto;
+  font-size: var(--tori-text-2xs);
+  color: var(--fg-muted);
+}
+
+.memberWarning {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--tori-text-2xs);
+  color: var(--attention-fg);
+}
+
+/* The repair, at the end of the row it repairs. `cursor: pointer` because the
+   row itself is `grab`, and a button that looks draggable reads as one. */
+.repair {
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+[data-member][data-state="failed"] .memberState,
+[data-member][data-state="repo-missing"] .memberState,
+[data-member][data-state="worktree-missing"] .memberState {
+  color: var(--danger-fg);
+}

@@ -13,7 +13,8 @@
 
 /* Bubbled rollup badge on a collapsed branch/project row, or a hidden project's/
    space's nearest rendered ancestor. Shows all four states, each with its own
-   glyph + hue, in priority order: waiting, executing, idle, running. */
+   glyph + hue, in priority order: waiting, pull request, executing, idle,
+   running. */
 .statusBubble {
   display: inline-flex;
   align-items: center;
@@ -32,6 +33,9 @@
 }
 .statusBubbleItem.waitingForApproval {
   color: var(--status-needs-you);
+}
+.statusBubbleItem.prAttention {
+  color: var(--attention-fg);
 }
 .statusBubbleItem.executing {
   color: var(--status-progress);
@@ -60,8 +64,10 @@
   padding: 1px calc(2px * var(--ui-scale));
 }
 
+/* The rollup counts' size, so the dock's corner reads at the same weight as
+   the space tiles' beside it. */
 .tileCount {
   color: var(--fg-muted);
-  font-size: var(--tori-text-2xs);
+  font-size: var(--tori-text-md);
   font-variant-numeric: tabular-nums;
 }
