@@ -64,9 +64,20 @@
   background: var(--glass-hi);
   overflow: hidden;
 }
-.track span {
+.fill {
   display: block;
   height: 100%;
+  transform-origin: left center;
+  will-change: transform;
+  animation: progress linear both;
+}
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 .caps {
   display: grid;
@@ -199,6 +210,9 @@
   }
   .cap[data-at="left"] {
     visibility: hidden;
+    animation: none;
+  }
+  .fill {
     animation: none;
   }
   .caps[data-moved] .cap[data-at="now"],
