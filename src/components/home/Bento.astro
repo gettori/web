@@ -1,6 +1,5 @@
 ---
 import AgentSvg from "./AgentSvg.astro";
-import { SITE } from "../../config";
 
 const ORBIT = ["claude", "codex", "opencode", "copilot", "pi"];
 
@@ -21,7 +20,7 @@ const CLI: [string, string, number][] = [
 ];
 ---
 
-<section class="section">
+<section class="section bento">
   <div class="section-inner">
     <h2 class="h2 head">Everything around <span class="accent-word gold">the agent.</span></h2>
     <div class="grid">
@@ -67,43 +66,6 @@ const CLI: [string, string, number][] = [
         </div>
       </div>
 
-      <div class="card phone-card" data-spot style="--spot:251,113,133">
-        <div class="title">In your pocket</div>
-        <div class="body">Pair the phone app with a QR code, over Tailscale. Answer, steer or stop a turn from anywhere.</div>
-        <div class="stores">
-          <a href={SITE.android} class="store">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.4395 5.5586c-.675 1.1664-1.352 2.3318-2.0274 3.498-.0366-.0155-.0742-.0286-.1113-.043-1.8249-.6957-3.484-.8-4.42-.787-1.8551.0185-3.3544.4643-4.2597.8203-.084-.1494-1.7526-3.021-2.0215-3.4864a1.1451 1.1451 0 0 0-.1406-.1914c-.3312-.364-.9054-.4859-1.379-.203-.475.282-.7136.9361-.3886 1.5019 1.9466 3.3696-.0966-.2158 1.9473 3.3593.0172.031-.4946.2642-1.3926 1.0177C2.8987 12.176.452 14.772 0 18.9902h24c-.119-1.1108-.3686-2.099-.7461-3.0683-.7438-1.9118-1.8435-3.2928-2.7402-4.1836a12.1048 12.1048 0 0 0-2.1309-1.6875c.6594-1.122 1.312-2.2559 1.9649-3.3848.2077-.3615.1886-.7956-.0079-1.1191a1.1001 1.1001 0 0 0-.8515-.5332c-.5225-.0536-.9392.3128-1.0488.5449zm-.0391 8.461c.3944.5926.324 1.3306-.1563 1.6503-.4799.3197-1.188.0985-1.582-.4941-.3944-.5927-.324-1.3307.1563-1.6504.4727-.315 1.1812-.1086 1.582.4941zM7.207 13.5273c.4803.3197.5506 1.0577.1563 1.6504-.394.5926-1.1038.8138-1.584.4941-.48-.3197-.5503-1.0577-.1563-1.6504.4008-.6021 1.1087-.8106 1.584-.4941z"></path></svg>
-            <span><small>Download the APK</small>Android</span>
-          </a>
-        </div>
-        <div class="phone">
-          <div class="island"></div>
-          <div class="p-head">
-            <span class="p-back">&lsaquo;</span>
-            <div>
-              <b>Sign webhook payloads</b>
-              <small><i></i>Needs you &middot; api &rsaquo; feat/webhooks</small>
-            </div>
-          </div>
-          <div class="p-user">run the webhook tests</div>
-          <div class="p-text">Signed payloads with the endpoint secret. Running the webhook tests now.</div>
-          <div class="p-slot">
-            <div class="p-pending">
-              <b>Allow Bash?</b>
-              <code>pnpm test webhooks</code>
-              <div class="p-btns"><span>Deny</span><span class="p-allow">Allow once<i class="tap"></i></span></div>
-            </div>
-            <div class="p-done">
-              <svg width="26" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                ><path d="M4 12 9 17 20 6"></path></svg
-              >
-              Back to work.
-            </div>
-          </div>
-          <div class="p-composer">Steer the running turn</div>
-        </div>
-      </div>
-
       <div class="card wake-card" data-spot style="--spot:217,164,104">
         <div class="title">Wakes when it matters</div>
         <div class="body">A chat can watch its pull request and wake when a check fails or a reviewer comments. One stopped by a usage limit carries on when the limit resets.</div>
@@ -139,7 +101,7 @@ const CLI: [string, string, number][] = [
               >zsh &middot; api/feat/webhooks</span
             ></div>
           <div class="term-body">
-            {CLI.map(([t, c, d]) => <div style={`color:${c};animation-delay:${d}s`}>{t}</div>)}
+            {CLI.map(([t, c, d], i) => <div class:list={[i < 5 && "cli-table"]} style={`color:${c};animation-delay:${d}s`}>{t}</div>)}
           </div>
         </div>
       </div>
@@ -164,12 +126,12 @@ const CLI: [string, string, number][] = [
             <span class="u-pct">40%</span>
           </div>
           <div class="u-head">Spending ceilings</div>
-          <div class="u-row">
+          <div class="u-row spend">
             <span class="u-who">This chat</span>
             <span class="u-track"><i class="u-gold" style="width:82%"></i></span>
             <span class="u-pct">$4.10 / $5</span>
           </div>
-          <div class="u-row">
+          <div class="u-row spend">
             <span class="u-who">This project</span>
             <span class="u-track"><i class="u-gold" style="width:61%"></i></span>
             <span class="u-pct">$12.30 / $20</span>
@@ -255,20 +217,20 @@ const CLI: [string, string, number][] = [
   .grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "orbit" "steer" "phone" "wake" "cli" "limits" "trust" "privacy" "restore";
+    grid-template-areas: "orbit" "steer" "wake" "cli" "limits" "trust" "privacy" "restore";
     gap: 12px;
     margin-top: 40px;
   }
   @media (min-width: 720px) {
     .grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "orbit orbit" "steer phone" "wake phone" "cli cli" "limits trust" "privacy restore";
+      grid-template-areas: "orbit orbit" "steer wake" "cli cli" "limits trust" "privacy restore";
     }
   }
   @media (min-width: 1100px) {
     .grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-areas: "orbit orbit phone" "steer wake phone" "cli cli limits" "trust privacy restore";
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas: "orbit steer wake limits" "cli trust privacy restore";
     }
   }
   .card {
@@ -486,173 +448,6 @@ const CLI: [string, string, number][] = [
     color: var(--faint);
   }
 
-  .phone-card {
-    grid-area: phone;
-  }
-  .stores {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 4px;
-  }
-  .store {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    height: 46px;
-    padding: 0 16px 0 12px;
-    border-radius: 12px;
-    background: var(--glass);
-    border: 1px solid var(--line);
-    color: var(--text);
-    transition: background 0.2s;
-  }
-  .store:hover {
-    background: var(--glass-hi);
-    color: var(--text);
-  }
-  .store svg {
-    width: 22px;
-    height: 22px;
-    fill: #3ddc84;
-  }
-  .store span {
-    display: flex;
-    flex-direction: column;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.15;
-  }
-  .store small {
-    font-size: 10.5px;
-    font-weight: 500;
-    color: var(--muted);
-  }
-  .phone {
-    position: relative;
-    margin: auto auto 0;
-    width: 236px;
-    height: 470px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 38px 12px 12px;
-    border-radius: 40px;
-    background: light-dark(#ffffff, #050608);
-    border: 6px solid #23262e;
-    box-shadow:
-      0 30px 60px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.08),
-      0 0 80px rgba(251, 113, 133, 0.15);
-    overflow: hidden;
-    font-size: 12px;
-  }
-  .island {
-    position: absolute;
-    top: 11px;
-    left: 50%;
-    width: 70px;
-    height: 20px;
-    margin-left: -35px;
-    border-radius: 999px;
-    background: #000;
-  }
-  .p-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--hair);
-  }
-  .p-back {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: light-dark(#efeff1, #1b1e25);
-    color: var(--muted);
-  }
-  .p-head b {
-    display: block;
-    font-size: 12px;
-  }
-  .p-head small {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 9.5px;
-    color: var(--faint);
-  }
-  .p-head small i {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--need);
-  }
-  .p-user {
-    align-self: flex-end;
-    padding: 6px 9px;
-    border-radius: 8px;
-    border: 1px solid var(--hair);
-    background: light-dark(#ecebe7, #272628);
-    font-size: 11px;
-  }
-  .p-text {
-    font-size: 11px;
-    line-height: 1.45;
-    color: var(--soft);
-  }
-  .p-slot {
-    position: relative;
-    margin-top: auto;
-    min-height: 104px;
-  }
-  .p-pending,
-  .p-done {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 11px;
-    border-radius: 14px;
-  }
-  .p-pending {
-    background: light-dark(#fdf0f2, #2a1f26);
-    border: 1px solid rgba(251, 113, 133, 0.5);
-    animation: swapA 5s infinite;
-  }
-  .p-pending b {
-    font-size: 11.5px;
-  }
-  .p-pending code {
-    font-family: var(--mono);
-    font-size: 10.5px;
-    color: var(--muted);
-  }
-  .p-btns {
-    display: flex;
-    justify-content: flex-end;
-    gap: 6px;
-    margin-top: auto;
-  }
-  .p-btns span {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    height: 26px;
-    padding: 0 10px;
-    border-radius: 7px;
-    background: light-dark(#ebecef, #252a34);
-    font-size: 11px;
-  }
-  .p-btns .p-allow {
-    background: #d9a468;
-    color: #4a3719;
-    font-weight: 600;
-  }
   .tap {
     position: absolute;
     left: 50%;
@@ -662,67 +457,6 @@ const CLI: [string, string, number][] = [
     margin: -13px 0 0 -13px;
     border-radius: 50%;
     background: #fff;
-    animation: tap 5s infinite;
-  }
-  @keyframes tap {
-    0%,
-    40% {
-      transform: scale(1);
-      opacity: 0;
-    }
-    44% {
-      transform: scale(0.6);
-      opacity: 0.9;
-    }
-    52% {
-      transform: scale(1.8);
-      opacity: 0;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  .p-done {
-    align-items: center;
-    justify-content: center;
-    background: light-dark(#e6f6f3, #12211f);
-    border: 1px solid rgba(45, 212, 191, 0.45);
-    color: light-dark(#0f766e, #99f6e4);
-    animation: swapB 5s infinite;
-  }
-  @keyframes swapA {
-    0%,
-    45% {
-      opacity: 1;
-    }
-    50%,
-    95% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  @keyframes swapB {
-    0%,
-    45% {
-      opacity: 0;
-    }
-    50%,
-    95% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  .p-composer {
-    padding: 10px;
-    border-radius: 12px;
-    border: 1px solid var(--hair);
-    background: light-dark(#f6f5f2, #111318);
-    color: var(--faint);
-    font-size: 11px;
   }
 
   .wake-card {
@@ -1318,6 +1052,184 @@ const CLI: [string, string, number][] = [
       width: auto;
     }
     .p-done {
+      display: none;
+    }
+  }
+  @media (min-width: 1100px) {
+    .card {
+      min-height: 250px;
+      gap: 6px;
+      padding: 18px;
+      border-radius: 20px;
+    }
+    .title {
+      font-size: 17px;
+      line-height: 1.2;
+    }
+    .body {
+      font-size: 13px;
+      line-height: 1.42;
+    }
+    .orbit-card {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 6px;
+      min-height: 250px;
+    }
+    .text,
+    .restore-card .text {
+      flex: none;
+      gap: 6px;
+    }
+    .orbit {
+      flex: 1;
+      min-height: 0;
+      height: auto;
+      zoom: 0.68;
+    }
+    .steer-card {
+      min-height: 250px;
+    }
+    .steer {
+      gap: 6px;
+    }
+    .steer-box {
+      gap: 6px;
+      padding: 10px;
+      border-radius: 12px;
+    }
+    .steer-line {
+      font-size: 11.5px;
+    }
+    .steer-hint {
+      display: none;
+    }
+    .wake,
+    .privacy {
+      flex: 1;
+      min-height: 0;
+    }
+    .cli-head {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cli-head .body {
+      flex: none;
+    }
+    .term {
+      flex: 1;
+      min-height: 0;
+      border-radius: 12px;
+    }
+    .term-bar {
+      height: 24px;
+      padding: 0 9px;
+      font-size: 10px;
+    }
+    .term-bar i {
+      width: 7px;
+      height: 7px;
+    }
+    .term-body {
+      padding: 8px 10px;
+      font-size: 10.5px;
+      line-height: 1.6;
+    }
+    .cli-table {
+      display: none;
+    }
+    .usage {
+      gap: 6px;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 11.5px;
+    }
+    .u-row {
+      grid-template-columns: 70px 1fr auto;
+      gap: 7px;
+    }
+    .u-pct {
+      min-width: 34px;
+      font-size: 10.5px;
+    }
+    .trust {
+      font-size: 11.5px;
+    }
+    .t-ask {
+      margin-bottom: 4px;
+      padding: 7px 7px 7px 10px;
+      border-radius: 10px;
+    }
+    .t-btns span {
+      height: 23px;
+      padding: 0 8px;
+      font-size: 10.5px;
+    }
+    .rtabs {
+      flex: 1;
+      min-height: 0;
+      gap: 5px;
+      overflow: hidden;
+    }
+    .rtab {
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 11.5px;
+    }
+  }
+
+  /* One screen on a desktop: the nav's height above, the grid taking what is left. */
+  @media (min-width: 1100px) and (min-height: 680px) {
+    .bento {
+      display: flex;
+      flex-direction: column;
+      height: 100svh;
+      padding-block: 82px 18px;
+    }
+    .bento .section-inner {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      width: 100%;
+      min-height: 0;
+    }
+    .head {
+      flex: none;
+      max-width: none;
+      font-size: clamp(34px, 5.2vh, 56px);
+    }
+    .grid {
+      flex: 1;
+      min-height: 0;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      margin-top: clamp(14px, 2.2vh, 24px);
+    }
+    .card,
+    .orbit-card,
+    .steer-card {
+      min-height: 0;
+    }
+  }
+  @media (min-width: 1100px) and (min-height: 680px) and (max-height: 860px) {
+    .u-head,
+    .spend,
+    .t-row:nth-child(n + 4),
+    .rtab:nth-child(n + 5) {
+      display: none;
+    }
+    .orbit {
+      zoom: 0.5;
+    }
+    .body {
+      font-size: 12.5px;
+      line-height: 1.38;
+    }
+  }
+  @media (min-width: 1100px) and (min-height: 680px) and (max-height: 700px) {
+    .usage .u-row:nth-child(3) {
       display: none;
     }
   }
