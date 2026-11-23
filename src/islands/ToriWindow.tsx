@@ -199,11 +199,12 @@ export default function ToriWindow(props: {
   still?: boolean;
   onStormHover?: boolean;
   time?: number;
+  initialWidth?: number;
 }) {
   const mode = (): Mode => props.mode ?? "loop";
   const startT = () => (mode() === "loop" && props.skipChaos ? 5.4 : 0);
   let root!: HTMLDivElement;
-  const [cw, setCw] = createSignal(1200);
+  const [cw, setCw] = createSignal(props.initialWidth ?? 1200);
   const [clock, setT] = createSignal(0);
   const t = () => props.time ?? clock();
   const [reduced, setReduced] = createSignal(false);
