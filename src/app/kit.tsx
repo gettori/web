@@ -1,7 +1,7 @@
 // Presentational ports of the app's own components (tori/src), trimmed to what
 // a picture needs: no menus, tooltips or stores, same DOM and class names, so the
 // vendored CSS modules in ./css draw them exactly as the app does.
-import { For, Show, type JSX } from "solid-js";
+import { createEffect, createSignal, For, on, onCleanup, Show, untrack, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import {
   ArrowUpFromLine,
@@ -277,6 +277,25 @@ export function SyncPush(props: { count: number }) {
   );
 }
 
+// The tile's pill opens two frames after the switch, as in the app: a layout
+// transition started in the frame that re-renders the tree stutters.
+function afterPaint(active: () => boolean | undefined) {
+  const [seen, setSeen] = createSignal(!!untrack(active));
+  createEffect(
+    on(
+      active,
+      (v) => {
+        let raf = requestAnimationFrame(() => {
+          raf = requestAnimationFrame(() => setSeen(!!v));
+        });
+        onCleanup(() => cancelAnimationFrame(raf));
+      },
+      { defer: true },
+    ),
+  );
+  return seen;
+}
+
 export function SpaceTile(props: {
   name: string;
   hueRgb: string;
@@ -284,12 +303,15 @@ export function SpaceTile(props: {
   nameWidth?: string;
   active?: boolean;
   rollup?: Rollup;
+  aim?: string;
 }) {
+  const titled = afterPaint(() => props.active);
   return (
     <span class={tileStyles.spaceMenu}>
       <span
+        data-aim={props.aim}
         class={tileStyles.space}
-        classList={{ [tileStyles.active]: !!props.active, [tileStyles.titled]: !!props.active }}
+        classList={{ [tileStyles.active]: !!props.active, [tileStyles.titled]: titled() }}
         style={{ "--space-hue-rgb": props.hueRgb, "--name-w": props.nameWidth }}
       >
         <Show when={props.glyph} fallback={props.name.slice(0, 1).toUpperCase()}>

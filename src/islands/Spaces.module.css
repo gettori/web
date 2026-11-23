@@ -60,7 +60,42 @@
   font: 600 13.5px var(--sans);
   text-transform: capitalize;
   cursor: pointer;
-  transition: all 0.4s var(--ease);
+  transition:
+    background 0.36s var(--ease),
+    color 0.36s var(--ease);
+}
+
+.stack {
+  display: grid;
+  min-width: 0;
+}
+.layer {
+  grid-area: 1 / 1;
+  min-width: 0;
+  transition:
+    opacity 0.36s var(--ease),
+    transform 0.46s var(--ease),
+    visibility 0s;
+}
+.layer[data-on="false"] {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0s 0.2s,
+    visibility 0s 0.2s;
+}
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.glow[data-on="true"] {
+  opacity: 1;
 }
 
 .stage {
@@ -76,11 +111,24 @@
   justify-content: center;
   gap: 12px;
   min-height: 380px;
+  position: relative;
+  isolation: isolate;
   padding: 28px 20px;
   border-radius: 24px;
-  background: radial-gradient(120% 90% at 50% 0%, rgb(var(--hue) / 0.14), transparent 60%), var(--card);
+  background: var(--card);
   border: 1px solid var(--hair);
-  transition: background 0.6s;
+  overflow: hidden;
+}
+
+.cursor {
+  position: absolute;
+  z-index: 6;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  transition:
+    left 0.9s var(--ease),
+    top 0.9s var(--ease),
+    transform 0.12s;
 }
 
 .tree {
@@ -115,6 +163,7 @@
   font-size: 14px;
 }
 .mode {
+  position: relative;
   display: flex;
   gap: 2px;
   margin-top: 12px;
@@ -124,16 +173,29 @@
   border: 1px solid var(--hair);
 }
 .mode span {
+  position: relative;
   flex: 1;
   padding: 5px 0;
   border-radius: 6px;
   text-align: center;
   color: var(--muted);
-  transition: all 0.4s var(--ease);
+  transition: color 0.3s var(--ease);
 }
 .mode .modeOn {
-  background: var(--glass-hi);
   color: var(--strong);
+}
+.thumb {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 3px);
+  border-radius: 6px;
+  background: var(--glass-hi);
+  transition: transform 0.42s var(--ease);
+}
+.thumb[data-right="true"] {
+  transform: translateX(calc(100% + 2px));
 }
 .list {
   display: flex;
@@ -153,7 +215,9 @@
   padding: 0 8px;
   border-radius: 7px;
   color: var(--muted);
-  transition: all 0.4s var(--ease);
+  transition:
+    background 0.32s var(--ease),
+    color 0.32s var(--ease);
 }
 .rowOn {
   background: rgb(var(--hue) / 0.12);
@@ -168,6 +232,20 @@
   border: 1px solid var(--line);
   font-size: 10px;
   line-height: 1;
+  transition:
+    background 0.24s var(--ease),
+    border-color 0.24s var(--ease);
+}
+.tick {
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 0.2s var(--ease),
+    transform 0.28s var(--ease);
+}
+.rowOn .tick {
+  opacity: 1;
+  transform: none;
 }
 .rowOn .box {
   background: rgb(var(--hue));
@@ -195,11 +273,18 @@
   align-items: center;
   min-height: calc(2 * 1.4em + 18px);
   width: 100%;
-  max-width: 340px;
   padding: 9px 12px;
   border-radius: 10px;
   font-size: 12.5px;
   line-height: 1.4;
+}
+.verdictStack {
+  width: 100%;
+  max-width: 340px;
+}
+.hostValue {
+  justify-items: end;
+  color: var(--soft);
 }
 .refused {
   background: rgba(251, 113, 133, 0.12);
@@ -219,7 +304,7 @@
   font-size: 12px;
   color: var(--soft);
 }
-.host span {
+.host > span {
   color: var(--faint);
 }
 
@@ -244,4 +329,21 @@
   margin-top: 28px;
   font-family: var(--mono);
   font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    display: none;
+  }
+  .seg,
+  .layer,
+  .layer[data-on="false"],
+  .glow,
+  .thumb,
+  .row,
+  .box,
+  .tick,
+  .mode span {
+    transition: none;
+  }
 }
