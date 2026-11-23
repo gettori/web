@@ -145,7 +145,6 @@ export default function Spaces() {
               <span class={sidebar.headStrut} />
               <div class={sidebar.spaceHeader}>
                 <span class={sidebar.spaceHeaderName}>{sp().name}</span>
-                <span class={sidebar.spaceHeaderKind}>{"\u00b7 Spaces"}</span>
               </div>
             </div>
             <div class={sidebar.treeScroll}>

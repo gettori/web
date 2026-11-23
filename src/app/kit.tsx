@@ -21,6 +21,10 @@ import bubbleStyles from "./css/StatusBubble.module.css";
 import prStyles from "./css/PrLine.module.css";
 import rowStyles from "./css/SidebarRows.module.css";
 import tileStyles from "./css/SpaceTile.module.css";
+import chatStyles from "./css/ChatList.module.css";
+import topicItemStyles from "./css/TopicItem.module.css";
+import topicListStyles from "./css/TopicList.module.css";
+import chipStyles from "./css/MemberChip.module.css";
 import tabStyles from "./css/Tab.module.css";
 import markStyles from "./css/TabMark.module.css";
 import syncStyles from "./css/SyncMarks.module.css";
@@ -176,6 +180,76 @@ export function BranchRow(props: { label: string; icon: JSX.Element; selected?: 
   );
 }
 
+export function GroupHead(props: { label: string; end?: JSX.Element }) {
+  return (
+    <div class={rowStyles.groupHead}>
+      <span class={rowStyles.groupTitle}>
+        <Icon icon={ChevronDown} class={rowStyles.groupChevron} />
+        <span class={rowStyles.groupLabel}>{props.label}</span>
+      </span>
+      <span class={rowStyles.rowEnd}>{props.end}</span>
+    </div>
+  );
+}
+
+export function ChatRow(props: { label: string; agent: Agent; time: string; rollup?: Rollup; selected?: boolean }) {
+  return (
+    <BranchRow
+      label={props.label}
+      icon={<AgentMark agent={props.agent} />}
+      selected={props.selected}
+      end={
+        <Show when={props.rollup} fallback={<time class={chatStyles.time}>{props.time}</time>}>
+          {(r) => <StatusBubble rollup={r()} />}
+        </Show>
+      }
+    />
+  );
+}
+
+export function TopicRow(props: { name: string; hue: string; members: IconNode[]; rollup?: Rollup }) {
+  const cells = () => Array.from({ length: 4 }, (_, i) => props.members[i] ?? null);
+  return (
+    <ul class={topicListStyles.items}>
+      <li class={`${rowStyles.projectCard} ${topicItemStyles.item}`}>
+        <div class={`${rowStyles.row} ${rowStyles.project}`}>
+          <span class={`${rowStyles.rowIcon} ${rowStyles.projectIcon}`}>
+            <span class={rowStyles.projectIconArt}>
+              <span class={topicItemStyles.glyph} aria-hidden="true">
+                <For each={cells()}>
+                  {(m) => (
+                    <span
+                      class={topicItemStyles.cell}
+                      classList={{ [topicItemStyles.cellEmpty]: !m }}
+                      style={m ? { "--chip-hue": props.hue } : undefined}
+                    />
+                  )}
+                </For>
+              </span>
+            </span>
+            <span class={rowStyles.iconChevron} aria-hidden="true">
+              <Icon icon={ChevronRight} />
+            </span>
+          </span>
+          <span class={rowStyles.label}>{props.name}</span>
+          <span class={rowStyles.rowEnd}>
+            <span class={topicItemStyles.chips}>
+              <For each={props.members}>
+                {(m) => (
+                  <span class={`${chipStyles.chip} ${chipStyles.md} ${chipStyles.outlined}`} style={{ "--chip-hue": props.hue }}>
+                    <Icon icon={m} />
+                  </span>
+                )}
+              </For>
+            </span>
+            <Show when={props.rollup}>{(r) => <StatusBubble rollup={r()} />}</Show>
+          </span>
+        </div>
+      </li>
+    </ul>
+  );
+}
+
 export function SyncPush(props: { count: number }) {
   return (
     <span class={syncStyles.marks}>
@@ -216,7 +290,7 @@ export function SpaceTile(props: {
 
 export function ModeTile(props: { label: string; glyph: IconNode }) {
   return (
-    <span class={`${tileStyles.space} ${tileStyles.modeTile}`}>
+    <span class={tileStyles.space}>
       <Icon icon={props.glyph} />
       <span class={tileStyles.tileName}>
         <span class={tileStyles.tileNameText}>{props.label}</span>

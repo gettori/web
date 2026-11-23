@@ -53,29 +53,32 @@
   height: var(--row-h);
   margin: 0 0 0 var(--tree-inset);
   padding: 0 calc(8px * var(--ui-scale));
-  /* Square on the left like the branch pill, so every list row in this column
-     takes the same shape under the pointer. */
-  border-radius: 0 var(--tori-radius-md) var(--tori-radius-md) 0;
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   transition: background var(--tori-duration-fast) ease;
 }
 
-/* [data-expanded] mirrors :hover: it persists on the row a context menu belongs
-   to, so it stays highlighted while the menu is open. Kobalte stamps it on the
-   trigger, which IS the row, so nothing in the sidebar toggles a class for it. */
-.row:hover,
-.row[data-expanded] {
-  background: linear-gradient(to right, var(--neutral-hover), transparent);
+/* The project whose settings tab is on screen. An inset ring rather than a
+   border, so the row keeps its height and nothing beside it moves. */
+.row.editing {
+  background: var(--neutral-subtle);
+  box-shadow: inset 0 0 0 1px var(--brand-default);
+}
+
+.glideFrame {
+  position: relative;
+  isolation: isolate;
+  --glide-radius: 0;
+  --glide-fill: linear-gradient(to right, var(--neutral-hover), transparent);
 }
 
 .branchNode {
   position: relative;
 }
 
-/* Under the rows (z-index 2), so a hovered or selected pill paints over the
-   rail rather than having to start clear of it. */
+/* Under the rows (z-index 2), so a selected pill paints over the rail rather
+   than having to start clear of it. */
 .branchNode::before {
   content: "";
   position: absolute;
@@ -109,9 +112,172 @@
   margin-bottom: 0;
 }
 
-/* Hover and selection share one pill: it starts ON the rail so the marker bar
-   lands where the line was, and runs to the column's right edge. The z-index
-   gives the -1 pill a context to sit behind, and lifts the row over the rail. */
+/* Inside a card the rail variables are re-anchored to the card's own edge,
+   so member rows draw the rail where it already runs and their pill reaches
+   back to it (see gotcha_the_sidebar_rail_is_a_variable_not_a_copy). */
+.groupCard {
+  position: relative;
+  margin: calc(8px * var(--ui-scale)) 0 0 calc(22px * var(--ui-scale));
+  border-radius: calc(8px * var(--ui-scale));
+  background: var(--lane-card);
+  --rail-x: calc(-6px * var(--ui-scale));
+  --branch-label-x: calc(10px * var(--ui-scale));
+}
+.groupCard::before {
+  content: "";
+  position: absolute;
+  left: var(--rail-x);
+  top: calc(-8px * var(--ui-scale));
+  bottom: 0;
+  width: 1px;
+  background: var(--border-rail);
+}
+.groupCard:last-child {
+  margin-bottom: calc(6px * var(--ui-scale));
+}
+.groupCard .branchNode:last-child {
+  margin-bottom: 0;
+}
+/* The rail runs outside the card, but `.row` clips its overflow, so a pill
+   drawn on it loses its bar. Inside a card it starts at the card's edge. */
+.groupCard .row.branch::before {
+  left: 0;
+}
+.row.cardHead {
+  padding-left: var(--branch-label-x);
+  border-radius: calc(8px * var(--ui-scale));
+}
+/* Open, the head sits on its body, so only its top corners round. */
+.row.cardHead.cardHeadOpen {
+  border-radius: calc(8px * var(--ui-scale)) calc(8px * var(--ui-scale)) 0 0;
+}
+.row.cardHead:hover,
+.row.cardHead[data-expanded] {
+  background: var(--lane-card-hi);
+}
+/* Collapsed with the selected branch inside. Inset from the rounded corners,
+   which would otherwise clip it, the way a parked lane draws it. */
+.row.cardHead.cardHeadSel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(6px * var(--ui-scale));
+  bottom: calc(6px * var(--ui-scale));
+  width: var(--tori-border-thick);
+  border-radius: 1px;
+  background: var(--brand-bar);
+}
+/* Set like the tree's own section heads (`.groupLabel`, `.groupCount`), so a
+   card's name labels its branches rather than competing with them. */
+.cardLabel {
+  color: var(--fg-subtle);
+  font-size: var(--tori-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.cardCount {
+  flex: none;
+  color: var(--fg-subtle);
+  font-family: var(--tori-font-mono);
+  font-size: var(--tori-text-xs);
+}
+.row.cardHead .rowChevron {
+  margin-left: auto;
+}
+.row.cardHead .rowEnd + .rowChevron {
+  margin-left: 0;
+}
+.groupName {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 calc(4px * var(--ui-scale));
+  border: 0;
+  border-radius: var(--tori-radius-sm);
+  background: var(--canvas-input);
+  box-shadow: inset 0 0 0 1px var(--attention-fg);
+  color: var(--fg-default);
+  font: inherit;
+  font-weight: 600;
+  outline: none;
+}
+/* Clipped to the card's lower corners, which a square pill on the last row
+   would otherwise poke past. */
+.cardBody {
+  padding-bottom: calc(2px * var(--ui-scale));
+  overflow: hidden;
+  border-radius: 0 0 calc(8px * var(--ui-scale)) calc(8px * var(--ui-scale));
+}
+button.row.cardHead {
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+button.row.cardHead:hover {
+  background: var(--lane-card-hi);
+}
+.parkedRow {
+  position: relative;
+  display: flex;
+  gap: calc(6px * var(--ui-scale));
+  padding: calc(8px * var(--ui-scale)) 0 calc(6px * var(--ui-scale)) calc(22px * var(--ui-scale));
+}
+.parkedRow::before {
+  content: "";
+  position: absolute;
+  left: calc(16px * var(--ui-scale));
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-rail);
+}
+.parkedCard {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  align-items: center;
+  gap: calc(6px * var(--ui-scale));
+  height: calc(32px * var(--ui-scale));
+  padding: 0 calc(10px * var(--ui-scale)) 0 calc(8px * var(--ui-scale));
+  border: 0;
+  border-radius: calc(8px * var(--ui-scale));
+  background: var(--lane-card);
+  color: var(--fg-muted);
+  font: inherit;
+  font-size: var(--tori-text-md);
+  cursor: pointer;
+}
+.parkedCard:hover {
+  background: var(--lane-card-hi);
+}
+.parkedCard svg {
+  flex: none;
+  width: calc(13px * var(--ui-scale));
+  height: calc(13px * var(--ui-scale));
+}
+.parkedName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.parkedCard.cardHeadSel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(6px * var(--ui-scale));
+  bottom: calc(6px * var(--ui-scale));
+  width: var(--tori-border-thick);
+  border-radius: 1px;
+  background: var(--brand-bar);
+}
+
+/* The selection pill starts ON the rail so the marker bar lands where the line
+   was, and runs to the column's right edge. The z-index gives the -1 pill a
+   context to sit behind, and lifts the row over the rail. */
 .row.branch {
   height: auto;
   padding-block: var(--branch-row-pad);
@@ -128,33 +294,20 @@
   top: 0;
   bottom: 0;
   z-index: -1;
-  /* Square on the rail, rounded away from it: a rounded left edge would clip
-     the selection's marker bar into a lozenge, and the bar has to run the row's
-     full height to read as the rail thickening. */
-  border-radius: 0 var(--tori-radius-md) var(--tori-radius-md) 0;
   background: transparent;
 }
 /* A branch whose pull request merged with nothing made since rests on a faint
-   teal wash. Declared before the hover rule at equal specificity, so the
-   pointer still lights it the way it lights every other row. */
+   teal wash. */
 .row.branch.done::before {
   background: linear-gradient(to right, var(--done-wash), transparent);
 }
-.row.branch:hover,
-.row.branch[data-expanded] {
-  background: transparent;
-}
-.row.branch:hover::before,
-.row.branch[data-expanded]::before {
-  background: linear-gradient(to right, var(--neutral-hover), transparent);
-}
 
 /* ---- The two-line branch row ----
-   Only a branch with a pull request grows one (see `PrLine`). A row without
-   one renders none of these elements at all, so the single-line row keeps the
-   exact metrics it has always had rather than being restored to them by an
-   override. The row carries `data-two-line` for anything that needs to tell
-   the two apart. */
+   Only a branch with a pull request or a diff of its own grows one (see
+   `BranchLine`). A row without one renders none of these elements at all, so
+   the single-line row keeps the exact metrics it has always had rather than
+   being restored to them by an override. The row carries `data-two-line` for
+   anything that needs to tell the two apart. */
 
 /* The stack takes the whole row, glyph included, so that `.rowTop` below is
    the single-line row exactly - same children, same gap, same centring - and
@@ -190,7 +343,7 @@
 
 /* The selected row raises its label to `--fg-default`, so the line under it
    goes up a step too and the gap between them stays one step rather than two.
-   Set as a variable because `PrLine` owns its own stylesheet and a descendant
+   Set as a variable because `BranchLine` owns its own stylesheet and a descendant
    selector cannot cross the two. */
 .row.branch.sel .rowStack {
   --pr-line-fg: var(--fg-muted);
@@ -210,26 +363,34 @@
   color: var(--fg-muted);
 }
 
-/* Selected branch: the hover pill's geometry held in a brand wash that fades
-   out to the right, with the same left bar the settings rail marks its active
-   category with (`.railItemActive::before`). The bar covers the rail rather
-   than sitting beside it, so the line reads as thickening into the selection.
-   Declared AFTER the :hover rule at equal specificity, so hovering a selected
-   row keeps the gold instead of dropping to grey - the same ordering every
-   selected row in this app depends on. */
+button.moreRow {
+  width: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+/* Selected branch: a brand wash that fades out to the right, with the same left
+   bar the settings rail marks its active category with (`.railItemActive::before`).
+   The bar covers the rail rather than sitting beside it, so the line reads as
+   thickening into the selection. */
 .row.branch.sel::before {
   background:
-    linear-gradient(var(--brand-bar), var(--brand-bar)) left center /
-      var(--tori-border-thick) 100% no-repeat,
+    linear-gradient(var(--brand-bar), var(--brand-bar)) left center / var(--tori-border-thick) 100% no-repeat,
     linear-gradient(to right, var(--brand-subtle), transparent);
+}
+
+.row.branch.picked::before {
+  background: var(--brand-subtle);
 }
 
 /* A done branch selected keeps its teal: the bar and a stronger wash take the
    brand's place, so it still reads as done while it is the one on screen. */
 .row.branch.done.sel::before {
   background:
-    linear-gradient(var(--done-bar), var(--done-bar)) left center /
-      var(--tori-border-thick) 100% no-repeat,
+    linear-gradient(var(--done-bar), var(--done-bar)) left center / var(--tori-border-thick) 100% no-repeat,
     linear-gradient(to right, var(--done-selected), transparent);
 }
 
@@ -266,8 +427,11 @@
   font-style: italic;
   cursor: default;
 }
-.row.dim:hover {
-  background: transparent;
+
+.row.trunkRow,
+.row.trunkRow .rowIcon {
+  color: var(--fg-subtle);
+  cursor: default;
 }
 
 .row .label {
@@ -275,6 +439,11 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Shrinks to the text so the trailing mark sits on the name's end; `.rowEnd`
+   keeps its place at the right with its own auto margin. */
+.row .label.labelHugged {
+  flex: 0 1 auto;
 }
 
 /* Leading type icon on a project / branch row, boxed to the same 16px
@@ -332,8 +501,10 @@
   opacity: 0;
 }
 
-.row.project:hover .projectIconArt,
-.row.project[data-expanded] .projectIconArt {
+/* Only a slot with a chevron to show trades its art for it: a plain folder
+   or a missing one has nothing to disclose, so its icon stays. */
+.row.project:hover .projectIcon:has(.iconChevron) .projectIconArt,
+.row.project[data-expanded] .projectIcon:has(.iconChevron) .projectIconArt {
   opacity: 0;
 }
 
@@ -379,6 +550,13 @@
   color: var(--scale-orange);
 }
 
+/* The ellipsis button's size, so the two sit level at the row's end. */
+.trustMark {
+  flex: none;
+  border-color: transparent;
+  color: var(--scale-orange);
+}
+
 /* The forge's one door per repo: add an account for this host, or pick between
    the ones it has. Sized to the glyph rather than to a control, so it lands in
    the same column as a branch row's marks directly below it. */
@@ -396,9 +574,37 @@
   cursor: pointer;
 }
 
+.accountAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: calc(14px * var(--ui-scale));
+  height: calc(14px * var(--ui-scale));
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--neutral-subtle);
+  color: var(--fg-muted);
+  font-size: calc(9px * var(--ui-scale));
+  line-height: 1;
+}
+.accountAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .rowGlyph:hover,
 .rowGlyph:focus-visible {
   color: var(--brand-default);
+}
+
+.rowGlyph.reviewMark {
+  width: auto;
+  gap: var(--tori-space-1);
+  color: var(--attention-fg);
+  font-size: var(--tori-text-sm);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Everything a row says about itself, in one cluster at its end.
@@ -476,6 +682,17 @@
    the key is the thing worth reading. */
 .row .issueChip {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  margin-left: calc(4px * var(--ui-scale));
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--fg-muted);
+  cursor: pointer;
+}
+.row .portChip {
+  flex: none;
   margin-left: calc(4px * var(--ui-scale));
   padding: 0 calc(3px * var(--ui-scale));
   background: none;
@@ -486,7 +703,35 @@
   color: var(--fg-muted);
   cursor: pointer;
 }
-.row .issueChip:hover {
+.row .runButton {
+  flex: none;
+  margin-left: calc(4px * var(--ui-scale));
+}
+/* Started on one worktree at a time, so the button waits for the row the
+   pointer is on; a live run shows through its port chip. Opacity, not display,
+   keeps the cluster from shifting under the pointer and the button reachable
+   by keyboard. */
+.row .runButton:not(:focus-visible) {
+  opacity: 0;
+}
+.row:hover .runButton,
+.row[data-expanded] .runButton {
+  opacity: 1;
+}
+.row .tearingDown {
+  flex: none;
+  margin-left: calc(4px * var(--ui-scale));
+  font-size: var(--tori-text-xs);
+  color: var(--fg-muted);
+}
+.row .issueChip:hover,
+.row .portChip:hover {
+  color: var(--brand-strong);
+}
+.row .portChip.portChipConnected {
+  color: var(--brand-default);
+}
+.row .portChip.portChipConnected:hover {
   color: var(--brand-strong);
 }
 
@@ -502,7 +747,237 @@
 }
 /* CSS-sized so it tracks --ui-scale. On the cluster's own size rather than a
    control's: it used to be the one mark that sat smaller than its neighbours. */
+.row .issueChip :global(svg),
 .row .topicChip :global(svg) {
   width: calc(14px * var(--ui-scale));
   height: calc(14px * var(--ui-scale));
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: var(--tori-space-3);
+  height: calc(28px * var(--ui-scale));
+  margin: 0 0 0 var(--tree-inset);
+  padding: 0 calc(4px * var(--ui-scale)) 0 calc(9px * var(--ui-scale));
+}
+
+.groupHead:not(:first-child) {
+  margin-top: calc(16px * var(--ui-scale));
+}
+
+.groupTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tori-space-3);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: default;
+}
+button.groupTitle {
+  cursor: pointer;
+}
+
+.groupChevron {
+  width: calc(14px * var(--ui-scale));
+  height: calc(14px * var(--ui-scale));
+  color: var(--fg-subtle);
+}
+
+.groupLabel {
+  font-size: var(--tori-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+
+.groupCount {
+  font-family: var(--tori-font-mono);
+  font-size: var(--tori-text-xs);
+  color: var(--fg-subtle);
+}
+
+/* Opacity rather than display, so the button stays a tab stop. */
+.groupHead .groupAdd:not(:focus-visible) {
+  opacity: 0;
+}
+.groupHead:hover .groupAdd {
+  opacity: 1;
+}
+
+.aliasBadge {
+  position: absolute;
+  left: calc(-4px * var(--ui-scale));
+  bottom: calc(-4px * var(--ui-scale));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(12px * var(--ui-scale));
+  height: calc(12px * var(--ui-scale));
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  background: var(--canvas-default);
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+
+.aliasBadge :global(svg) {
+  width: calc(8px * var(--ui-scale));
+  height: calc(8px * var(--ui-scale));
+  stroke-width: 3.2;
+}
+
+/* In the marks' place rather than on a second line, so the row keeps its
+   height. */
+.attachedPath {
+  display: none;
+  font-family: var(--tori-font-mono);
+  font-size: var(--tori-text-2xs);
+  color: var(--fg-subtle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row.attached:hover .attachedPath {
+  display: inline;
+}
+
+.row.attached:hover .rowEnd > :not(.attachedPath) {
+  display: none;
+}
+
+.row.missing .projectIconArt {
+  opacity: 0.45;
+  outline: 1px dashed var(--fg-subtle);
+  outline-offset: 1px;
+  border-radius: var(--tori-radius-sm);
+}
+
+.row.missing .aliasBadge {
+  opacity: 0.45;
+}
+
+.row.missing .label {
+  color: var(--fg-subtle);
+}
+
+.missingMark {
+  display: inline-flex;
+  color: var(--attention-fg);
+}
+
+/* The reorder gesture (`sidebarDrag.ts`). Grouping is an inset shadow rather
+   than a pseudo element, because `::before` is already the row's pill. */
+.row[data-dragging] {
+  opacity: 0.35;
+}
+.row[data-drop="into"] {
+  box-shadow: inset 0 0 0 0.5px var(--attention-fg);
+}
+/* A branch row's outline starts where a group card does, clear of the rail,
+   so it is drawn on the free `::after` rather than as the row's own shadow. */
+.row.branch[data-drop="into"] {
+  box-shadow: none;
+}
+.row.branch[data-drop="into"]::after {
+  content: "";
+  position: absolute;
+  left: max(0px, calc(var(--rail-x) + 6px * var(--ui-scale)));
+  right: 0;
+  top: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 0 0.5px var(--attention-fg);
+  pointer-events: none;
+}
+
+/* Drawn on the row's wrapper, centred on the seam, so the bottom of one row and
+   the top of the next are the same line rather than two lines a few pixels
+   apart; and "after" an expanded row sits under what it holds, where it lands. */
+:is(.projectCard, .branchNode, .groupCard):has(> .row[data-drop="before"])::after,
+:is(.projectCard, .branchNode, .groupCard):has(> .row[data-drop="after"])::after {
+  content: "";
+  position: absolute;
+  left: calc(16px * var(--ui-scale));
+  right: calc(16px * var(--ui-scale));
+  height: 0.5px;
+  background: var(--attention-fg);
+  pointer-events: none;
+  z-index: 3;
+}
+/* Where a group card starts, 6px clear of the rail, so a branch's line and a
+   card's line on the same seam are one line. Inside a card the rail runs 6px
+   outside it, so there the line starts at the card's edge. */
+.branchNode:has(> .row[data-drop])::after {
+  left: max(0px, calc(var(--rail-x) + 6px * var(--ui-scale)));
+  right: 0;
+}
+.groupCard:has(> .row[data-drop])::after {
+  left: 0;
+  right: 0;
+}
+:is(.projectCard, .branchNode, .groupCard):has(> .row[data-drop="before"])::after {
+  top: -0.5px;
+}
+:is(.projectCard, .branchNode, .groupCard):has(> .row[data-drop="after"])::after {
+  bottom: 0;
+}
+/* `.cardBody` clips its overflow, so the line above a group's first member is
+   drawn inside that row instead of on the seam. */
+.cardBody > .branchNode:first-child:has(> .row[data-drop="before"])::after {
+  top: 0;
+}
+.groupCard:has(> .dropTail[data-drop="after"])::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0.5px;
+  background: var(--attention-fg);
+  pointer-events: none;
+  z-index: 3;
+}
+/* A group card stands 8px below whatever is above it, so the line after that
+   row and the line before the card are both drawn mid gap, as one line. */
+.groupCard:has(> .row[data-drop="before"])::after {
+  top: calc(-4px * var(--ui-scale) - 0.25px);
+}
+:is(.branchNode, .groupCard):has(+ .groupCard):has(> .row[data-drop="after"], > .dropTail[data-drop="after"])::after {
+  bottom: calc(-4px * var(--ui-scale) - 0.25px);
+}
+
+/* Over the card's last pixels and the gap under it, above the next row, so a
+   group at the bottom of the list still has somewhere to drop after it. */
+.dropTail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-4px * var(--ui-scale));
+  height: calc(10px * var(--ui-scale));
+  z-index: 3;
+}
+
+.groupCard[data-hue] {
+  background: var(--card-body, var(--lane-card));
+}
+.groupCard[data-hue] > .row.cardHead {
+  background: var(--card-head, var(--lane-card));
+}
+.groupCard[data-hue] > .row.cardHead:hover,
+.groupCard[data-hue] > .row.cardHead[data-expanded],
+.parkedCard[data-hue]:hover {
+  background: color-mix(in srgb, var(--card-head, var(--lane-card)), var(--fg-default) 5%);
+}
+.groupCard[data-hue] > .row.cardHead .rowIcon,
+.parkedCard[data-hue] svg {
+  color: var(--card-icon, currentColor);
+}
+.parkedCard[data-hue] {
+  background: var(--card-head, var(--lane-card));
 }

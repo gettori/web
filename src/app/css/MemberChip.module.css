@@ -1,0 +1,97 @@
+/* The repo chip: a member's project icon on its Space tint. Five surfaces drew
+   this box separately before, in three copies of one recipe plus a fourth that
+   only differed in size. */
+
+.chip {
+  --chip-hue: var(--fg-muted);
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: calc(20px * var(--ui-scale));
+  height: calc(18px * var(--ui-scale));
+  padding-inline: calc(4px * var(--ui-scale));
+  border-radius: var(--tori-radius-sm, 4px);
+  color: var(--chip-hue);
+  background: color-mix(in srgb, var(--chip-hue) 18%, transparent);
+}
+
+.chip :global(svg),
+.chip img {
+  width: calc(12px * var(--ui-scale));
+  height: calc(12px * var(--ui-scale));
+}
+
+.chip img {
+  object-fit: contain;
+  border-radius: calc(2px * var(--ui-scale));
+}
+
+/* The sidebar's Topic rows sit on a taller line and carry a state badge, so
+   the box is bigger there. */
+.md {
+  height: calc(20px * var(--ui-scale));
+  padding-inline: calc(6px * var(--ui-scale));
+}
+
+.md :global(svg),
+.md img {
+  width: calc(14px * var(--ui-scale));
+  height: calc(14px * var(--ui-scale));
+}
+
+/* The collapsed Topic row's chip: a square outlined in the Space hue, on a
+   fainter fill so the outline carries the colour. */
+.outlined {
+  width: calc(20px * var(--ui-scale));
+  min-width: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--chip-hue) 55%, transparent);
+  background: color-mix(in srgb, var(--chip-hue) 12%, transparent);
+}
+
+/* A repo in no Space has no hue to mix, so it falls back to a flat neutral
+   rather than to a muted-grey mix of itself. */
+.neutral {
+  color: var(--fg-muted);
+  background: var(--neutral-subtle);
+}
+
+/* After `.neutral`, so a repo in no Space goes bare too. The glyph takes the
+   list's muted tone rather than the Space hue it drew on the tint. */
+.bare {
+  min-width: 0;
+  padding: 0;
+  color: var(--fg-muted);
+  background: none;
+}
+
+/* A member that cannot be opened right now keeps its chip and wears the state.
+   Gated on the attribute being *present*, not only on its value: a chip that
+   passes no state at all is not a broken one, and `:not([data-state="present"])`
+   alone would dim every chip in the tree, the search and the changes panel. */
+.chip[data-state]:not([data-state="present"]) {
+  opacity: 0.6;
+}
+
+/* The top-left corner, the one the state badge and the sync and dirty dots
+   leave free, so a reference that is also dirty still shows both. */
+.lock {
+  position: absolute;
+  top: calc(-4px * var(--ui-scale));
+  left: calc(-4px * var(--ui-scale));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(11px * var(--ui-scale));
+  height: calc(11px * var(--ui-scale));
+  border-radius: 50%;
+  color: var(--fg-muted);
+  background: var(--canvas-default);
+}
+
+.chip .lock :global(svg) {
+  width: calc(8px * var(--ui-scale));
+  height: calc(8px * var(--ui-scale));
+}

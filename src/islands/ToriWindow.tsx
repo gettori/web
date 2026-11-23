@@ -5,9 +5,12 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowRightToLine,
+  ArrowUp,
   ArrowUpFromLine,
   ArrowUpRight,
+  AudioWaveform,
   Bell,
+  BotOff,
   Brain,
   Bug,
   ChevronDown,
@@ -19,17 +22,17 @@ import {
   Copy,
   Ellipsis,
   Eye,
-  FileCode,
   Files,
   GitBranch,
+  GitCompare,
   GitMerge,
   GitPullRequest,
   Globe,
   History,
   House,
+  LoaderCircle,
   MessageSquare,
   PanelLeft,
-  Paperclip,
   Pause,
   PenLine,
   Play,
@@ -38,21 +41,24 @@ import {
   RotateCcw,
   Search,
   Settings,
+  ShieldCheck,
   Smartphone,
   Square,
+  SquarePen,
   SquareTerminal,
-  Tags,
   Undo2,
   UserCheck,
   Workflow,
+  ZapOff,
 } from "lucide";
 import "../app/css/tokens.css";
 import {
   AgentMark,
   BranchRow,
   Button,
+  ChatRow,
+  GroupHead,
   Icon,
-  ModeTile,
   PrLine,
   ProjectRow,
   SpaceTile,
@@ -60,6 +66,7 @@ import {
   SyncPush,
   Tab,
   TabMark,
+  TopicRow,
   type Agent,
   type Rollup,
   type TabStatus,
@@ -266,11 +273,18 @@ export default function ToriWindow(props: {
         <span class={sidebar.headStrut} />
         <div class={sidebar.spaceHeader}>
           <span class={sidebar.spaceHeaderName}>work</span>
-          <span class={sidebar.spaceHeaderKind}>{"\u00b7 Spaces"}</span>
         </div>
         <Button class={sidebar.searchToggle} variant="ghost" size="md" icon={<Icon icon={Search} />} />
       </div>
       <div class={sidebar.treeScroll} style={{ overflow: "hidden" }}>
+        <GroupHead label="Chats" />
+        <div class={rows.projectCard}>
+          <ChatRow label="Compare queue libraries" agent="claude" time="2h" />
+          <ChatRow label="Draft the launch notes" agent="codex" time="Yesterday" />
+        </div>
+        <GroupHead label="Topics" />
+        <TopicRow name="Webhook signing" hue="rgb(217 164 104)" members={[Globe, Workflow]} />
+        <GroupHead label="Projects" />
         <ProjectRow name="api" icon={Globe} open>
           <BranchRow label="main" icon={<BranchMark active={false} current={false} />} />
           <BranchRow
@@ -293,18 +307,16 @@ export default function ToriWindow(props: {
           />
         </ProjectRow>
         <ProjectRow name="web" icon={Workflow} end={<StatusBubble rollup={{ executing: 2, idle: 1 }} />} />
-        <ProjectRow name="infra" icon={House} open>
-          <BranchRow label="main" icon={<BranchMark active={false} current />} end={<StatusBubble rollup={{ idle: 1 }} />} />
-        </ProjectRow>
+        <ProjectRow name="infra" icon={Anchor} end={<StatusBubble rollup={{ idle: 1 }} />} />
       </div>
       <div class={sidebar.spaceBar}>
         <div class={sidebar.stripNav}>
+          <SpaceTile name="Home" hueRgb="99 193 193" glyph={House} />
+          <div class={sidebar.spaceDivider} />
           <div class={sidebar.spaceScroll}>
             <SpaceTile name="work" hueRgb={AMBER} active />
-            <SpaceTile name="personal" hueRgb="111 197 154" glyph={House} rollup={{ waiting: 1 }} />
+            <SpaceTile name="personal" hueRgb="111 197 154" glyph={PenLine} rollup={{ waiting: 1 }} />
           </div>
-          <div class={sidebar.spaceDivider} />
-          <ModeTile label="Topics" glyph={Tags} />
         </div>
         <span class={`${sidebar.stripBtn} ${sidebar.dockBtn}`}>
           <Icon icon={SquareTerminal} />
@@ -368,11 +380,11 @@ export default function ToriWindow(props: {
               tb().agent ? (
                 <TabMark agent={tb().agent!} status={tb().status ?? null} />
               ) : tb().diff ? (
-                <Icon icon={GitBranch} size={13} />
+                <Icon icon={GitCompare} size={13} />
               ) : tb().file === "sh" ? (
                 <Icon icon={SquareTerminal} size={13} />
               ) : (
-                <Icon icon={FileCode} size={13} />
+                <span class={w.seti} aria-hidden="true">{"\ue099"}</span>
               )
             }
           />
@@ -409,7 +421,7 @@ export default function ToriWindow(props: {
       <span class={w.sep}>{"\u00b7"}</span>
       <span>{p.files} files</span>
       <span class={w.sep}>{"\u00b7"}</span>
-      <span>opus-4</span>
+      <span>{isLoop() && !onWebhooks() ? "gpt-5-codex" : "opus-5.5"}</span>
       <span class={w.meter}>
         <span class={w.pie} style={{ "--p": p.pct }} />
         {p.ctx}
@@ -418,12 +430,24 @@ export default function ToriWindow(props: {
     </div>
   );
 
-  const Composer = (p: { placeholder: string; running: boolean; agent: Agent; lanes?: JSX.Element; text?: JSX.Element; chips?: JSX.Element; modeLabel?: string }) => (
+  const Composer = (p: { placeholder: string; running: boolean; agent: Agent; lanes?: JSX.Element; text?: JSX.Element; chips?: JSX.Element; modeLabel?: string; plan?: { done: number; total: number; working: boolean } }) => (
     <div class={w.composer}>
       <Show when={p.lanes}>
         <div class={w.lanes}>{p.lanes}</div>
       </Show>
       <div class={w.box}>
+        <Show when={p.plan}>
+          {(plan) => (
+            <span class={w.planPill}>
+              <Show when={plan().working}>
+                <span class={w.planPillGlyph}>
+                  <Icon icon={LoaderCircle} size={12} />
+                </span>
+              </Show>
+              {plan().done}/{plan().total}
+            </span>
+          )}
+        </Show>
         <Show when={p.chips}>
           <div class={w.chips}>{p.chips}</div>
         </Show>
@@ -434,22 +458,34 @@ export default function ToriWindow(props: {
         </div>
         <div class={w.boxBar}>
           <span class={w.sqBtn}>
-            <Icon icon={Paperclip} size={13} />
+            <Icon icon={Plus} size={15} />
           </span>
           <span class={w.sqBtn}>
-            <Icon icon={PenLine} size={13} />
+            <Icon icon={SquarePen} size={15} />
+          </span>
+          <span class={w.sqBtn}>
+            <Icon icon={AudioWaveform} size={15} />
           </span>
           <span class={w.pillBtn}>
-            <AgentMark agent={p.agent} size={12} />
-            {p.agent === "claude" ? "Opus" : "gpt-5-codex"}
-            <Icon icon={ChevronDown} size={11} />
+            <AgentMark agent={p.agent} size={15} />
+            {p.agent === "claude" ? "Opus 5.5 / Default" : "gpt-5-codex"}
+            <Icon icon={ChevronDown} size={15} />
           </span>
           <span class={w.pillBtn}>
+            <Icon icon={ShieldCheck} size={15} />
             {p.modeLabel ?? "Accept edits"}
-            <Icon icon={ChevronDown} size={11} />
+            <Icon icon={ChevronDown} size={15} />
           </span>
-          <span class={w.send}>
-            <Show when={p.running} fallback={<Icon icon={ArrowUpRight} size={14} />}>
+          <Show when={p.agent === "claude"}>
+            <span class={w.pillBtn} data-toggle="true">
+              <Icon icon={ZapOff} size={15} />
+            </span>
+          </Show>
+          <span class={w.pillBtn} data-toggle="true">
+            <Icon icon={BotOff} size={15} />
+          </span>
+          <span class={w.send} data-idle={!p.running && !p.text ? "true" : undefined}>
+            <Show when={p.running} fallback={<Icon icon={ArrowUp} size={15} />}>
               <span class={w.stopSq} />
             </Show>
           </span>
@@ -473,7 +509,7 @@ export default function ToriWindow(props: {
         </div>
         <ToolRow name="Bash" arg="pnpm test" summary="Running" />
       </div>
-      <Composer placeholder="Type to queue for the next turn" running agent="codex" modeLabel="Auto" />
+      <Composer placeholder="Type to queue for the next turn" running agent="codex" modeLabel="Auto" plan={{ done: 3, total: 5, working: true }} />
     </div>
   );
 
@@ -509,21 +545,25 @@ export default function ToriWindow(props: {
                 Run <code>pnpm test webhooks</code> in this workspace?
               </div>
               <span class={w.permArgs}>Show the full arguments</span>
-              <div class={w.permBtns} style={{ position: "relative" }}>
+              <div class={w.permBtns}>
                 <Button size="sm" variant="primary">
                   Allow once
                 </Button>
-                <Button size="sm" pressed={allowPressed()} class={allowPressed() ? "is-pressed" : ""}>
-                  Allow for this session
-                </Button>
+                <span style={{ position: "relative", display: "inline-flex" }}>
+                  <Button size="sm" pressed={allowPressed()} class={allowPressed() ? "is-pressed" : ""}>
+                    Allow for this session
+                  </Button>
+                  <Show when={at(11.6, 13.3)}>
+                    <Cursor x={t() >= 12 ? 62 : 170} y={t() >= 12 ? 10 : 58} down={allowPressed()} />
+                  </Show>
+                </span>
                 <Button size="sm">Always in this project</Button>
-                <Button size="sm">Deny</Button>
+                <Button size="sm" variant="ghost">
+                  Deny
+                </Button>
                 <Button size="sm" variant="ghost">
                   Deny with feedback
                 </Button>
-                <Show when={at(11.6, 13.3)}>
-                  <Cursor x={t() >= 12 ? 150 : 260} y={t() >= 12 ? 12 : 60} down={allowPressed()} />
-                </Show>
               </div>
             </div>
           </Show>
@@ -545,6 +585,7 @@ export default function ToriWindow(props: {
         placeholder={web() === "done" ? "Reply, or @ a file \u00b7 / for commands" : "Steer this turn, picked up in 1.5-5.4s"}
         running={web() !== "done"}
         agent="claude"
+        plan={{ done: t() >= 18.6 ? 5 : t() >= 17 ? 4 : 3, total: 5, working: web() !== "done" }}
         lanes={
           <Show when={t() >= 14.3}>
             <span class={w.lane} data-on="true">

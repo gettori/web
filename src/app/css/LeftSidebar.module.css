@@ -56,19 +56,6 @@
   min-height: calc(40px * var(--ui-scale));
 }
 
-/* The one thing this column makes, in a filled box beside the bare filter
-   glyph: the pair reads as add-then-find, and the fill is what says which of
-   the two acts rather than reveals. */
-.headAdd {
-  margin-left: auto;
-  color: var(--fg-muted);
-  background: var(--neutral-subtle);
-}
-
-.headAdd:hover {
-  color: var(--fg-default);
-}
-
 /* Holds the right edge while the field is closed, and gives way to it when it
    opens, since a growing field leaves no free space for the auto margin.
    General sibling rather than adjacent: the field sits between the two while
@@ -78,20 +65,14 @@
   color: var(--fg-subtle);
 }
 
-.headAdd ~ .searchToggle {
-  margin-left: 0;
-}
-
 .searchToggle:hover {
   color: var(--fg-default);
 }
 
-/* The Topic list on the tree's insets, like the cards it replaces, and stood
-   off the title and the strip by block padding of its own: the New Topic
-   button that used to hold the gap at the top has moved into the head row. */
+/* The Topic list on the Spaces tree's own padding: its Topics are project
+   cards, which bring their inset with them. */
 .topicList {
-  padding-inline: var(--tree-inset) var(--tree-gutter);
-  padding-block: calc(8px * var(--ui-scale));
+  padding: 0 var(--tree-gutter) calc(10px * var(--ui-scale)) 0;
 }
 
 .searchInput {
@@ -152,10 +133,12 @@
   text-transform: capitalize;
 }
 
-.spaceHeaderKind {
-  flex: none;
-  color: var(--fg-subtle);
-  font-size: var(--tori-text-lg);
+.globalEmpty {
+  margin: calc(6px * var(--ui-scale)) calc(10px * var(--ui-scale));
+  padding: calc(14px * var(--ui-scale));
+  border: 1px solid var(--border-default);
+  border-radius: var(--tori-radius-md);
+  background: var(--neutral-subtle);
 }
 
 /* The trigger wraps the button rather than being it (Dropdown's `wrapper`), so
@@ -244,8 +227,7 @@
   gap: calc(6px * var(--ui-scale));
   /* Right on `--tree-gutter`, like the head and the tree above it, so the dock
      button lands on the one edge the whole column ends on. */
-  padding: calc(8px * var(--ui-scale)) var(--tree-gutter) calc(16px * var(--ui-scale))
-    calc(10px * var(--ui-scale));
+  padding: calc(8px * var(--ui-scale)) var(--tree-gutter) calc(16px * var(--ui-scale)) calc(10px * var(--ui-scale));
   /* A relayout boundary. The pill opens by animating widths, and without this
      every frame of that dirties the column above it, tree and all. Size
      containment needs the height stated: the padding plus one tile. */
@@ -258,6 +240,10 @@
   display: flex;
   align-items: center;
   gap: calc(6px * var(--ui-scale));
+}
+
+.spaceBar.belowMisplaced {
+  margin-top: 0;
 }
 
 /* Divider from the tree above, inset 8px from each edge so it does not run into
@@ -308,6 +294,91 @@
   background: var(--border-default);
 }
 
+/* ---- The side rail: the same strip stood up along the left edge, for a set of
+   spaces too long for one row. It takes its width out of the tree rather than
+   growing the sidebar, so the width the user dragged to is still the width. ---- */
+.tree.railed {
+  --rail-w: calc(52px * var(--ui-scale));
+  position: relative;
+  padding-inline-start: var(--rail-w);
+}
+
+/* The sidebar hidden with the rail on: the rail stays and the tree goes.
+   Hidden rather than unmounted, so the tree's open rows and filter survive. */
+.tree.railOnly > :not(.spaceBar) {
+  display: none;
+}
+
+/* Nothing beside the rail to rule off: the work card sits flush against it. */
+.tree.railOnly .spaceBar.rail::before {
+  display: none;
+}
+
+/* Out of the column's flow, so the head, the tree and Topics keep the layout
+   they have with the strip at the bottom and only start further right. */
+.spaceBar.rail {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--rail-w);
+  height: auto;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(6px * var(--ui-scale));
+  padding: calc(12px * var(--ui-scale)) 0 calc(16px * var(--ui-scale));
+}
+
+/* The bottom strip's rule, turned to run the rail's full height: the rail is a
+   column of its own, not a band inside the tree's. */
+.spaceBar.rail::before {
+  inset: 0 0 0 auto;
+  width: 1px;
+  height: auto;
+}
+
+.spaceBar.rail .stripNav {
+  flex-direction: column;
+  align-items: center;
+  min-width: auto;
+  min-height: 0;
+}
+
+/* Scrolls down instead of across. The bubble still hangs off the top right
+   corner, so the overhang padding is the same; it is only the axis that turns. */
+.spaceBar.rail .spaceScroll {
+  flex-direction: column;
+  gap: calc(6px * var(--ui-scale));
+  min-width: auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.spaceBar.rail .spaceDivider {
+  align-self: center;
+  width: calc(22px * var(--ui-scale));
+  height: 1px;
+  margin: calc(4px * var(--ui-scale)) 0;
+}
+
+/* Dashed, so it reads as a slot for a space rather than one more space. */
+.addSpaceBtn {
+  border-style: dashed;
+  border-color: var(--border-default);
+}
+
+.spaceBar.rail .dockBtn {
+  margin-top: auto;
+}
+
+/* The rail is a column of icons with the width to spare, so its buttons take
+   the tiles' larger square and the column reads as one size. */
+.spaceBar.rail .stripBtn {
+  width: calc(36px * var(--ui-scale));
+  height: calc(36px * var(--ui-scale));
+}
+
 /* ---- The space menu's heading: which space the four rows below act on.
    It sits inside <Menu>'s `.heading`, which supplies the inset and the muted
    voice; what is added here is the glyph and the name, because a heading that
@@ -340,6 +411,7 @@
 }
 .spaceMenuName {
   font-weight: 600;
+  text-transform: capitalize;
   color: var(--fg-default);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -390,4 +462,63 @@
   color: var(--fg-subtle);
   border: var(--tori-border-thin) solid var(--border-strong);
   border-radius: var(--tori-radius-sm);
+}
+
+.missingNote {
+  display: flex;
+  gap: var(--tori-space-3);
+  margin: calc(2px * var(--ui-scale)) 0 calc(6px * var(--ui-scale)) calc(40px * var(--ui-scale));
+  padding: calc(9px * var(--ui-scale)) calc(10px * var(--ui-scale));
+  border: 1px solid var(--border-default);
+  border-radius: var(--tori-radius-md);
+  background: var(--neutral-subtle);
+  font-size: var(--tori-text-sm);
+  color: var(--fg-muted);
+}
+.missingNote p {
+  margin: 0;
+}
+.missingNote strong {
+  font-weight: 600;
+  color: var(--fg-default);
+  word-break: break-all;
+}
+.missingNoteIcon {
+  flex: 0 0 auto;
+  color: var(--attention-fg);
+}
+.missingNoteBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tori-space-3);
+  min-width: 0;
+}
+.missingNoteActions {
+  display: flex;
+  gap: var(--tori-space-2);
+}
+
+/* Stands in for the drag ghost while a drop is refused: the platform draws the
+   ghost, so the reason has to follow the pointer on its own. */
+.dragRefused {
+  position: fixed;
+  z-index: 1300;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tori-space-3);
+  max-width: calc(280px * var(--ui-scale));
+  padding: var(--tori-space-3) var(--tori-space-5);
+  border: 1px solid var(--border-default);
+  border-radius: var(--tori-radius-md);
+  background: var(--canvas-card);
+  box-shadow: var(--shadow-md);
+  color: var(--fg-default);
+  font-size: var(--tori-text-md);
+  line-height: var(--tori-line-normal);
+  pointer-events: none;
+}
+.dragRefused svg {
+  flex: none;
+  margin-top: calc(2px * var(--ui-scale));
+  color: var(--danger-fg);
 }
