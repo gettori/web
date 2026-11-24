@@ -4,6 +4,7 @@ import "../app/css/tokens.css";
 import { AgentMark, Icon } from "../app/kit";
 import { WorktreeMark } from "../app/gitMarks";
 import sp from "./Spaces.module.css";
+import { resting } from "../app/rest";
 import s from "./Topics.module.css";
 
 type Kind = "worktree" | "reference";
@@ -73,7 +74,7 @@ export default function Topics() {
     const ro = new ResizeObserver((e) => setCw(e[0].contentRect.width || WIDE.w));
     ro.observe(fit);
     const id = setInterval(() => {
-      if (reduced || held() || !visible || document.hidden) return;
+      if (reduced || held() || !visible || document.hidden || resting()) return;
       setT((x) => (x + 0.1 >= LOOP ? 0 : x + 0.1));
     }, 100);
     onCleanup(() => {

@@ -4,6 +4,7 @@ import "../app/css/tokens.css";
 import { Icon } from "../app/kit";
 import { SITE } from "../config";
 import sp from "./Spaces.module.css";
+import { resting } from "../app/rest";
 import s from "./Reach.module.css";
 
 const LOOP = 13.6;
@@ -42,7 +43,7 @@ export default function Reach() {
     const ro = new ResizeObserver((e) => setCw(e[0].contentRect.width || WIDTH));
     ro.observe(fit);
     const id = setInterval(() => {
-      if (reduced || !visible || document.hidden) return;
+      if (reduced || !visible || document.hidden || resting()) return;
       setT((x) => (x + 0.1 >= LOOP ? 0 : x + 0.1));
     }, 100);
     onCleanup(() => {

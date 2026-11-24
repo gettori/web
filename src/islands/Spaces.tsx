@@ -6,6 +6,7 @@ import { BranchMark, WorktreeMark } from "../app/gitMarks";
 import sidebar from "../app/css/LeftSidebar.module.css";
 import rows from "../app/css/SidebarRows.module.css";
 import { PIED_PIPER, PIPER_PP } from "../app/brandIcons";
+import { resting } from "../app/rest";
 import s from "./Spaces.module.css";
 
 
@@ -107,7 +108,7 @@ export default function Spaces() {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     setLive(!reduced);
     const id = setInterval(() => {
-      if (!visible || document.hidden || reduced) return;
+      if (!visible || document.hidden || reduced || resting()) return;
       const next = beat() + 0.1;
       if (next < BEAT) return void setBeat(next);
       setBeat(0);

@@ -8,26 +8,23 @@ const stars = Array.from({ length: 50 }, () => ({
   x: (rnd() * 100).toFixed(2),
   y: (rnd() * 60).toFixed(2),
   r: rnd() > 0.85 ? 2 : 1.2,
-  d: (2.5 + rnd() * 4).toFixed(1),
-  dl: (rnd() * 5).toFixed(1),
+  o: (0.3 + rnd() * 0.65).toFixed(2),
 }));
 
-// Light mode's stars. [left vw, top %, width px, opacity, seconds per crossing]; bigger and nearer the sea lower down.
-const CLOUDS: [number, number, number, number, number][] = [
-  [14, 14, 140, 0.8, 170],
-  [72, 10, 100, 0.7, 190],
-  [9, 46, 210, 0.85, 140],
-  [84, 38, 180, 0.85, 150],
-  [52, 62, 260, 1, 120],
+// Light mode's stars. [left vw, top %, width px, opacity]; bigger and nearer the sea lower down.
+const CLOUDS: [number, number, number, number][] = [
+  [14, 14, 140, 0.8],
+  [72, 10, 100, 0.7],
+  [9, 46, 210, 0.85],
+  [84, 38, 180, 0.85],
+  [52, 62, 260, 1],
 ];
-const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
-  style: `--x:${x};top:${top}%;width:${w}px;opacity:${op};animation-duration:${dur}s;animation-delay:-${(((x + 25) / 135) * dur).toFixed(1)}s`,
-}));
+const clouds = CLOUDS.map(([x, top, w, op]) => ({ style: `left:${x}vw;top:${top}%;width:${w}px;opacity:${op}` }));
 ---
 
 <section class="closing" data-closing>
   <div class="stars" aria-hidden="true">
-    {stars.map((s) => <span style={`left:${s.x}%;top:${s.y}%;width:${s.r}px;height:${s.r}px;animation-duration:${s.d}s;animation-delay:-${s.dl}s`} />)}
+    {stars.map((s) => <span style={`left:${s.x}%;top:${s.y}%;width:${s.r}px;height:${s.r}px;opacity:${s.o}`} />)}
   </div>
   <div class="clouds" aria-hidden="true">
     {
@@ -84,20 +81,9 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
   }
   .cloud {
     position: absolute;
-    left: calc(var(--x) * 1vw);
     height: auto;
     fill: color-mix(in oklch, var(--sky-mid), #fff 95%);
     filter: drop-shadow(0 8px 14px color-mix(in oklch, var(--sky-mid) 14%, transparent));
-    animation: cloud-drift linear infinite;
-  }
-  /* Starts left of the viewport and ends past it; the negative delay puts each cloud at its left: position at load. */
-  @keyframes cloud-drift {
-    from {
-      transform: translateX(calc((var(--x) + 25) * -1vw));
-    }
-    to {
-      transform: translateX(calc((110 - var(--x)) * 1vw));
-    }
   }
   :global([data-theme="light"]) .stars {
     display: none;
@@ -127,8 +113,6 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
     position: absolute;
     border-radius: 50%;
     background: #fff;
-    opacity: 0.7;
-    animation: v-breathe ease-in-out infinite;
   }
   .inner {
     position: relative;
@@ -141,7 +125,6 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
   }
   .icon {
     filter: drop-shadow(0 0 40px rgba(217, 164, 104, 0.6));
-    animation: v-drift 5s ease-in-out infinite;
   }
   h2 {
     margin: 30px 0 0;
@@ -192,6 +175,11 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
     mask-image: linear-gradient(180deg, transparent, #000 45%);
     -webkit-mask-image: linear-gradient(180deg, transparent, #000 45%);
   }
+  /* The sea is a still picture here. Its drift and twinkle are animations inside an
+     svg, which every browser but Chrome repaints whole on each frame. */
+  .scene :global(*) {
+    animation-play-state: paused !important;
+  }
   .scene :global(svg) {
     display: block;
     width: 100%;
@@ -200,8 +188,6 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
 </style>
 
 <script>
-  import { stillCropped } from "../../app/scene";
-
   // Same hour ranges as the app's cockpit banner (Horizon.tsx pickScene).
   const h = new Date().getHours();
   const scene =
@@ -224,12 +210,7 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
     io.disconnect();
     fetch(`/scenes/${scene}.svg`)
       .then((r) => r.text())
-      .then((svg) => {
-        slot.innerHTML = svg;
-        const crop = () => requestAnimationFrame(() => stillCropped(slot));
-        addEventListener("resize", crop);
-        crop();
-      })
+      .then((svg) => (slot.innerHTML = svg))
       .catch(() => {});
   }, { rootMargin: "400px" }).observe(sec);
 </script>

@@ -1,5 +1,6 @@
 import { batch, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import ToriWindow, { LOOP, type Mode } from "./ToriWindow";
+import { resting } from "../app/rest";
 import s from "./Features.module.css";
 
 type Step = {
@@ -138,7 +139,7 @@ export default function Features() {
       const now = performance.now();
       const dt = (now - last) / 1000;
       last = now;
-      if (!running() || reduced()) return;
+      if (!running() || reduced() || resting()) return;
       const next = clock() + dt;
       if (next < length()) setClock(next);
       else if (pinned()) {
