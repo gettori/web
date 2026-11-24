@@ -47,5 +47,8 @@ const ogImage = new URL("/og.png", Astro.site).href;
   </head>
   <body class="page">
     <slot />
+    <script>
+      import "./offscreen";
+    </script>
   </body>
 </html>

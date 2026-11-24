@@ -211,15 +211,11 @@ export default function Reach() {
 
               <Show when={cursor()}>
                 {(c) => (
-                  <svg
-                    class={s.cursor}
-                    width="18"
-                    height="22"
-                    viewBox="0 0 18 22"
-                    style={{ left: `${c().x}px`, top: `${c().y}px`, transform: c().down ? "scale(.82)" : "none" }}
-                  >
-                    <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
-                  </svg>
+                  <span class={s.cursor} aria-hidden="true" style={{ translate: `${c().x}px ${c().y}px` }}>
+                    <svg width="18" height="22" viewBox="0 0 18 22" style={{ transform: c().down ? "scale(.82)" : "none" }}>
+                      <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
+                    </svg>
+                  </span>
                 )}
               </Show>
             </div>

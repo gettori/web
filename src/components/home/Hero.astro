@@ -27,7 +27,7 @@ const WORDS = [
   <div class="grain"></div>
   <div class="dots"></div>
 
-  <div class="pills" aria-hidden="true">
+  <div class="pills" aria-hidden="true" data-motion>
     {
       PILLS.map(([label, agent, pos, top, depth, st], i) => (
         <div
@@ -38,8 +38,12 @@ const WORDS = [
             <AgentSvg agent={agent} size={14} class={`mark mark-${agent}`} />
             {label}
             <span class="dot">
-              <i />
-              <i />
+              {[0, 1, 2].map((s) => (
+                <b data-s={s}>
+                  <i />
+                  <i />
+                </b>
+              ))}
             </span>
           </div>
         </div>
@@ -74,7 +78,7 @@ const WORDS = [
     <InstallCopy tone="quiet" />
   </div>
   <dialog class="trailer" data-trailer aria-label="Tori trailer">
-    <video controls playsinline preload="none" poster="/trailer-poster.jpg" src="/trailer.mp4"></video>
+    <div class="screen" data-trailer-screen></div>
     <button type="button" class="close" data-trailer-close aria-label="Close">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
     </button>
@@ -83,7 +87,7 @@ const WORDS = [
     <span>{SITE.openSource ? "Free and open source" : "Free, Apache-2.0"}</span><span>&middot;</span><span>No telemetry</span>
   </div>
 
-  <div class="win-wrap" data-hero-win>
+  <div class="win-wrap" data-hero-win data-motion>
     <div class="halo"></div>
     <div class="tilt">
       <ToriWindow client:only="solid-js" mode="loop" maxScale={1} />
@@ -109,7 +113,6 @@ const WORDS = [
     width: 100%;
     height: 100%;
     z-index: -2;
-    filter: blur(40px) saturate(1.2);
     opacity: 0.9;
   }
   :global([data-theme="light"]) .aurora {
@@ -156,6 +159,7 @@ const WORDS = [
     transition: transform 0.6s var(--ease);
   }
   .pill {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 9px;
@@ -163,23 +167,27 @@ const WORDS = [
     padding: 0 14px 0 12px;
     border-radius: 999px;
     background: var(--float);
-    backdrop-filter: blur(12px);
     border: 1px solid var(--line);
     box-shadow: 0 12px 40px var(--shadow);
     font-size: 13.5px;
     color: var(--soft);
     white-space: nowrap;
     animation: v-drift 6s ease-in-out infinite;
-    transition: border-color 0.6s, box-shadow 0.6s;
-    --c: var(--work);
   }
-  .pill[data-st="1"] {
-    --c: var(--need);
-    border-color: rgba(251, 113, 133, 0.5);
-    box-shadow: 0 12px 40px var(--shadow), 0 0 30px rgba(251, 113, 133, 0.45);
+  /* The waiting glow is a layer of its own that fades, because a border or shadow that
+     changes colour is repainted on the main thread for every frame of the change. */
+  .pill::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    border: 1px solid rgba(251, 113, 133, 0.5);
+    box-shadow: 0 0 30px rgba(251, 113, 133, 0.45);
+    opacity: 0;
+    transition: opacity 0.6s;
   }
-  .pill[data-st="2"] {
-    --c: var(--done);
+  .pill[data-st="1"]::after {
+    opacity: 1;
   }
   .mark {
     color: var(--text);
@@ -196,14 +204,33 @@ const WORDS = [
     height: 8px;
     margin-left: 4px;
   }
+  .dot b {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s;
+    --c: var(--work);
+  }
+  .dot b[data-s="1"] {
+    --c: var(--need);
+  }
+  .dot b[data-s="2"] {
+    --c: var(--done);
+  }
+  .pill[data-st="0"] b[data-s="0"],
+  .pill[data-st="1"] b[data-s="1"],
+  .pill[data-st="2"] b[data-s="2"] {
+    opacity: 1;
+  }
   .dot i {
     position: absolute;
     inset: 0;
     border-radius: 50%;
     background: var(--c);
-    transition: background 0.6s;
   }
-  .dot i + i {
+  .pill[data-st="0"] b[data-s="0"] i + i,
+  .pill[data-st="1"] b[data-s="1"] i + i,
+  .pill[data-st="2"] b[data-s="2"] i + i {
     animation: v-ping 1.8s ease-out infinite;
   }
 
@@ -353,11 +380,16 @@ const WORDS = [
     background: rgba(5, 6, 9, 0.78);
     backdrop-filter: blur(8px);
   }
-  .trailer video {
-    display: block;
-    width: 100%;
+  .screen {
     aspect-ratio: 16 / 9;
     border-radius: 15px;
+    overflow: hidden;
+  }
+  .screen :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
   }
   .close {
     position: absolute;
@@ -434,54 +466,76 @@ const WORDS = [
   const hero =document.querySelector<HTMLElement>("[data-hero]")!;
   const root = document.documentElement;
 
-  // Aurora: five soft blobs at a sixth of the resolution, blurred by CSS.
+  // Aurora: five soft blobs at a sixth of the resolution, scaled up by the browser.
   const cv = document.querySelector<HTMLCanvasElement>("[data-aurora]")!;
   const ctx = cv.getContext("2d")!;
+  // Each colour has saturate(1.2) worked into it. As a CSS filter on the canvas that
+  // is a second full-hero pass on every frame the hero draws.
   const blobs: [string, number, number, number][] = [
-    ["217,164,104", 0.3, 0.35, 0.9],
-    ["192,132,252", 0.7, 0.3, 1.1],
-    ["251,113,133", 0.55, 0.62, 0.7],
-    ["45,212,191", 0.2, 0.7, 0.8],
-    ["192,132,252", 0.85, 0.75, 0.6],
+    ["226,163,91", 0.3, 0.35, 0.9],
+    ["200,128,255", 0.7, 0.3, 1.1],
+    ["255,107,131", 0.55, 0.62, 0.7],
+    ["19,219,194", 0.2, 0.7, 0.8],
+    ["200,128,255", 0.85, 0.75, 0.6],
   ];
   const m = { x: 0.5, y: 0.4 };
   const sm = { x: 0.5, y: 0.4 };
-  let heroVisible = true;
-  new IntersectionObserver((e) => (heroVisible = e[0].isIntersecting)).observe(hero);
-  const draw = (ts: number) => {
+  let drawn = 0;
+  // The blobs take most of a minute to cross the hero, so 15 redraws a second is
+  // smooth, and a timer is used over requestAnimationFrame so the page is not
+  // asked for a frame on the refreshes in between.
+  const FRAME_MS = 1000 / 15;
+  const draw = () => {
+    const now = performance.now();
+    const dt = drawn ? now - drawn : FRAME_MS;
+    drawn = now;
     const w = (cv.clientWidth / 6) | 0;
     const h = (cv.clientHeight / 6) | 0;
     if (cv.width !== w || cv.height !== h) {
       cv.width = w;
       cv.height = h;
     }
-    if (heroVisible) {
-      sm.x += (m.x - sm.x) * 0.04;
-      sm.y += (m.y - sm.y) * 0.04;
-      const t = (reduced ? 0 : ts) / 1000;
-      ctx.clearRect(0, 0, w, h);
-      ctx.globalCompositeOperation = "lighter";
-      blobs.forEach((b, i) => {
-        const x = (b[1] + Math.sin(t * 0.13 * b[3] + i * 1.7) * 0.12 + (sm.x - 0.5) * 0.12 * (i % 2 ? 1 : -1)) * w;
-        const y = (b[2] + Math.cos(t * 0.11 * b[3] + i) * 0.1 + (sm.y - 0.5) * 0.1) * h * 0.8;
-        const rad = Math.max(w, h) * (0.28 + 0.05 * Math.sin(t * 0.2 + i));
-        const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
-        g.addColorStop(0, `rgba(${b[0]},.34)`);
-        g.addColorStop(1, `rgba(${b[0]},0)`);
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, w, h);
-      });
-    }
-    if (!reduced) requestAnimationFrame(draw);
+    const follow = 1 - 0.96 ** Math.min(12, dt / (1000 / 60));
+    sm.x += (m.x - sm.x) * follow;
+    sm.y += (m.y - sm.y) * follow;
+    const t = (reduced ? 0 : now) / 1000;
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = "lighter";
+    blobs.forEach((b, i) => {
+      const x = (b[1] + Math.sin(t * 0.13 * b[3] + i * 1.7) * 0.12 + (sm.x - 0.5) * 0.12 * (i % 2 ? 1 : -1)) * w;
+      const y = (b[2] + Math.cos(t * 0.11 * b[3] + i) * 0.1 + (sm.y - 0.5) * 0.1) * h * 0.8;
+      const rad = Math.max(w, h) * (0.28 + 0.05 * Math.sin(t * 0.2 + i));
+      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, `rgba(${b[0]},.34)`);
+      g.addColorStop(1, `rgba(${b[0]},0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    });
   };
-  requestAnimationFrame(draw);
+  draw();
+  let heroVisible = true;
+  let timer = 0;
+  const pace = () => {
+    const on = heroVisible && !document.hidden && !reduced;
+    if (on === !!timer) return;
+    if (on) timer = window.setInterval(draw, FRAME_MS);
+    else clearInterval(timer);
+    if (!on) timer = 0;
+    drawn = 0;
+  };
+  new IntersectionObserver((e) => {
+    heroVisible = e[0].isIntersecting;
+    pace();
+  }).observe(hero);
+  document.addEventListener("visibilitychange", pace);
 
+  const pillBox = hero.querySelector<HTMLElement>(".pills")!;
   hero.addEventListener("mousemove", (ev) => {
     const r = hero.getBoundingClientRect();
     m.x = (ev.clientX - r.left) / r.width;
     m.y = (ev.clientY - r.top) / Math.min(r.height, innerHeight);
-    root.style.setProperty("--mx", ((m.x - 0.5) * 2).toFixed(3));
-    root.style.setProperty("--my", ((m.y - 0.5) * 2).toFixed(3));
+    pillBox.style.setProperty("--mx", ((m.x - 0.5) * 2).toFixed(3));
+    pillBox.style.setProperty("--my", ((m.y - 0.5) * 2).toFixed(3));
   });
 
   // The rotating word and the pills share one 2.6s beat, like the app's status marks.
@@ -489,8 +543,10 @@ const WORDS = [
     const words = [...document.querySelectorAll<HTMLElement>("[data-words] .word")];
     const pills = [...document.querySelectorAll<HTMLElement>("[data-pill]")];
     let tick = 0;
+    let headline = true;
+    new IntersectionObserver((e) => (headline = e[0].isIntersecting)).observe(words[0].parentElement!);
     setInterval(() => {
-      if (document.hidden || !heroVisible) return;
+      if (document.hidden || !headline) return;
       tick++;
       const on = tick % 3;
       words.forEach((w, i) => {
@@ -501,14 +557,26 @@ const WORDS = [
     }, 2600);
   }
 
+  // The player is built in a frame of its own when the trailer opens. Chrome's native
+  // video controls listen for animationiteration, and one such listener anywhere in a
+  // document makes every looping animation in it wake the main thread on each lap.
   const trailer = document.querySelector<HTMLDialogElement>("[data-trailer]")!;
-  const film = trailer.querySelector("video")!;
+  const screen = trailer.querySelector<HTMLElement>("[data-trailer-screen]")!;
   document.querySelector("[data-trailer-open]")!.addEventListener("click", () => {
     const cut = root.dataset.theme === "light" ? "-light" : "";
-    if (!film.src.endsWith(`/trailer${cut}.mp4`)) {
-      film.poster = `/trailer-poster${cut}.jpg`;
-      film.src = `/trailer${cut}.mp4`;
-    }
+    const frame = document.createElement("iframe");
+    frame.title = "Tori trailer";
+    frame.allow = "autoplay; fullscreen";
+    screen.replaceChildren(frame);
+    const doc = frame.contentDocument!;
+    const film = doc.createElement("video");
+    film.controls = film.playsInline = true;
+    film.poster = `/trailer-poster${cut}.jpg`;
+    film.src = `/trailer${cut}.mp4`;
+    film.style.cssText = "display:block;width:100%;height:100%;background:#000";
+    doc.body.style.margin = "0";
+    doc.body.append(film);
+    doc.addEventListener("keydown", (ev) => ev.key === "Escape" && trailer.close());
     trailer.showModal();
     lenis?.stop();
     void film.play();
@@ -517,15 +585,17 @@ const WORDS = [
   trailer.addEventListener("click", (ev) => ev.target === trailer && trailer.close());
   trailer.addEventListener("close", () => {
     lenis?.start();
-    film.pause();
-    film.currentTime = 0;
+    screen.replaceChildren();
   });
 
   const win = document.querySelector<HTMLElement>("[data-hero-win]")!;
+  let tilt = "";
   const onScroll = () => {
     const top = win.getBoundingClientRect().top;
-    const hp = reduced ? 1 : Math.max(0, Math.min(1, 1 - (top - 90) / (innerHeight * 0.6)));
-    root.style.setProperty("--hp", hp.toFixed(3));
+    const hp = (reduced ? 1 : Math.max(0, Math.min(1, 1 - (top - 90) / (innerHeight * 0.6)))).toFixed(3);
+    if (hp === tilt) return;
+    tilt = hp;
+    win.style.setProperty("--hp", hp);
   };
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", onScroll);

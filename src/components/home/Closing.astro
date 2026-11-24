@@ -200,6 +200,8 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
 </style>
 
 <script>
+  import { stillCropped } from "../../app/scene";
+
   // Same hour ranges as the app's cockpit banner (Horizon.tsx pickScene).
   const h = new Date().getHours();
   const scene =
@@ -222,7 +224,12 @@ const clouds = CLOUDS.map(([x, top, w, op, dur]) => ({
     io.disconnect();
     fetch(`/scenes/${scene}.svg`)
       .then((r) => r.text())
-      .then((svg) => (slot.innerHTML = svg))
+      .then((svg) => {
+        slot.innerHTML = svg;
+        const crop = () => requestAnimationFrame(() => stillCropped(slot));
+        addEventListener("resize", crop);
+        crop();
+      })
       .catch(() => {});
   }, { rootMargin: "400px" }).observe(sec);
 </script>

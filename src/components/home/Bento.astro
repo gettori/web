@@ -59,7 +59,7 @@ const CLI: [string, string, number][] = [
           <div class="steer-box">
             <div class="steer-status"><AgentSvg agent="claude" size={12} class="breathe" />Working 38s</div>
             <div class="steer-line">
-              <span class="typed">also cover the retry path</span><span class="caret"></span>
+              <span class="typed"><span>also cover the retry path</span></span><span class="caret"></span>
             </div>
             <div class="steer-hint">Steer this turn, picked up in 1.5-5.4s</div>
           </div>
@@ -195,7 +195,7 @@ const CLI: [string, string, number][] = [
         </div>
         <div class="rtabs" aria-hidden="true">
           <span class="rtab"><i></i>Sign webhook payloads</span>
-          <span class="rtab live"><i></i>Cap the rate limiter</span>
+          <span class="rtab live"><i></i><span class="rt" data-t="Cap the rate limiter">Cap the rate limiter</span></span>
           <span class="rtab"><i></i>zsh</span>
           <span class="rtab"><i></i>deliver.ts</span>
           <span class="rtab"><i></i>Search results page</span>
@@ -412,31 +412,63 @@ const CLI: [string, string, number][] = [
     font-family: var(--mono);
     font-size: 13px;
   }
+  /* The line is typed by sliding a clip box over the text while the text slides the
+     other way and so stays put. Both are transforms, which the compositor runs. A
+     growing width is laid out and painted on the main thread at every step. */
   .typed {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
-    width: 0;
+    width: 25ch;
+    transform: translateX(-100%);
     animation: type 7s steps(25) infinite;
   }
+  .typed span {
+    display: inline-block;
+    transform: translateX(100%);
+    animation: type-text 7s steps(25) infinite;
+  }
   @keyframes type {
-    0% {
-      width: 0;
+    0%,
+    62%,
+    100% {
+      transform: translateX(-100%);
     }
     50%,
     60% {
-      width: 25ch;
+      transform: none;
     }
+  }
+  @keyframes type-text {
+    0%,
     62%,
     100% {
-      width: 0;
+      transform: translateX(100%);
+    }
+    50%,
+    60% {
+      transform: none;
+    }
+  }
+  @keyframes type-caret {
+    0%,
+    62%,
+    100% {
+      transform: translateX(-25ch);
+    }
+    50%,
+    60% {
+      transform: none;
     }
   }
   .caret {
     width: 7px;
     height: 15px;
     background: #d9a468;
-    animation: blink 1s steps(1) infinite;
+    transform: translateX(-25ch);
+    animation:
+      blink 1s steps(1) infinite,
+      type-caret 7s steps(25) infinite;
   }
   @keyframes blink {
     50% {
@@ -631,6 +663,7 @@ const CLI: [string, string, number][] = [
     overflow: hidden;
   }
   .u-track i {
+    position: relative;
     display: block;
     height: 100%;
     border-radius: 3px;
@@ -649,8 +682,20 @@ const CLI: [string, string, number][] = [
   .u-pct b {
     font-weight: 500;
   }
+  /* The bar is full width and slides inside the track, and its red is a second fill
+     that fades in over it, so the compositor runs both. */
   .hot .u-track i {
+    transform: translateX(-28%);
     animation: uBar 9s var(--ease) infinite;
+  }
+  .hot .u-track i::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--need);
+    opacity: 0;
+    animation: uHot 9s var(--ease) infinite;
   }
   .u-swap {
     position: relative;
@@ -673,24 +718,27 @@ const CLI: [string, string, number][] = [
   }
   @keyframes uBar {
     0% {
-      width: 72%;
-      background: var(--work);
-    }
-    30% {
-      background: var(--work);
-    }
-    38% {
-      background: var(--need);
+      transform: translateX(-28%);
     }
     42%,
     70% {
-      width: 100%;
-      background: var(--need);
+      transform: none;
     }
     74%,
     100% {
-      width: 4%;
-      background: var(--work);
+      transform: translateX(-96%);
+    }
+  }
+  @keyframes uHot {
+    0%,
+    30%,
+    74%,
+    100% {
+      opacity: 0;
+    }
+    38%,
+    70% {
+      opacity: 1;
     }
   }
   @keyframes uA {
@@ -981,39 +1029,51 @@ const CLI: [string, string, number][] = [
     border-radius: 50%;
     border: 1.5px solid var(--faint);
   }
-  .rtab.live {
-    animation: rtab 5s var(--ease) infinite;
+  /* The live tab's lit border, dot and label are each drawn a second time over the
+     resting ones and faded in. A colour that changes is repainted on the main thread
+     for every frame, and a fade is not. */
+  .rtab.live,
+  .rtab.live i,
+  .rt {
+    position: relative;
   }
-  .rtab.live i {
-    animation: rdot 5s var(--ease) infinite;
+  .rtab.live::after,
+  .rtab.live i::after,
+  .rt::after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    animation: rOn 5s var(--ease) infinite;
   }
-  @keyframes rtab {
+  .rtab.live::after {
+    inset: -1px;
+    border-radius: inherit;
+    border: 1px solid var(--work);
+  }
+  .rtab.live i::after {
+    inset: -1.5px;
+    border-radius: 50%;
+    background: var(--work);
+  }
+  .rt::after {
+    content: attr(data-t);
+    inset: 0;
+    color: var(--text);
+  }
+  @keyframes rOn {
     0%,
     35% {
-      color: var(--faint);
-      border-color: var(--hair);
+      opacity: 0;
     }
     45%,
     100% {
-      color: var(--text);
-      border-color: var(--work);
-    }
-  }
-  @keyframes rdot {
-    0%,
-    35% {
-      background: transparent;
-      border-color: var(--faint);
-    }
-    45%,
-    100% {
-      background: var(--work);
-      border-color: var(--work);
+      opacity: 1;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hot .u-track i,
+    .hot .u-track i::after,
     .hot .u-b,
     .hot .u-c,
     .t-yes .tap {
@@ -1033,23 +1093,22 @@ const CLI: [string, string, number][] = [
     .t-ready {
       animation: none;
     }
-    .rtab.live {
+    .rtab.live::after,
+    .rtab.live i::after,
+    .rt::after {
       animation: none;
-      color: var(--text);
-      border-color: var(--work);
-    }
-    .rtab.live i {
-      animation: none;
-      background: var(--work);
-      border-color: var(--work);
+      opacity: 1;
     }
     .term-body div,
     .p-pending,
     .steer-bubble {
       opacity: 1;
     }
-    .typed {
-      width: auto;
+    .typed,
+    .typed span,
+    .caret {
+      transform: none;
+      animation-name: none;
     }
     .p-done {
       display: none;

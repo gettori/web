@@ -162,6 +162,15 @@ a:hover {
   }
 }
 
+/* A looping animation costs a frame on every refresh whether or not it is in view.
+   offscreen.ts marks what has scrolled out, and this stops it there. */
+[data-offscreen],
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

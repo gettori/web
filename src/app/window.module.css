@@ -1282,15 +1282,21 @@
 .ctxMenu > span[data-hot="true"] {
   background: var(--neutral-hover);
 }
+/* The cursor is a box moved with `translate` around a glyph pressed with `transform`,
+   which the compositor animates. `left` and `top` are laid out and painted on every
+   frame of a move, and Chrome will not take `translate` on an svg element itself. */
 .cursor {
   position: absolute;
+  left: 0;
+  top: 0;
   z-index: 6;
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
-  transition:
-    left 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
-    top 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
-    transform 0.12s;
+  transition: translate 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
   pointer-events: none;
+}
+.cursor svg {
+  display: block;
+  transition: transform 0.12s;
 }
 
 /* ---- Chaos opening ---- */

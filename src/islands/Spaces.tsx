@@ -102,7 +102,7 @@ export default function Spaces() {
 
   onMount(() => {
     let visible = false;
-    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting));
+    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting), { rootMargin: "-8% 0px" });
     io.observe(root);
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     setLive(!reduced);
@@ -190,16 +190,11 @@ export default function Spaces() {
           <Glow />
           <Show when={cursor()}>
             {(c) => (
-              <svg
-                class={s.cursor}
-                width="18"
-                height="22"
-                viewBox="0 0 18 22"
-                aria-hidden="true"
-                style={{ left: `${c().x}px`, top: `${c().y}px`, transform: c().down ? "scale(.82)" : "none" }}
-              >
-                <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
-              </svg>
+              <span class={s.cursor} aria-hidden="true" style={{ translate: `${c().x}px ${c().y}px` }}>
+                <svg width="18" height="22" viewBox="0 0 18 22" style={{ transform: c().down ? "scale(.82)" : "none" }}>
+                  <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
+                </svg>
+              </span>
             )}
           </Show>
           <div class={`${s.tree} ${sidebar.tree} ${rows.rowScope}`}>
