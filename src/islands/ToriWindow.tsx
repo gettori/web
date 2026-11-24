@@ -77,6 +77,7 @@ import {
 import { BranchMark, WorktreeMark } from "../app/gitMarks";
 import { loadScene, sceneFor, Wheel } from "../app/autopilotParts";
 import { stillCropped } from "../app/scene";
+import { resting } from "../app/rest";
 import w from "../app/window.module.css";
 import sidebar from "../app/css/LeftSidebar.module.css";
 import rows from "../app/css/SidebarRows.module.css";
@@ -226,7 +227,7 @@ export default function ToriWindow(props: {
     const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting), { rootMargin: "-8% 0px" });
     io.observe(root);
     const id = setInterval(() => {
-      if (props.time != null || !visible || frozen() || document.hidden) return;
+      if (props.time != null || !visible || frozen() || document.hidden || resting()) return;
       const next = t() + 0.1;
       if (next >= LOOP[mode()]) {
         setApprovedAt(null);

@@ -49,6 +49,9 @@ const ogImage = new URL("/og.png", Astro.site).href;
     <slot />
     <script>
       import "./offscreen";
+      import { watchRest } from "../../app/rest";
+
+      watchRest();
     </script>
   </body>
 </html>

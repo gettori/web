@@ -21,20 +21,25 @@ const WORDS = [
 ];
 ---
 
-<header class="hero" data-hero>
-  <canvas class="aurora" data-aurora></canvas>
+<header class="hero" data-hero data-on="0">
+  <div class="backdrop"></div>
+  <div class="lights" aria-hidden="true">
+    <i data-s="0"></i>
+    <i data-s="1"></i>
+    <i data-s="2"></i>
+  </div>
   <div class="fade"></div>
   <div class="grain"></div>
-  <div class="dots"></div>
 
   <div class="pills" aria-hidden="true" data-motion>
     {
-      PILLS.map(([label, agent, pos, top, depth, st], i) => (
+      PILLS.map(([label, agent, pos, top, depth, st]) => (
         <div
           class="pill-wrap"
           style={`${pos[0] === "L" ? "left" : "right"}:${pos.slice(1)}%;top:${top}px;--d:${depth}`}
         >
-          <div class="pill" data-pill data-st={st} style={`animation-duration:${5 + i * 0.7}s;animation-delay:-${i * 1.3}s`}>
+          <div class="pill" data-pill data-st={st}>
+            {[0, 1, 2].map((s) => <span class="lit" data-s={s} />)}
             <AgentSvg agent={agent} size={14} class={`mark mark-${agent}`} />
             {label}
             <span class="dot">
@@ -107,16 +112,64 @@ const WORDS = [
     align-items: center;
     text-align: center;
   }
-  .aurora {
+  /* Nothing in the hero's background moves on its own. A browser that redraws the
+     region under a moving element (Firefox) pays for the whole stack on every frame,
+     so the dots are a plain tiled background and the colour is three still washes. */
+  .backdrop {
     position: absolute;
     inset: 0;
-    width: 100%;
-    height: 100%;
+    z-index: -3;
+    background:
+      radial-gradient(60% 50% at 50% 35%, transparent, var(--page)),
+      radial-gradient(light-dark(rgba(20, 22, 30, 0.09), rgba(255, 255, 255, 0.07)) 1px, transparent 1px) 0 0 / 28px 28px;
+  }
+  /* One wash per state the headline names. Each holds every colour and leans on its
+     own, and the beat fades from one to the next, so the hero is lit by whichever
+     state is being read out. */
+  .lights {
+    --r: max(38vw, 340px);
+    position: absolute;
+    inset: 0;
     z-index: -2;
     opacity: 0.9;
   }
-  :global([data-theme="light"]) .aurora {
+  :global([data-theme="light"]) .lights {
     opacity: 0.55;
+  }
+  .lights i {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s var(--ease);
+  }
+  .hero[data-on="0"] .lights [data-s="0"],
+  .hero[data-on="1"] .lights [data-s="1"],
+  .hero[data-on="2"] .lights [data-s="2"] {
+    opacity: 1;
+  }
+  .lights [data-s="0"] {
+    background:
+      radial-gradient(circle var(--r) at 70% 24%, rgba(200, 128, 255, 0.4), transparent),
+      radial-gradient(circle var(--r) at 85% 60%, rgba(200, 128, 255, 0.32), transparent),
+      radial-gradient(circle var(--r) at 30% 28%, rgba(226, 163, 91, 0.22), transparent),
+      radial-gradient(circle var(--r) at 55% 50%, rgba(255, 107, 131, 0.2), transparent),
+      radial-gradient(circle var(--r) at 20% 56%, rgba(19, 219, 194, 0.18), transparent);
+  }
+  .lights [data-s="1"] {
+    background:
+      radial-gradient(circle var(--r) at 52% 44%, rgba(255, 107, 131, 0.42), transparent),
+      radial-gradient(circle var(--r) at 84% 58%, rgba(255, 107, 131, 0.26), transparent),
+      radial-gradient(circle var(--r) at 24% 30%, rgba(226, 163, 91, 0.24), transparent),
+      radial-gradient(circle var(--r) at 76% 20%, rgba(200, 128, 255, 0.22), transparent),
+      radial-gradient(circle var(--r) at 16% 62%, rgba(19, 219, 194, 0.16), transparent);
+  }
+  .lights [data-s="2"] {
+    background:
+      radial-gradient(circle var(--r) at 24% 50%, rgba(19, 219, 194, 0.42), transparent),
+      radial-gradient(circle var(--r) at 80% 62%, rgba(19, 219, 194, 0.26), transparent),
+      radial-gradient(circle var(--r) at 34% 24%, rgba(226, 163, 91, 0.22), transparent),
+      radial-gradient(circle var(--r) at 66% 28%, rgba(200, 128, 255, 0.22), transparent),
+      radial-gradient(circle var(--r) at 60% 56%, rgba(255, 107, 131, 0.18), transparent);
   }
   .fade {
     position: absolute;
@@ -134,14 +187,6 @@ const WORDS = [
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  .dots {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-image: radial-gradient(light-dark(rgba(20, 22, 30, 0.09), rgba(255, 255, 255, 0.07)) 1px, transparent 1px);
-    background-size: 28px 28px;
-    mask-image: radial-gradient(60% 50% at 50% 35%, #000, transparent);
-  }
 
   .pills {
     display: none;
@@ -158,6 +203,9 @@ const WORDS = [
     transform: translate(calc(var(--mx, 0) * var(--d) * 1px), calc(var(--my, 0) * var(--d) * 1px));
     transition: transform 0.6s var(--ease);
   }
+  /* A pill is lit while the headline names the state it is in, which is the claim the
+     headline makes. Every change is a fade of opacity, so the pills cost a frame
+     only on the beat. */
   .pill {
     position: relative;
     display: flex;
@@ -172,21 +220,33 @@ const WORDS = [
     font-size: 13.5px;
     color: var(--soft);
     white-space: nowrap;
-    animation: v-drift 6s ease-in-out infinite;
+    opacity: 0.6;
+    transition: opacity 0.6s var(--ease);
   }
-  /* The waiting glow is a layer of its own that fades, because a border or shadow that
-     changes colour is repainted on the main thread for every frame of the change. */
-  .pill::after {
-    content: "";
+  .pill [data-s="0"] {
+    --c: var(--work);
+  }
+  .pill [data-s="1"] {
+    --c: var(--need);
+  }
+  .pill [data-s="2"] {
+    --c: var(--done);
+  }
+  .lit {
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    border: 1px solid rgba(251, 113, 133, 0.5);
-    box-shadow: 0 0 30px rgba(251, 113, 133, 0.45);
+    border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+    box-shadow: 0 0 30px color-mix(in srgb, var(--c) 45%, transparent);
     opacity: 0;
-    transition: opacity 0.6s;
+    transition: opacity 0.6s var(--ease);
   }
-  .pill[data-st="1"]::after {
+  .hero[data-on="0"] .pill[data-st="0"],
+  .hero[data-on="1"] .pill[data-st="1"],
+  .hero[data-on="2"] .pill[data-st="2"],
+  .hero[data-on="0"] .pill[data-st="0"] .lit[data-s="0"],
+  .hero[data-on="1"] .pill[data-st="1"] .lit[data-s="1"],
+  .hero[data-on="2"] .pill[data-st="2"] .lit[data-s="2"] {
     opacity: 1;
   }
   .mark {
@@ -209,13 +269,6 @@ const WORDS = [
     inset: 0;
     opacity: 0;
     transition: opacity 0.6s;
-    --c: var(--work);
-  }
-  .dot b[data-s="1"] {
-    --c: var(--need);
-  }
-  .dot b[data-s="2"] {
-    --c: var(--done);
   }
   .pill[data-st="0"] b[data-s="0"],
   .pill[data-st="1"] b[data-s="1"],
@@ -228,10 +281,10 @@ const WORDS = [
     border-radius: 50%;
     background: var(--c);
   }
-  .pill[data-st="0"] b[data-s="0"] i + i,
-  .pill[data-st="1"] b[data-s="1"] i + i,
-  .pill[data-st="2"] b[data-s="2"] i + i {
-    animation: v-ping 1.8s ease-out infinite;
+  .hero[data-on="0"] .pill[data-st="0"] b[data-s="0"] i + i,
+  .hero[data-on="1"] .pill[data-st="1"] b[data-s="1"] i + i,
+  .hero[data-on="2"] .pill[data-st="2"] b[data-s="2"] i + i {
+    animation: v-ping 0.9s ease-out both;
   }
 
   .rise {
@@ -435,7 +488,6 @@ const WORDS = [
     background: conic-gradient(from 180deg, #c084fc, #fb7185, #d9a468, #2dd4bf, #c084fc);
     filter: blur(90px);
     opacity: calc(0.25 + var(--hp, 0) * 0.3);
-    animation: v-spin 18s linear infinite;
     pointer-events: none;
   }
   .tilt {
@@ -460,85 +512,29 @@ const WORDS = [
 </style>
 
 <script>
+  import { resting } from "../../app/rest";
   import { lenis } from "./smoothScroll";
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const hero =document.querySelector<HTMLElement>("[data-hero]")!;
   const root = document.documentElement;
 
-  // Aurora: five soft blobs at a sixth of the resolution, scaled up by the browser.
-  const cv = document.querySelector<HTMLCanvasElement>("[data-aurora]")!;
-  const ctx = cv.getContext("2d")!;
-  // Each colour has saturate(1.2) worked into it. As a CSS filter on the canvas that
-  // is a second full-hero pass on every frame the hero draws.
-  const blobs: [string, number, number, number][] = [
-    ["226,163,91", 0.3, 0.35, 0.9],
-    ["200,128,255", 0.7, 0.3, 1.1],
-    ["255,107,131", 0.55, 0.62, 0.7],
-    ["19,219,194", 0.2, 0.7, 0.8],
-    ["200,128,255", 0.85, 0.75, 0.6],
-  ];
-  const m = { x: 0.5, y: 0.4 };
-  const sm = { x: 0.5, y: 0.4 };
-  let drawn = 0;
-  // The blobs take most of a minute to cross the hero, so 15 redraws a second is
-  // smooth, and a timer is used over requestAnimationFrame so the page is not
-  // asked for a frame on the refreshes in between.
-  const FRAME_MS = 1000 / 15;
-  const draw = () => {
-    const now = performance.now();
-    const dt = drawn ? now - drawn : FRAME_MS;
-    drawn = now;
-    const w = (cv.clientWidth / 6) | 0;
-    const h = (cv.clientHeight / 6) | 0;
-    if (cv.width !== w || cv.height !== h) {
-      cv.width = w;
-      cv.height = h;
-    }
-    const follow = 1 - 0.96 ** Math.min(12, dt / (1000 / 60));
-    sm.x += (m.x - sm.x) * follow;
-    sm.y += (m.y - sm.y) * follow;
-    const t = (reduced ? 0 : now) / 1000;
-    ctx.clearRect(0, 0, w, h);
-    ctx.globalCompositeOperation = "lighter";
-    blobs.forEach((b, i) => {
-      const x = (b[1] + Math.sin(t * 0.13 * b[3] + i * 1.7) * 0.12 + (sm.x - 0.5) * 0.12 * (i % 2 ? 1 : -1)) * w;
-      const y = (b[2] + Math.cos(t * 0.11 * b[3] + i) * 0.1 + (sm.y - 0.5) * 0.1) * h * 0.8;
-      const rad = Math.max(w, h) * (0.28 + 0.05 * Math.sin(t * 0.2 + i));
-      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
-      g.addColorStop(0, `rgba(${b[0]},.34)`);
-      g.addColorStop(1, `rgba(${b[0]},0)`);
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-    });
-  };
-  draw();
-  let heroVisible = true;
-  let timer = 0;
-  const pace = () => {
-    const on = heroVisible && !document.hidden && !reduced;
-    if (on === !!timer) return;
-    if (on) timer = window.setInterval(draw, FRAME_MS);
-    else clearInterval(timer);
-    if (!on) timer = 0;
-    drawn = 0;
-  };
-  new IntersectionObserver((e) => {
-    heroVisible = e[0].isIntersecting;
-    pace();
-  }).observe(hero);
-  document.addEventListener("visibilitychange", pace);
-
   const pillBox = hero.querySelector<HTMLElement>(".pills")!;
   hero.addEventListener("mousemove", (ev) => {
     const r = hero.getBoundingClientRect();
-    m.x = (ev.clientX - r.left) / r.width;
-    m.y = (ev.clientY - r.top) / Math.min(r.height, innerHeight);
-    pillBox.style.setProperty("--mx", ((m.x - 0.5) * 2).toFixed(3));
-    pillBox.style.setProperty("--my", ((m.y - 0.5) * 2).toFixed(3));
+    pillBox.style.setProperty("--mx", (((ev.clientX - r.left) / r.width - 0.5) * 2).toFixed(3));
+    pillBox.style.setProperty("--my", (((ev.clientY - r.top) / Math.min(r.height, innerHeight) - 0.5) * 2).toFixed(3));
   });
 
-  // The rotating word and the pills share one 2.6s beat, like the app's status marks.
+  // One 2.6s beat, like the app's status marks: the headline names the next state, the
+  // hero's light follows it, and the pills in that state light up. When the headline
+  // comes back round to "working" the agents have moved on, so the pills are dealt a
+  // new hand, each with two in every state.
+  const HANDS = [
+    [0, 1, 2, 1, 2, 0],
+    [1, 2, 0, 0, 1, 2],
+    [2, 0, 1, 2, 0, 1],
+  ];
   if (!reduced) {
     const words = [...document.querySelectorAll<HTMLElement>("[data-words] .word")];
     const pills = [...document.querySelectorAll<HTMLElement>("[data-pill]")];
@@ -546,14 +542,15 @@ const WORDS = [
     let headline = true;
     new IntersectionObserver((e) => (headline = e[0].isIntersecting)).observe(words[0].parentElement!);
     setInterval(() => {
-      if (document.hidden || !headline) return;
+      if (document.hidden || !headline || resting()) return;
       tick++;
       const on = tick % 3;
+      if (on === 0) pills.forEach((p, i) => (p.dataset.st = String(HANDS[(tick / 3) % 3][i])));
+      hero.dataset.on = String(on);
       words.forEach((w, i) => {
         w.classList.toggle("on", i === on);
         w.classList.toggle("gone", i === (on + 2) % 3);
       });
-      pills.forEach((p) => (p.dataset.st = String((Number(p.dataset.st) + 1) % 3)));
     }, 2600);
   }
 
