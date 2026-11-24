@@ -76,6 +76,7 @@ import {
 } from "../app/kit";
 import { BranchMark, WorktreeMark } from "../app/gitMarks";
 import { loadScene, sceneFor, Wheel } from "../app/autopilotParts";
+import { stillCropped } from "../app/scene";
 import w from "../app/window.module.css";
 import sidebar from "../app/css/LeftSidebar.module.css";
 import rows from "../app/css/SidebarRows.module.css";
@@ -139,15 +140,11 @@ function CockpitSwitch(props: { cockpit: boolean; state: "idle" | "working" | "n
 
 function Cursor(props: { x: number; y: number; down?: boolean }) {
   return (
-    <svg
-      class={w.cursor}
-      width="18"
-      height="22"
-      viewBox="0 0 18 22"
-      style={{ left: `${props.x}px`, top: `${props.y}px`, transform: props.down ? "scale(.82)" : "none" }}
-    >
-      <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
-    </svg>
+    <span class={w.cursor} aria-hidden="true" style={{ translate: `${props.x}px ${props.y}px` }}>
+      <svg width="18" height="22" viewBox="0 0 18 22" style={{ transform: props.down ? "scale(.82)" : "none" }}>
+        <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
+      </svg>
+    </span>
   );
 }
 
@@ -226,7 +223,7 @@ export default function ToriWindow(props: {
     setScene(sceneFor(new Date().getHours()));
     const ro = new ResizeObserver((e) => setCw(e[0].contentRect.width || 1200));
     ro.observe(root);
-    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting));
+    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting), { rootMargin: "-8% 0px" });
     io.observe(root);
     const id = setInterval(() => {
       if (props.time != null || !visible || frozen() || document.hidden) return;
@@ -1693,6 +1690,14 @@ export default function ToriWindow(props: {
   const approved = () => isCockpit() && (approvedAt() !== null || t() >= 11);
   const showCall = () => isCockpit() && t() >= 6 && !approved();
   const storm = () => hoverStorm();
+  let sceneBox: HTMLDivElement | undefined;
+  createEffect(() => {
+    scenes();
+    storm();
+    cw();
+    mode();
+    requestAnimationFrame(() => sceneBox && stillCropped(sceneBox));
+  });
   const hero = () => {
     if (storm())
       return {
@@ -1797,7 +1802,7 @@ export default function ToriWindow(props: {
         <section class={av.center}>
           <header class={av.hero} data-state={heroState()}>
             <div class={hz.horizon}>
-              <div class={hz.scene} innerHTML={scenes()[storm() ? "storm" : scene()] ?? ""} />
+              <div ref={sceneBox} class={hz.scene} innerHTML={scenes()[storm() ? "storm" : scene()] ?? ""} />
             </div>
             <div class={av.heroRow}>
               <div class={av.heroText}>

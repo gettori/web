@@ -68,7 +68,7 @@ export default function Topics() {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) setT(STILL);
     let visible = false;
-    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting));
+    const io = new IntersectionObserver((e) => (visible = e[0].isIntersecting), { rootMargin: "-8% 0px" });
     io.observe(root);
     const ro = new ResizeObserver((e) => setCw(e[0].contentRect.width || WIDE.w));
     ro.observe(fit);
@@ -287,16 +287,11 @@ export default function Topics() {
         <div ref={chatPanel} class={`${sp.panel} ${s.chatPanel}`}>
           <Show when={pointer()}>
             {(c) => (
-              <svg
-                class={sp.cursor}
-                width="18"
-                height="22"
-                viewBox="0 0 18 22"
-                aria-hidden="true"
-                style={{ left: `${c().x}px`, top: `${c().y}px`, transform: c().down ? "scale(.82)" : "none" }}
-              >
-                <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
-              </svg>
+              <span class={sp.cursor} aria-hidden="true" style={{ translate: `${c().x}px ${c().y}px` }}>
+                <svg width="18" height="22" viewBox="0 0 18 22" style={{ transform: c().down ? "scale(.82)" : "none" }}>
+                  <path d="M1 1l15 11-7 1-4 7z" fill="#fff" stroke="#15171c" stroke-width="1.2" stroke-linejoin="round" />
+                </svg>
+              </span>
             )}
           </Show>
           <div class={s.chat}>
