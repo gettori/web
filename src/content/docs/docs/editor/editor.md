@@ -173,10 +173,14 @@ later without ever staging it.
 
 ## Previews
 
-- **Markdown and SVG** have a preview button on the tab bar. The preview shows
-  the buffer you are editing, unsaved changes included, and draws Mermaid
-  diagrams. Links are opened by Tori rather than followed, and raw HTML is
-  cleaned. **Open Markdown and SVG rendered** makes the preview the default.
+- **Markdown and SVG** have a preview button on the tab bar. Markdown means
+  `.md`, `.markdown` and `.mkd` files. The preview shows the buffer you are
+  editing, unsaved changes included, and draws Mermaid diagrams. Links are
+  opened by Tori rather than followed, and raw HTML is cleaned. **Open
+  Markdown and SVG rendered** makes the preview the default.
+- **MDX** files highlight as Markdown and get the Markdown icon, but stay
+  source only: Tori does not run MDX, so imports and components would show as
+  raw text in a preview.
 - **Images** open as images.
 - **PDFs** open as pages you can scroll. The bar has zoom out, an editable
   percentage, zoom in, fit (**Page**, **Width** or **100%**) and a page field.
